@@ -1,108 +1,186 @@
 buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://plugins.gradle.org/m2/' }
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'gradle.plugin.com.modrinth.minotaur', name: 'Minotaur', version: '1.2.1'
+        classpath group: 'gradle.plugin.com.matthewprenger',  name: 'CurseGradle', version: '1.4.0'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+apply plugin: 'com.matthewprenger.cursegradle'
 
-version = '1.0.0'
-group = 'modpackage' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'modid'
+// This initializes the config. Please try to modify the variables in the config file, if needed, add more if you see a reason to.
+ext.config = parseConfig(file('build.properties'))
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+version = config.VERSION
+group = "${config.GROUP}.${config.ARTIFACT}"
+archivesBaseName = "${config.ARCHIVES_BASE_NAME}-${config.MINECRAFT_VERSION}"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 minecraft {
-    // The mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   Snapshot are built nightly.
-    // stable_#            Stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not always work.
-    // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'snapshot', version: '20210309-1.16.5'
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-    
+    mappings channel: config.MAPPINGS_CHANNEL, version: config.MAPPINGS_VERSION
+
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
     runs {
         client {
             workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN'
-
-            // Recommended logging level for the console
+            property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            
-
             mods {
                 modid {
                     source sourceSets.main
                 }
-            }
-        }
+          }
+      }
 
-        server {
-            workingDirectory project.file('run')
+      server {
+          workingDirectory project.file('run')
+          property 'forge.logging.markers', 'REGISTRIES'
+          property 'forge.logging.console.level', 'debug'
+          mods {
+              modid {
+                  source sourceSets.main
+              }
+          }
+      }
 
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-            
-
-            mods {
-                modid {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'foodeffects', '--all', '--output', file('src/generated/resources/')
-
-            mods {
-                modid {
-                    source sourceSets.main
-                }
-            }
-        }
+      data {
+          workingDirectory project.file('run')
+          property 'forge.logging.markers', 'REGISTRIES'
+          property 'forge.logging.console.level', 'debug'
+          args '--mod', config.MOD_ID, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+          mods {
+              modid {
+                  source sourceSets.main
+              }
+          }
+      }
     }
 }
 
-dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.0'
+repositories {
+
 }
 
-// Example for how to get properties into the manifest for reading by the runtime..
+dependencies {
+    minecraft "net.minecraftforge:forge:${config.MINECRAFT_VERSION}-${config.FORGE_VERSION}"
+}
+
 jar {
     manifest {
         attributes([
-            "Specification-Title": "modid",
-            "Specification-Vendor": "infernalstudios",
-            "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"infernalstudios",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            'Specification-Title'   : config.TITLE,
+            'Specification-Vendor'  : config.AUTHOR,
+            'Specification-Version' : '1',
+            'Implementation-Title'  : config.TITLE,
+            'Implementation-Version': config.VERSION,
+            'Implementation-Vendor' : config.AUTHOR
         ])
     }
 }
 
 jar.finalizedBy('reobfJar')
+
+task sourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from sourceSets.main.allJava
+}
+
+tasks.build.dependsOn sourcesJar
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = config.GROUP
+            artifactId = config.ARTIFACT
+            version = "${config.VERSION}-${config.MINECRAFT_VERSION}"
+            artifact jar
+            artifact sourcesJar
+
+            pom {
+                // https://docs.gradle.org/current/dsl/org.gradle.api.publish.maven.MavenPom.html
+                name = config.NAME
+                url = config.URL
+                licenses {
+                    license {
+                        name = config.LICENSE_NAME
+                        url = config.LICENSE_URL
+                    }
+                }
+                scm {
+                    connection = config.SCM_CONNECTION
+                    url = config.SCM_URL
+                }
+            }
+        }
+    }
+
+    repositories {
+        if (System.getenv().containsKey('MAVEN_USER') && System.getenv().containsKey('MAVEN_TOKEN')) {
+            maven {
+                url config.MAVEN_URL
+
+                credentials {
+                    username = System.getenv('MAVEN_USER')
+                    password = System.getenv('MAVEN_TOKEN')
+                }
+                
+                authentication {
+                    basic(BasicAuthentication)
+                }
+            }
+        } 
+    }
+}
+
+// Modrinth publishing
+import com.modrinth.minotaur.TaskModrinthUpload
+
+task publishModrinth (type: TaskModrinthUpload) {
+    onlyIf {
+        System.getenv('MODRINTH')
+    }
+    token = System.getenv('MODRINTH')
+    projectId = config.MODRINTH_ID ?: 'No Modrinth ID set!'
+    versionNumber = project.version
+    uploadFile = jar
+    addFile(sourcesJar)
+    addGameVersion(config.MINECRAFT_VERSION)
+    addLoader('forge')
+}
+
+// Curseforge publishing
+if (System.getenv().containsKey('CURSEFORGE')) {
+    curseforge {
+        apiKey = System.getenv('CURSEFORGE')
+        
+        project {
+            id = config.CURSEFORGE_ID ?: 'No CurseForge ID set!'
+            changelog = 'No changelog specified.'
+            releaseType = 'release'
+            addGameVersion config.MINECRAFT_VERSION
+            addArtifact(sourcesJar)
+            mainArtifact (jar) { 
+                displayName = "${project.version}"
+            }
+        }
+    }
+}
+
+// Config parse function
+def parseConfig(File config) {
+    config.withReader {
+        def prop = new Properties()
+        prop.load(it)
+        return new ConfigSlurper().parse(prop)
+    }
+}

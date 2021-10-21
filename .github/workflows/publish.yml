@@ -1,0 +1,47 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-20.04
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Build
+        run: ./gradlew build
+        
+      - name: Publish to Modrinth
+        run: ./gradlew publishModrinth
+        env:
+          MODRINTH: ${{ secrets.MODRINTH_TOKEN }}
+        
+      - name: Publish to Curseforge
+        run: ./gradlew curseforge
+        env:
+          CURSEFORGE: ${{ secrets.CURSEFORGE_TOKEN }}
+        
+      - name: Publish to Maven
+        run: ./gradlew publish
+        env:
+          MAVEN_USER: ${{ secrets.MAVEN_USER }}
+          MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
+          
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "./build/libs/*,LICENSE"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Release ${{ steps.get_version.outputs.VERSION }}
