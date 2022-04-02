@@ -27,7 +27,7 @@ jobs:
         id: latest_forge_version
         run: |
           curl -s 'https://files.minecraftforge.net/net/minecraftforge/forge/promotions_slim.json' | \
-          jq --raw-output '"::set-output name=value::"+.promos["${{ steps.latest_minecraft_version.outputs.value }}-latest"]'
+          jq --raw-output '"::set-output name=value::"+.promos["${{ steps.properties_minecraft_version.outputs.value }}-latest"]'
         
       - name: Get declared Forge version
         id: properties_forge_version
