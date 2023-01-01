@@ -1,7 +1,7 @@
 modLoader="javafml" #mandatory
 
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
-loaderVersion="[32,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+loaderVersion="[43,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 
 license="Apache-2.0"
 
@@ -12,13 +12,13 @@ issueTrackerURL="" #optional
 [[mods]] #mandatory
 
 # The modid of the mod
-modId = "" #mandatory
+modId = "jsonentitymodels" #mandatory
 
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
 version="${file.jarVersion}" #mandatory
 
 # A display name for the mod
-displayName = "" #mandatory
+displayName = "JSON Entity Models" #mandatory
 
 # A URL to query for updates for this mod. See the JSON update specification <here>
 #updateJSONURL="http://myurl.me/" #optional
@@ -40,15 +40,21 @@ description = '''
 
 '''
 
-[[dependencies.modid]]
+[[dependencies.jsonentitymodels]]
 modId="forge"
 mandatory=true
-versionRange="[32,)"
+versionRange="[43,)"
 ordering="NONE"
 side="BOTH"
-[[dependencies.modid]]
+[[dependencies.jsonentitymodels]]
 modId="minecraft"
 mandatory = true
-versionRange = "[1.16.3,1.17)"
+versionRange = "[1.19.2,1.19.3)"
+ordering = "NONE"
+side="BOTH"
+[[dependencies.jsonentitymodels]]
+modId="geckolib3"
+mandatory = true
+versionRange = "[3.1.39,4.0)"
 ordering = "NONE"
 side="BOTH"

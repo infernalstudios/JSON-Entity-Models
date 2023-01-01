@@ -68,11 +68,12 @@ minecraft {
 }
 
 repositories {
-
+    maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${config.MINECRAFT_VERSION}-${config.FORGE_VERSION}"
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.19:${config.GECKOLIB_VERSION}")
 }
 
 jar {
