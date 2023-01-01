@@ -31,4 +31,6 @@ public class JSONEntityModels {
         final ModLoadingContext modLoadingContext = ModLoadingContext.get();
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     }
+
+
 }
