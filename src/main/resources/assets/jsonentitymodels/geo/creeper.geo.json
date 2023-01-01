@@ -1,0 +1,69 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.creeper",
+				"texture_width": 64,
+				"texture_height": 32,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 3.5,
+				"visible_bounds_offset": [0, 1.25, 0]
+			},
+			"bones": [
+				{
+					"name": "all",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "torso",
+					"parent": "all",
+					"pivot": [0, 6, 0],
+					"cubes": [
+						{"origin": [-4, 6, -2], "size": [8, 12, 4], "uv": [16, 16]}
+					]
+				},
+				{
+					"name": "head",
+					"parent": "torso",
+					"pivot": [0, 18, 0],
+					"cubes": [
+						{"origin": [-4, 18, -4], "size": [8, 8, 8], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "leftlegfront",
+					"parent": "all",
+					"pivot": [2, 6, -2],
+					"cubes": [
+						{"origin": [0, 0, -6], "size": [4, 6, 4], "uv": [0, 16]}
+					]
+				},
+				{
+					"name": "rightlegfront",
+					"parent": "all",
+					"pivot": [-2, 6, -2],
+					"cubes": [
+						{"origin": [-4, 0, -6], "size": [4, 6, 4], "uv": [0, 16]}
+					]
+				},
+				{
+					"name": "leftlegback",
+					"parent": "all",
+					"pivot": [2, 6, 2],
+					"cubes": [
+						{"origin": [0, 0, 2], "size": [4, 6, 4], "uv": [0, 16]}
+					]
+				},
+				{
+					"name": "rightlegback",
+					"parent": "all",
+					"pivot": [-2, 6, 2],
+					"cubes": [
+						{"origin": [-4, 0, 2], "size": [4, 6, 4], "uv": [0, 16]}
+					]
+				}
+			]
+		}
+	]
+}
