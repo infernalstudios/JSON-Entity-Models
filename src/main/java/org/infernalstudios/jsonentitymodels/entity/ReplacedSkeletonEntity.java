@@ -10,15 +10,9 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
-public class ReplacedSkeletonEntity implements IAnimatable {
+public class ReplacedSkeletonEntity extends ReplacedEntityBase implements IAnimatable {
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
-
-    private boolean isHurt;
     private boolean isAiming;
-
-    public void setHurt(boolean isHurt) {
-        this.isHurt = isHurt;
-    }
 
     public void setAiming(boolean isAiming) {
         this.isAiming = isAiming;

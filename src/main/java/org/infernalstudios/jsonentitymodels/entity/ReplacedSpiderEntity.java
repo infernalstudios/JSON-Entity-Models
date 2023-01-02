@@ -10,7 +10,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
-public class ReplacedSpiderEntity implements IAnimatable {
+public class ReplacedSpiderEntity extends ReplacedEntityBase implements IAnimatable {
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     private <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {

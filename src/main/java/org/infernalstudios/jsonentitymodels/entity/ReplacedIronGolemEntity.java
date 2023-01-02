@@ -10,7 +10,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
-public class ReplacedIronGolemEntity implements IAnimatable {
+public class ReplacedIronGolemEntity extends ReplacedEntityBase implements IAnimatable {
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     private boolean isAttacking;

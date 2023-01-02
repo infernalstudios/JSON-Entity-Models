@@ -34,7 +34,6 @@ public class ReplacedSkeletonRenderer extends ExtendedGeoReplacedEntityRenderer<
     @Override
     public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         if (entity instanceof Skeleton skeletonEntity && animatable instanceof ReplacedSkeletonEntity replacedSkeleton) {
-            replacedSkeleton.setHurt(skeletonEntity.hurtTime > 0);
             replacedSkeleton.setAiming(skeletonEntity.getMainHandItem().getItem() instanceof BowItem && skeletonEntity.isUsingItem());
         }
 

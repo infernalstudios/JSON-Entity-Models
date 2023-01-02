@@ -47,6 +47,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.apache.commons.lang3.StringUtils;
+import org.infernalstudios.jsonentitymodels.entity.ReplacedEntityBase;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
@@ -171,6 +172,11 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
     @Override
     public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack,
                        MultiBufferSource bufferSource, int packedLight) {
+
+        if (entity instanceof LivingEntity livingEntity && animatable instanceof ReplacedEntityBase replacedEntityBase) {
+            replacedEntityBase.setHurt(livingEntity.hurtTime > 0);
+        }
+
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
         // Now, render the heads
         renderHeads(poseStack, bufferSource, packedLight);
