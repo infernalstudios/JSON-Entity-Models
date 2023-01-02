@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.item.BowItem;
 import org.infernalstudios.jsonentitymodels.client.model.ReplacedSkeletonModel;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedSkeletonEntity;
 import org.jetbrains.annotations.Nullable;
@@ -34,8 +35,10 @@ public class ReplacedSkeletonRenderer extends GeoReplacedEntityRenderer<Replaced
 
     @Override
     public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-        if (entity instanceof Skeleton skeletonEntity) {
+        if (entity instanceof Skeleton skeletonEntity && animatable instanceof ReplacedSkeletonEntity replacedSkeleton) {
             this.skeleton = skeletonEntity;
+            replacedSkeleton.setHurt(skeletonEntity.hurtTime > 0);
+            replacedSkeleton.setAiming(skeletonEntity.getMainHandItem().getItem() instanceof BowItem && skeletonEntity.isUsingItem());
         }
 
         this.whTexture = this.getTextureLocation(animatable);
