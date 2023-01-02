@@ -32,6 +32,7 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeableArmorItem;
@@ -80,7 +81,7 @@ import java.util.Queue;
  *         model must feature a few special bones for this to work.
  */
 @OnlyIn(Dist.CLIENT)
-public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U extends LivingEntity> extends GeoReplacedEntityRenderer<T> {
+public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U extends Mob> extends GeoReplacedEntityRenderer<T> {
     protected static Map<ResourceLocation, IntIntPair> TEXTURE_DIMENSIONS_CACHE = new Object2ObjectOpenHashMap<>();
     protected static Map<ResourceLocation, Tuple<Integer, Integer>> TEXTURE_SIZE_CACHE = new Object2ObjectOpenHashMap<>();
     private static final Map<String, ResourceLocation> ARMOR_TEXTURE_RES_MAP = new Object2ObjectOpenHashMap<>();
@@ -570,17 +571,39 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
      */
     @Nullable
     protected ItemStack getArmorForBone(String boneName, U animatable) {
+        EquipmentSlot slot = this.getEquipmentSlotForArmorBone(boneName, animatable);
+
+        if (boneName.startsWith("armor") && slot != null) {
+            return animatable.getItemBySlot(slot);
+        }
+
         return null;
     }
 
     @Nullable
     protected EquipmentSlot getEquipmentSlotForArmorBone(String boneName, U animatable) {
-        return null;
+        return switch (boneName) {
+            case "armorhead" -> EquipmentSlot.HEAD;
+            case "armorbody" -> EquipmentSlot.CHEST;
+            case "armorrightarm" -> EquipmentSlot.CHEST;
+            case "armorleftarm" -> EquipmentSlot.CHEST;
+            case "armorrightleg", "armorleftleg" -> EquipmentSlot.LEGS;
+            case "armorrightfoot", "armorleftfoot" -> EquipmentSlot.FEET;
+            default -> null;
+        };
     }
 
     @Nullable
     protected ModelPart getArmorPartForBone(String name, HumanoidModel<?> armorModel) {
-        return null;
+        return switch (name) {
+            case "armorhead" -> armorModel.head;
+            case "armorbody" -> armorModel.body;
+            case "armorrightarm" -> armorModel.rightArm;
+            case "armorleftarm" -> armorModel.leftArm;
+            case "armorrightleg", "armorrightfoot" -> armorModel.rightLeg;
+            case "armorleftleg", "armorleftfoot" -> armorModel.leftLeg;
+            default -> null;
+        };
     }
 
     protected ResourceLocation getArmorResource(Entity entity, ItemStack stack, EquipmentSlot slot, @Nonnull String type) {

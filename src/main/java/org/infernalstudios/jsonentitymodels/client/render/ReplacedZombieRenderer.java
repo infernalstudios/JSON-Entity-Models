@@ -32,7 +32,7 @@ public class ReplacedZombieRenderer extends ExtendedGeoReplacedEntityRenderer<Re
 
     @Override
     protected boolean isArmorBone(GeoBone bone) {
-        return false;
+        return bone.getName().startsWith("armor");
     }
 
     @Nullable
@@ -61,7 +61,7 @@ public class ReplacedZombieRenderer extends ExtendedGeoReplacedEntityRenderer<Re
             return ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
         }
 
-        return null;
+        return ItemTransforms.TransformType.NONE;
     }
 
     @Nullable
