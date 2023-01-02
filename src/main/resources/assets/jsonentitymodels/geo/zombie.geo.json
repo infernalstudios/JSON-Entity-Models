@@ -41,6 +41,11 @@
 					]
 				},
 				{
+					"name": "leftitem",
+					"parent": "leftarm",
+					"pivot": [6, 14, 0]
+				},
+				{
 					"name": "rightarm",
 					"parent": "body",
 					"pivot": [-5, 22, 0],
@@ -48,6 +53,11 @@
 					"cubes": [
 						{"origin": [-8, 12, -2], "size": [4, 12, 4], "uv": [40, 16]}
 					]
+				},
+				{
+					"name": "rightitem",
+					"parent": "rightarm",
+					"pivot": [-6, 14, 0]
 				},
 				{
 					"name": "leftleg",
