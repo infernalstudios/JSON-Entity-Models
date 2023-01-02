@@ -2,8 +2,6 @@ package org.infernalstudios.jsonentitymodels.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -12,16 +10,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import org.infernalstudios.jsonentitymodels.client.model.ReplacedSkeletonModel;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedSkeletonEntity;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
-import software.bernie.geckolib3.renderers.geo.GeoReplacedEntityRenderer;
 
-public class ReplacedSkeletonRenderer extends GeoReplacedEntityRenderer<ReplacedSkeletonEntity> {
-    Skeleton skeleton;
-    public ResourceLocation whTexture;
+public class ReplacedSkeletonRenderer extends ExtendedGeoReplacedEntityRenderer<ReplacedSkeletonEntity, Skeleton> {
 
     public ReplacedSkeletonRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ReplacedSkeletonModel(), new ReplacedSkeletonEntity());
@@ -36,27 +34,70 @@ public class ReplacedSkeletonRenderer extends GeoReplacedEntityRenderer<Replaced
     @Override
     public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         if (entity instanceof Skeleton skeletonEntity && animatable instanceof ReplacedSkeletonEntity replacedSkeleton) {
-            this.skeleton = skeletonEntity;
             replacedSkeleton.setHurt(skeletonEntity.hurtTime > 0);
             replacedSkeleton.setAiming(skeletonEntity.getMainHandItem().getItem() instanceof BowItem && skeletonEntity.isUsingItem());
         }
-
-        this.whTexture = this.getTextureLocation(animatable);
 
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
     @Override
-    public void renderRecursively(GeoBone bone, PoseStack stack, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (bone.getName().equals("rightitem") && this.skeleton != null && !this.skeleton.isInvisible()) {
-            stack.pushPose();
-            stack.translate(0.4D, 0.8D, 0.2D);
-            stack.mulPose(Vector3f.XN.rotationDegrees(180.0F));
-            Minecraft.getInstance().getItemRenderer().renderStatic(this.skeleton.getMainHandItem(), ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND, packedLightIn, packedOverlayIn, stack, this.rtb, 0);
-            stack.popPose();
-            bufferIn = this.rtb.getBuffer(RenderType.entityTranslucent(this.whTexture));
+    protected boolean isArmorBone(GeoBone bone) {
+        return false;
+    }
+
+    @Nullable
+    @Override
+    protected ResourceLocation getTextureForBone(String boneName, Skeleton animatable) {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    protected ItemStack getHeldItemForBone(String boneName, Skeleton animatable) {
+        if (boneName.equals("rightitem")) {
+            return animatable.getMainHandItem();
+        } else if (boneName.equals("leftitem")) {
+            return animatable.getOffhandItem();
         }
 
-        super.renderRecursively(bone, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        return null;
+    }
+
+    @Override
+    protected ItemTransforms.TransformType getCameraTransformForItemAtBone(ItemStack stack, String boneName) {
+        if (boneName.equals("rightitem")) {
+            return ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
+        } else if (boneName.equals("leftitem")) {
+            return ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    @Override
+    protected BlockState getHeldBlockForBone(String boneName, Skeleton animatable) {
+        return null;
+    }
+
+    @Override
+    protected void preRenderItem(PoseStack poseStack, ItemStack stack, String boneName, Skeleton animatable, IBone bone) {
+
+    }
+
+    @Override
+    protected void preRenderBlock(PoseStack poseStack, BlockState state, String boneName, Skeleton animatable) {
+
+    }
+
+    @Override
+    protected void postRenderItem(PoseStack poseStack, ItemStack stack, String boneName, Skeleton animatable, IBone bone) {
+
+    }
+
+    @Override
+    protected void postRenderBlock(PoseStack poseStack, BlockState state, String boneName, Skeleton animatable) {
+
     }
 }
