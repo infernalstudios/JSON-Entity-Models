@@ -27,8 +27,10 @@ public class ReplacedZombieRenderer extends GeoReplacedEntityRenderer<ReplacedZo
 
     @Override
     public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-        if (entity instanceof Zombie zombieEntity) {
+        if (entity instanceof Zombie zombieEntity && animatable instanceof ReplacedZombieEntity replacedZombie) {
             this.zombie = zombieEntity;
+            replacedZombie.setHurt(zombieEntity.hurtTime > 0);
+            replacedZombie.setAttacking(zombieEntity.isAggressive());
         }
 
         this.whTexture = this.getTextureLocation(animatable);
