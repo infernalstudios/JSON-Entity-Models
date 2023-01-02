@@ -334,18 +334,18 @@
 		},
 		"attack": {
 			"loop": true,
-			"animation_length": 0.83333,
+			"animation_length": 0.5,
 			"bones": {
 				"upperbody": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.1667": {
+						"0.0833": {
 							"vector": [-10, 0, 0],
 							"easing": "easeInQuint"
 						},
-						"0.8333": {
+						"0.5": {
 							"vector": [0, 0, 0],
 							"easing": "easeInOutBack"
 						}
@@ -356,11 +356,11 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.1667": {
+						"0.0833": {
 							"vector": [-22.5, 0, 0],
 							"easing": "easeInQuint"
 						},
-						"0.8333": {
+						"0.5": {
 							"vector": [0, 0, 0],
 							"easing": "easeInOutBack"
 						}
@@ -371,11 +371,11 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.1667": {
+						"0.0833": {
 							"vector": [-180, 0, 0],
 							"easing": "easeInQuint"
 						},
-						"0.8333": {
+						"0.5": {
 							"vector": [0, 0, 0],
 							"easing": "easeInOutBack"
 						}
@@ -386,11 +386,11 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.1667": {
+						"0.0833": {
 							"vector": [-180, 0, 0],
 							"easing": "easeInQuint"
 						},
-						"0.8333": {
+						"0.5": {
 							"vector": [0, 0, 0],
 							"easing": "easeInOutBack"
 						}

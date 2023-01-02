@@ -13,8 +13,16 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 public class ReplacedIronGolemEntity implements IAnimatable {
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
+    private boolean isAttacking;
+
+    public void setAttacking(boolean isAttacking) {
+        this.isAttacking = isAttacking;
+    }
+
     private <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-        if (!(event.getLimbSwingAmount() > -0.10F && event.getLimbSwingAmount() < 0.10F)) {
+        if (this.isAttacking) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("attack", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+        } else if (!(event.getLimbSwingAmount() > -0.10F && event.getLimbSwingAmount() < 0.10F)) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", ILoopType.EDefaultLoopTypes.LOOP));
         } else {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP));
