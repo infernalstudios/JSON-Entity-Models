@@ -1,12 +1,15 @@
 package org.infernalstudios.jsonentitymodels.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import org.infernalstudios.jsonentitymodels.client.model.ReplacedCreeperModel;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedCreeperEntity;
+import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.renderers.geo.GeoReplacedEntityRenderer;
 
 public class ReplacedCreeperRenderer extends GeoReplacedEntityRenderer<ReplacedCreeperEntity> {
@@ -16,16 +19,12 @@ public class ReplacedCreeperRenderer extends GeoReplacedEntityRenderer<ReplacedC
     }
 
     @Override
-    protected void preRenderCallback(LivingEntity entity, PoseStack poseStack, float partialTick) {
-        Creeper creeper = (Creeper)entity;
-        float f = creeper.getSwelling(partialTick);
-        float f1 = 1.0F + Mth.sin(f * 100.0F) * f * 0.01F;
-        f = Mth.clamp(f, 0.0F, 1.0F);
-        f = f * f;
-        f = f * f;
-        float f2 = (1.0F + f * 0.4F) * f1;
-        float f3 = (1.0F + f * 0.1F) / f1;
-        poseStack.scale(f2, f3, f2);
+    public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+        if (entity instanceof Creeper creeper && animatable instanceof ReplacedCreeperEntity replacedCreeper) {
+            replacedCreeper.setFusing(creeper.getSwelling(partialTick) > 0);
+        }
+
+        super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
     @Override

@@ -13,9 +13,17 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 public class ReplacedCreeperEntity implements IAnimatable {
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
+    private boolean isFusing;
+
+    public void setFusing(boolean isFusing) {
+        this.isFusing = isFusing;
+    }
+
     private <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
         if (!(event.getLimbSwingAmount() > -0.15F && event.getLimbSwingAmount() < 0.15F)) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", ILoopType.EDefaultLoopTypes.LOOP));
+        } else if (this.isFusing) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("fuse", ILoopType.EDefaultLoopTypes.LOOP));
         } else {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP));
         }
