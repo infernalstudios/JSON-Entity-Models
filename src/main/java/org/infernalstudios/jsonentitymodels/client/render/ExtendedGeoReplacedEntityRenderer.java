@@ -4,7 +4,6 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -36,7 +35,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeableArmorItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PlayerHeadItem;
 import net.minecraft.world.level.block.AbstractSkullBlock;
@@ -198,86 +196,85 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
     protected abstract boolean isArmorBone(final GeoBone bone);
 
 
-    protected void handleArmorRenderingForBone(GeoBone bone, PoseStack stack, VertexConsumer buffer,
-                                               int packedLight, int packedOverlay, ResourceLocation currentTexture) {
-        ItemStack armorForBone = getArmorForBone(bone.getName(), this.currentEntityBeingRendered);
-        EquipmentSlot boneSlot = getEquipmentSlotForArmorBone(bone.getName(), this.currentEntityBeingRendered);
+    protected void handleArmorRenderingForBone(GeoBone bone, PoseStack stack, VertexConsumer bufferIn,
+                                               int packedLightIn, int packedOverlayIn, ResourceLocation currentTexture) {
+        final ItemStack armorForBone = this.getArmorForBone(bone.getName(), currentEntityBeingRendered);
+        final EquipmentSlot boneSlot = this.getEquipmentSlotForArmorBone(bone.getName(),
+                currentEntityBeingRendered);
+        // Armor and geo armor
+        if (armorForBone != null && boneSlot != null) {
+            // Geo armor
+            if (armorForBone.getItem() instanceof ArmorItem) {
+                final ArmorItem armorItem = (ArmorItem) armorForBone.getItem();
+                if (armorForBone.getItem() instanceof IAnimatable) {
+                    final GeoArmorRenderer<? extends GeoArmorItem> geoArmorRenderer = GeoArmorRenderer
+                            .getRenderer(armorItem.getClass(), this.currentEntityBeingRendered);
+                    final HumanoidModel<?> armorModel = (HumanoidModel<?>) geoArmorRenderer;
 
-        if (armorForBone == null || boneSlot == null)
-            return;
+                    if (armorModel != null) {
+                        ModelPart sourceLimb = this.getArmorPartForBone(bone.getName(), armorModel);
+                        if (sourceLimb != null) {
+                            List<Cube> cubeList = sourceLimb.cubes;
+                            if (cubeList != null && !cubeList.isEmpty()) {
+                                // IMPORTANT: The first cube is used to define the armor part!!
+                                stack.scale(-1, -1, 1);
+                                stack.pushPose();
 
-        Item armorItem = armorForBone.getItem();
+                                this.prepareArmorPositionAndScale(bone, cubeList, sourceLimb, stack, true,
+                                        boneSlot == EquipmentSlot.CHEST);
 
-        if (armorForBone.getItem() instanceof BlockItem blockItem
-                && blockItem.getBlock() instanceof AbstractSkullBlock) {
-            this.HEAD_QUEUE.add(new Tuple<>(bone, armorForBone));
+                                geoArmorRenderer.setCurrentItem(this.currentEntityBeingRendered, armorForBone,
+                                        boneSlot);
+                                // Just to be safe, it does some modelprovider stuff in there too
+                                geoArmorRenderer.applySlot(boneSlot);
+                                this.handleGeoArmorBoneVisibility(geoArmorRenderer, sourceLimb, armorModel, boneSlot);
 
-            return;
-        }
+                                VertexConsumer ivb = ItemRenderer.getArmorFoilBuffer(rtb,
+                                        RenderType.armorCutoutNoCull(GeoArmorRenderer
+                                                .getRenderer(armorItem.getClass(), this.currentEntityBeingRendered)
+                                                .getTextureLocation(armorItem)),
+                                        false, armorForBone.hasFoil());
 
-        if (armorItem instanceof GeoArmorItem geoArmorItem) {
-            GeoArmorRenderer<? extends GeoArmorItem> geoArmorRenderer = GeoArmorRenderer
-                    .getRenderer(geoArmorItem.getClass(), this.currentEntityBeingRendered);
-            HumanoidModel<?> armorModel = (HumanoidModel<?>)geoArmorRenderer;
+                                geoArmorRenderer.render(this.currentPartialTicks, stack, ivb, packedLightIn);
 
-            if (armorModel == null)
-                return;
+                                stack.popPose();
+                            }
+                        }
+                    }
+                }
+                // Normal Armor
+                else {
+                    final HumanoidModel<?> armorModel = (HumanoidModel<?>) ForgeHooksClient.getArmorModel(currentEntityBeingRendered,
+                            armorForBone, boneSlot, boneSlot == EquipmentSlot.LEGS ? DEFAULT_BIPED_ARMOR_MODEL_INNER
+                                    : DEFAULT_BIPED_ARMOR_MODEL_OUTER);
+                    if (armorModel != null) {
+                        ModelPart sourceLimb = this.getArmorPartForBone(bone.getName(), armorModel);
+                        if (sourceLimb != null) {
+                            List<ModelPart.Cube> cubeList = sourceLimb.cubes;
+                            if (cubeList != null && !cubeList.isEmpty()) {
+                                // IMPORTANT: The first cube is used to define the armor part!!
+                                this.prepareArmorPositionAndScale(bone, cubeList, sourceLimb, stack);
+                                stack.scale(-1, -1, 1);
 
-            ModelPart sourceLimb = getArmorPartForBone(bone.getName(), armorModel);
+                                stack.pushPose();
 
-            if (sourceLimb == null)
-                return;
+                                ResourceLocation armorResource = this.getArmorResource(currentEntityBeingRendered,
+                                        armorForBone, boneSlot, null);
 
-            List<Cube> cubeList = sourceLimb.cubes;
+                                this.renderArmorOfItem(armorItem, armorForBone, boneSlot, armorResource, sourceLimb,
+                                        stack, packedLightIn, packedOverlayIn);
 
-            if (cubeList.isEmpty())
-                return;
-
-            VertexConsumer ivb = ItemRenderer.getArmorFoilBuffer(this.rtb,
-                    RenderType.armorCutoutNoCull(GeoArmorRenderer
-                            .getRenderer(geoArmorItem.getClass(), this.currentEntityBeingRendered)
-                            .getTextureLocation(geoArmorItem)),
-                    false, armorForBone.hasFoil());
-
-            stack.pushPose();
-            stack.scale(-1, -1, 1);
-            prepareArmorPositionAndScale(bone, cubeList, sourceLimb, stack, true,
-                    boneSlot == EquipmentSlot.CHEST);
-            geoArmorRenderer.setCurrentItem(this.currentEntityBeingRendered, armorForBone, boneSlot);
-            // Just to be safe, it does some modelprovider stuff in there too
-            geoArmorRenderer.applySlot(boneSlot);
-            setLimbBoneVisible(geoArmorRenderer, sourceLimb, armorModel, boneSlot);
-            geoArmorRenderer.render(this.currentPartialTicks, stack, ivb, packedLight);
-            stack.popPose();
-        }
-        else if (armorForBone.getItem() instanceof ArmorItem armor) {
-            HumanoidModel<?> armorModel = (HumanoidModel<?>)ForgeHooksClient.getArmorModel(
-                    this.currentEntityBeingRendered, armorForBone, boneSlot,
-                    boneSlot == EquipmentSlot.LEGS ? DEFAULT_BIPED_ARMOR_MODEL_INNER
-                            : DEFAULT_BIPED_ARMOR_MODEL_OUTER);
-
-            if (armorModel == null)
-                return;
-
-            ModelPart limb = getArmorPartForBone(bone.getName(), armorModel);
-
-            if (limb == null)
-                return;
-
-            List<Cube> cubeList = limb.cubes;
-
-            if (cubeList.isEmpty())
-                return;
-
-            ResourceLocation armorResource = getArmorResource(this.currentEntityBeingRendered, armorForBone,
-                    boneSlot, null);
-
-            stack.pushPose();
-            stack.scale(-1, -1, 1);
-            prepareArmorPositionAndScale(bone, cubeList, limb, stack);
-            renderArmorOfItem(armor, armorForBone, boneSlot, armorResource, limb, stack,
-                    packedLight, packedOverlay);
-            stack.popPose();
+                                stack.popPose();
+                            }
+                        }
+                    }
+                }
+            }
+            // Head blocks
+            else if (armorForBone.getItem() instanceof BlockItem
+                    && ((BlockItem) armorForBone.getItem()).getBlock() instanceof AbstractSkullBlock) {
+                this.HEAD_QUEUE.add(new Tuple<>(bone, armorForBone));
+            }
         }
     }
 
@@ -340,18 +337,19 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
     }
 
     protected void renderArmorOfItem(ArmorItem armorItem, ItemStack armorForBone, EquipmentSlot boneSlot,
-                                     ResourceLocation armorResource, ModelPart sourceLimb, PoseStack poseStack, int packedLight,
-                                     int packedOverlay) {
-        if (armorItem instanceof DyeableArmorItem dyableArmor) {
-            int color = dyableArmor.getColor(armorForBone);
+                                     ResourceLocation armorResource, ModelPart sourceLimb, PoseStack stack, int packedLightIn,
+                                     int packedOverlayIn) {
+        if (armorItem instanceof DyeableArmorItem) {
+            int i = ((DyeableArmorItem) armorItem).getColor(armorForBone);
+            float r = (float) (i >> 16 & 255) / 255.0F;
+            float g = (float) (i >> 8 & 255) / 255.0F;
+            float b = (float) (i & 255) / 255.0F;
 
-            renderArmorPart(poseStack, sourceLimb, packedLight, packedOverlay,
-                    (color >> 16 & 255) / 255f, (color >> 8 & 255) / 255f, (color & 255) / 255f, 1, armorForBone, armorResource);
-            renderArmorPart(poseStack, sourceLimb, packedLight, packedOverlay, 1, 1, 1, 1, armorForBone,
+            renderArmorPart(stack, sourceLimb, packedLightIn, packedOverlayIn, r, g, b, 1, armorForBone, armorResource);
+            renderArmorPart(stack, sourceLimb, packedLightIn, packedOverlayIn, 1, 1, 1, 1, armorForBone,
                     getArmorResource(currentEntityBeingRendered, armorForBone, boneSlot, "overlay"));
-        }
-        else {
-            renderArmorPart(poseStack, sourceLimb, packedLight, packedOverlay, 1, 1, 1, 1, armorForBone, armorResource);
+        } else {
+            renderArmorPart(stack, sourceLimb, packedLightIn, packedOverlayIn, 1, 1, 1, 1, armorForBone, armorResource);
         }
     }
 
@@ -361,22 +359,25 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
     }
 
     protected void prepareArmorPositionAndScale(GeoBone bone, List<Cube> cubeList, ModelPart sourceLimb,
-                                                PoseStack poseStack, boolean geoArmor, boolean modMatrixRot) {
+                                                PoseStack stack, boolean geoArmor, boolean modMatrixRot) {
         GeoCube firstCube = bone.childCubes.get(0);
-        Cube armorCube = cubeList.get(0);
-        float targetSizeX = firstCube.size.x();
-        float targetSizeY = firstCube.size.y();
-        float targetSizeZ = firstCube.size.z();
-        float sourceSizeX = Math.abs(armorCube.maxX - armorCube.minX);
-        float sourceSizeY = Math.abs(armorCube.maxY - armorCube.minY);
-        float sourceSizeZ = Math.abs(armorCube.maxZ - armorCube.minZ);
+        final Cube armorCube = cubeList.get(0);
+
+        final float targetSizeX = firstCube.size.x();
+        final float targetSizeY = firstCube.size.y();
+        final float targetSizeZ = firstCube.size.z();
+
+        final float sourceSizeX = Math.abs(armorCube.maxX - armorCube.minX);
+        final float sourceSizeY = Math.abs(armorCube.maxY - armorCube.minY);
+        final float sourceSizeZ = Math.abs(armorCube.maxZ - armorCube.minZ);
+
         float scaleX = targetSizeX / sourceSizeX;
         float scaleY = targetSizeY / sourceSizeY;
         float scaleZ = targetSizeZ / sourceSizeZ;
 
         // Modify position to move point to correct location, otherwise it will be off
         // when the sizes are different
-        // Modifications of X and Z don't seem to be necessary here, so let's ignore
+        // Modifications of X and Z doon't seem to be necessary here, so let's ignore
         // them. For now.
         sourceLimb.setPos(-(bone.getPivotX() - ((bone.getPivotX() * scaleX) - bone.getPivotX()) / scaleX),
                 -(bone.getPivotY() - ((bone.getPivotY() * scaleY) - bone.getPivotY()) / scaleY),
@@ -386,100 +387,108 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
             sourceLimb.xRot = -bone.getRotationX();
             sourceLimb.yRot = -bone.getRotationY();
             sourceLimb.zRot = bone.getRotationZ();
-        }
-        else {
-            // All those * 2 calls ARE necessary, otherwise the geo armor will apply
+        } else {
+            // All those *= 2 calls ARE necessary, otherwise the geo armor will apply
             // rotations twice, so to have it only applied one time in the correct direction
             // we add 2x the negative rotation to it
-            float xRot = bone.getRotationX() * -2;
-            float yRot = bone.getRotationY() * -2;
-            float zRot = bone.getRotationZ() * 2;
+            float xRot = -bone.getRotationX();
+            // xRot *= 1;
+            float yRot = -bone.getRotationY();
+            // yRot *= 1;
+            float zRot = bone.getRotationZ();
+            // zRot *= 1;
+            /*
+             * GeoBone tmpBone = bone.parent; while (tmpBone != null) { xRot -=
+             * tmpBone.getRotationX(); yRot -= tmpBone.getRotationY(); zRot +=
+             * tmpBone.getRotationZ(); tmpBone = tmpBone.parent; }
+             */
 
-            for (GeoBone parentBone = bone.parent; parentBone != null; parentBone = parentBone.parent) {
-                xRot -= parentBone.getRotationX();
-                yRot -= parentBone.getRotationY();
-                zRot += parentBone.getRotationZ();
-            }
-
-            if (modMatrixRot) {
-                poseStack.mulPose(new Quaternion(0, 0, (float)Math.toRadians(zRot), false));
-                poseStack.mulPose(new Quaternion(0, (float)Math.toRadians(yRot), 0, false));
-                poseStack.mulPose(new Quaternion((float)Math.toRadians(xRot), 0, 0, false));
-            }
-            else {
-                sourceLimb.xRot = xRot;
-                sourceLimb.yRot = yRot;
-                sourceLimb.zRot = zRot;
-            }
+            /*
+             * if (modMatrixRot) { xRot = (float) Math.toRadians(xRot); yRot = (float)
+             * Math.toRadians(yRot); zRot = (float) Math.toRadians(zRot);
+             *
+             * stack.mulPose(new Quaternion(0, 0, zRot, false)); stack.mulPose(new
+             * Quaternion(0, yRot, 0, false)); stack.mulPose(new Quaternion(xRot, 0, 0,
+             * false));
+             *
+             * } else {
+             */
+            sourceLimb.xRot = xRot;
+            sourceLimb.yRot = yRot;
+            sourceLimb.zRot = zRot;
+            // }
         }
 
-        poseStack.scale(scaleX, scaleY, scaleZ);
+        stack.scale(scaleX, scaleY, scaleZ);
     }
 
     @Override
-    public void renderRecursively(GeoBone bone, PoseStack poseStack, VertexConsumer buffer, int packedLight,
-                                  int packedOverlay, float red, float green, float blue, float alpha) {
-        MultiBufferSource bufferSource = getCurrentRTB();
+    public void renderRecursively(GeoBone bone, PoseStack stack, VertexConsumer bufferIn, int packedLightIn,
+                                  int packedOverlayIn, float red, float green, float blue, float alpha) {
+        if (this.getCurrentRTB() == null) {
+            throw new IllegalStateException("RenderTypeBuffer must never be null at this point!");
+        }
 
-        if (bufferSource == null)
-            throw new NullPointerException("Can't render with a null RenderTypeBuffer! (GeoEntityRenderer.rtb is null)");
-
-        if (getCurrentModelRenderCycle() != EModelRenderCycle.INITIAL) {
-            super.renderRecursively(bone, poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-
+        if (this.getCurrentModelRenderCycle() != EModelRenderCycle.INITIAL) {
+            super.renderRecursively(bone, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             return;
         }
 
-        this.textureForBone = getCurrentModelRenderCycle() != EModelRenderCycle.INITIAL ? null
-                : getTextureForBone(bone.getName(), this.currentEntityBeingRendered);
-        boolean useCustomTexture = this.textureForBone != null;
-        ResourceLocation currentTexture = getTextureLocation(this.currentEntityBeingRendered);
+        this.textureForBone = this.getCurrentModelRenderCycle() != EModelRenderCycle.INITIAL ? null
+                : this.getTextureForBone(bone.getName(), this.currentEntityBeingRendered);
+        boolean customTextureMarker = this.textureForBone != null;
+        ResourceLocation currentTexture = this.getTextureLocation(this.currentEntityBeingRendered);
 
-        RenderType renderType = useCustomTexture
-                ? getRenderTypeForBone(bone, this.currentEntityBeingRendered, this.currentPartialTicks, poseStack,
-                buffer, bufferSource, packedLight, this.textureForBone)
-                : getRenderType(this.currentEntityBeingRendered, this.currentPartialTicks, poseStack,
-                bufferSource, buffer, packedLight, currentTexture);
-        buffer = bufferSource.getBuffer(renderType);
+        final RenderType rt = customTextureMarker
+                ? this.getRenderTypeForBone(bone, this.currentEntityBeingRendered, this.currentPartialTicks, stack,
+                bufferIn, this.getCurrentRTB(), packedLightIn, this.textureForBone)
+                : this.getRenderType(this.currentEntityBeingRendered, this.currentPartialTicks, stack,
+                this.getCurrentRTB(), bufferIn, packedLightIn, currentTexture);
+        bufferIn = this.getCurrentRTB().getBuffer(rt);
 
-        if (getCurrentModelRenderCycle() == EModelRenderCycle.INITIAL) {
-            poseStack.pushPose();
+        if (this.getCurrentModelRenderCycle() == EModelRenderCycle.INITIAL) {
+            stack.pushPose();
 
             // Render armor
-            if (isArmorBone(bone)) {
-                handleArmorRenderingForBone(bone, poseStack, buffer, packedLight, packedOverlay, currentTexture);
-            }
-            else {
-                ItemStack boneItem = getHeldItemForBone(bone.getName(), this.currentEntityBeingRendered);
-                BlockState boneBlock = getHeldBlockForBone(bone.getName(), this.currentEntityBeingRendered);
+            if (this.isArmorBone(bone)) {
+                stack.pushPose();
+                this.handleArmorRenderingForBone(bone, stack, bufferIn, packedLightIn, packedOverlayIn, currentTexture);
+                stack.popPose();
 
+                // Reset buffer...
+                bufferIn = this.getCurrentRTB().getBuffer(rt);
+            } else {
+                ItemStack boneItem = this.getHeldItemForBone(bone.getName(), this.currentEntityBeingRendered);
+                BlockState boneBlock = this.getHeldBlockForBone(bone.getName(), this.currentEntityBeingRendered);
                 if (boneItem != null || boneBlock != null) {
-                    handleItemAndBlockBoneRendering(poseStack, bone, boneItem, boneBlock, packedLight, packedOverlay);
+                    stack.pushPose();
+                    this.handleItemAndBlockBoneRendering(stack, bone, boneItem, boneBlock, packedLightIn, packedOverlayIn);
+                    stack.popPose();
 
-                    buffer = bufferSource.getBuffer(RenderType.entityTranslucent(currentTexture));
+                    bufferIn = this.getCurrentRTB().getBuffer(rt);
                 }
             }
-
-            poseStack.popPose();
+            stack.popPose();
         }
+        this.customBoneSpecificRenderingHook(bone, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue,
+                alpha, customTextureMarker, currentTexture);
 
-        customBoneSpecificRenderingHook(bone, poseStack, buffer, packedLight, packedOverlay, red, green, blue,
-                alpha, useCustomTexture, currentTexture);
-
-        poseStack.pushPose();
-        RenderUtils.prepMatrixForBone(poseStack, bone);
-        super.renderCubesOfBone(bone, poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-
-        // Reset buffer
-        if (useCustomTexture) {
-            buffer = bufferSource.getBuffer(this.getRenderType(this.currentEntityBeingRendered,
-                    this.currentPartialTicks, poseStack, bufferSource, buffer, packedLight, currentTexture));
+        ////////////////////////////////////
+        stack.pushPose();
+        RenderUtils.prepMatrixForBone(stack, bone);
+        super.renderCubesOfBone(bone, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        //////////////////////////////////////
+        // reset buffer
+        if (customTextureMarker) {
+            bufferIn = this.getCurrentRTB().getBuffer(this.getRenderType(currentEntityBeingRendered,
+                    this.currentPartialTicks, stack, this.getCurrentRTB(), bufferIn, packedLightIn, currentTexture));
             // Reset the marker...
             this.textureForBone = null;
         }
-
-        super.renderChildBones(bone, poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        poseStack.popPose();
+        //////////////////////////////////////
+        super.renderChildBones(bone, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        stack.popPose();
+        ////////////////////////////////////
     }
 
     /*
