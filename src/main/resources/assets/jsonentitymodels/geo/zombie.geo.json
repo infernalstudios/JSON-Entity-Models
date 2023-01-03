@@ -32,6 +32,14 @@
 					]
 				},
 				{
+					"name": "armorpelvis",
+					"parent": "body",
+					"pivot": [0, 24, 0],
+					"cubes": [
+						{"origin": [-4, 12, -2], "size": [8.5, 12, 4.5], "uv": [16, 32]}
+					]
+				},
+				{
 					"name": "head",
 					"parent": "body",
 					"pivot": [0, 24, 0],

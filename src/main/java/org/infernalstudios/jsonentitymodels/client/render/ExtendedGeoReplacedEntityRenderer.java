@@ -593,10 +593,8 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
     protected EquipmentSlot getEquipmentSlotForArmorBone(String boneName, U animatable) {
         return switch (boneName) {
             case "armorhead" -> EquipmentSlot.HEAD;
-            case "armorbody" -> EquipmentSlot.CHEST;
-            case "armorrightarm" -> EquipmentSlot.CHEST;
-            case "armorleftarm" -> EquipmentSlot.CHEST;
-            case "armorrightleg", "armorleftleg" -> EquipmentSlot.LEGS;
+            case "armorbody", "armorrightarm", "armorleftarm" -> EquipmentSlot.CHEST;
+            case "armorpelvis", "armorrightleg", "armorleftleg" -> EquipmentSlot.LEGS;
             case "armorrightfoot", "armorleftfoot" -> EquipmentSlot.FEET;
             default -> null;
         };
@@ -606,7 +604,7 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
     protected ModelPart getArmorPartForBone(String name, HumanoidModel<?> armorModel) {
         return switch (name) {
             case "armorhead" -> armorModel.head;
-            case "armorbody" -> armorModel.body;
+            case "armorbody", "armorpelvis" -> armorModel.body;
             case "armorrightarm" -> armorModel.rightArm;
             case "armorleftarm" -> armorModel.leftArm;
             case "armorrightleg", "armorrightfoot" -> armorModel.rightLeg;
