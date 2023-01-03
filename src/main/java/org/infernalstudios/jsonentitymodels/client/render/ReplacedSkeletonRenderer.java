@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -17,7 +16,6 @@ import org.infernalstudios.jsonentitymodels.entity.ReplacedSkeletonEntity;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.geo.render.built.GeoBone;
 
 public class ReplacedSkeletonRenderer extends ExtendedGeoReplacedEntityRenderer<ReplacedSkeletonEntity, Skeleton> {
 
@@ -40,37 +38,9 @@ public class ReplacedSkeletonRenderer extends ExtendedGeoReplacedEntityRenderer<
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
-    @Override
-    protected boolean isArmorBone(GeoBone bone) {
-        return false;
-    }
-
     @Nullable
     @Override
     protected ResourceLocation getTextureForBone(String boneName, Skeleton animatable) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    protected ItemStack getHeldItemForBone(String boneName, Skeleton animatable) {
-        if (boneName.equals("rightitem")) {
-            return animatable.getMainHandItem();
-        } else if (boneName.equals("leftitem")) {
-            return animatable.getOffhandItem();
-        }
-
-        return null;
-    }
-
-    @Override
-    protected ItemTransforms.TransformType getCameraTransformForItemAtBone(ItemStack stack, String boneName) {
-        if (boneName.equals("rightitem")) {
-            return ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
-        } else if (boneName.equals("leftitem")) {
-            return ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
-        }
-
         return null;
     }
 

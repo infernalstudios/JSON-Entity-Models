@@ -16,6 +16,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.ModelPart.Cube;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -193,7 +194,9 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
         this.currentPartialTicks = partialTick;
     }
 
-    protected abstract boolean isArmorBone(final GeoBone bone);
+    protected boolean isArmorBone(final GeoBone bone) {
+        return bone.getName().startsWith("armor");
+    }
 
 
     protected void handleArmorRenderingForBone(GeoBone bone, PoseStack stack, VertexConsumer bufferIn,
@@ -561,9 +564,25 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
      * Return null if there is no item
      */
     @Nullable
-    protected abstract ItemStack getHeldItemForBone(String boneName, U animatable);
+    protected ItemStack getHeldItemForBone(String boneName, U animatable) {
+        if (boneName.equals("rightitem")) {
+            return !animatable.isLeftHanded() ? animatable.getMainHandItem() : animatable.getOffhandItem();
+        } else if (boneName.equals("leftitem")) {
+            return animatable.isLeftHanded() ? animatable.getMainHandItem() : animatable.getOffhandItem();
+        }
 
-    protected abstract TransformType getCameraTransformForItemAtBone(ItemStack stack, String boneName);
+        return null;
+    }
+
+    protected TransformType getCameraTransformForItemAtBone(ItemStack stack, String boneName) {
+        if (boneName.equals("rightitem")) {
+            return ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
+        } else if (boneName.equals("leftitem")) {
+            return ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
+        }
+
+        return ItemTransforms.TransformType.NONE;
+    }
 
     /*
      * Return null if there is no held block

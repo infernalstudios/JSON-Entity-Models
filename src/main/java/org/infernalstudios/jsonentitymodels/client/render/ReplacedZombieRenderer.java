@@ -2,7 +2,6 @@ package org.infernalstudios.jsonentitymodels.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -14,7 +13,6 @@ import org.infernalstudios.jsonentitymodels.entity.ReplacedZombieEntity;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.geo.render.built.GeoBone;
 
 public class ReplacedZombieRenderer extends ExtendedGeoReplacedEntityRenderer<ReplacedZombieEntity, Zombie> {
     public ReplacedZombieRenderer(EntityRendererProvider.Context renderManager) {
@@ -30,38 +28,10 @@ public class ReplacedZombieRenderer extends ExtendedGeoReplacedEntityRenderer<Re
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
-    @Override
-    protected boolean isArmorBone(GeoBone bone) {
-        return bone.getName().startsWith("armor");
-    }
-
     @Nullable
     @Override
     protected ResourceLocation getTextureForBone(String boneName, Zombie animatable) {
         return null;
-    }
-
-    @Nullable
-    @Override
-    protected ItemStack getHeldItemForBone(String boneName, Zombie animatable) {
-        if (boneName.equals("rightitem")) {
-            return animatable.getMainHandItem();
-        } else if (boneName.equals("leftitem")) {
-            return animatable.getOffhandItem();
-        }
-
-        return null;
-    }
-
-    @Override
-    protected ItemTransforms.TransformType getCameraTransformForItemAtBone(ItemStack stack, String boneName) {
-        if (boneName.equals("rightitem")) {
-            return ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
-        } else if (boneName.equals("leftitem")) {
-            return ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND;
-        }
-
-        return ItemTransforms.TransformType.NONE;
     }
 
     @Nullable

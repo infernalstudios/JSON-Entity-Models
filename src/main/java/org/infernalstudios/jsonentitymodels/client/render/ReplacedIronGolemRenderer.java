@@ -2,7 +2,6 @@ package org.infernalstudios.jsonentitymodels.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -14,7 +13,6 @@ import org.infernalstudios.jsonentitymodels.entity.ReplacedIronGolemEntity;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.geo.render.built.GeoBone;
 
 public class ReplacedIronGolemRenderer extends ExtendedGeoReplacedEntityRenderer<ReplacedIronGolemEntity, IronGolem> {
 
@@ -31,25 +29,9 @@ public class ReplacedIronGolemRenderer extends ExtendedGeoReplacedEntityRenderer
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
     }
 
-    @Override
-    protected boolean isArmorBone(GeoBone bone) {
-        return false;
-    }
-
     @Nullable
     @Override
     protected ResourceLocation getTextureForBone(String boneName, IronGolem animatable) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    protected ItemStack getHeldItemForBone(String boneName, IronGolem animatable) {
-        return null;
-    }
-
-    @Override
-    protected ItemTransforms.TransformType getCameraTransformForItemAtBone(ItemStack stack, String boneName) {
         return null;
     }
 

@@ -1,7 +1,6 @@
 package org.infernalstudios.jsonentitymodels.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.monster.Spider;
@@ -11,7 +10,6 @@ import org.infernalstudios.jsonentitymodels.client.model.ReplacedSpiderModel;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedSpiderEntity;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.geo.render.built.GeoBone;
 
 public class ReplacedSpiderRenderer extends ExtendedGeoReplacedEntityRenderer<ReplacedSpiderEntity, Spider> {
 
@@ -19,25 +17,9 @@ public class ReplacedSpiderRenderer extends ExtendedGeoReplacedEntityRenderer<Re
         super(renderManager, new ReplacedSpiderModel(), new ReplacedSpiderEntity());
     }
 
-    @Override
-    protected boolean isArmorBone(GeoBone bone) {
-        return false;
-    }
-
     @Nullable
     @Override
     protected ResourceLocation getTextureForBone(String boneName, Spider animatable) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    protected ItemStack getHeldItemForBone(String boneName, Spider animatable) {
-        return null;
-    }
-
-    @Override
-    protected ItemTransforms.TransformType getCameraTransformForItemAtBone(ItemStack stack, String boneName) {
         return null;
     }
 
