@@ -175,6 +175,7 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
 
         if (entity instanceof LivingEntity livingEntity && animatable instanceof ReplacedEntityBase replacedEntityBase) {
             replacedEntityBase.setHurt(livingEntity.hurtTime > 0);
+            replacedEntityBase.setBaby(livingEntity.isBaby());
         }
 
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
