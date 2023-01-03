@@ -12,26 +12,26 @@ import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class ReplacedZombieEntity extends ReplacedEntityBase implements IAnimatable {
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
-    private boolean isAttacking;
+    private boolean isAggressive;
 
-    public void setAttacking(boolean isAttacking) {
-        this.isAttacking = isAttacking;
+    public void setAggressive(boolean isAgressive) {
+        this.isAggressive = isAgressive;
     }
 
     private <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
         if (this.isHurt) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAttacking ? "attack_hurt" : "hurt", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAggressive ? "attack_hurt" : "hurt", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
         } else if (!(event.getLimbSwingAmount() > -0.10F && event.getLimbSwingAmount() < 0.10F)) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAttacking ? "attack_walk" : "walk", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAggressive ? "attack_walk" : "walk", ILoopType.EDefaultLoopTypes.LOOP));
         } else {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAttacking ? "attack_idle" : "idle", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAggressive ? "attack_idle" : "idle", ILoopType.EDefaultLoopTypes.LOOP));
         }
         return PlayState.CONTINUE;
     }
 
     private <P extends IAnimatable> PlayState attackpredicate(AnimationEvent<P> event) {
-        if (this.isAttacking) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("attack", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+        if (this.isAggressive) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("aggressive", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
 

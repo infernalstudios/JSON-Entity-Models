@@ -24,7 +24,7 @@ public class ReplacedZombieRenderer extends ExtendedGeoReplacedEntityRenderer<Re
     @Override
     public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         if (entity instanceof Zombie zombieEntity && animatable instanceof ReplacedZombieEntity replacedZombie) {
-            replacedZombie.setAttacking(zombieEntity.isAggressive());
+            replacedZombie.setAggressive(zombieEntity.isAggressive());
         }
 
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
