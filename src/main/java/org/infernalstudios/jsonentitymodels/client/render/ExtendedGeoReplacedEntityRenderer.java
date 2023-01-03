@@ -176,6 +176,7 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
         if (entity instanceof LivingEntity livingEntity && animatable instanceof ReplacedEntityBase replacedEntityBase) {
             replacedEntityBase.setHurt(livingEntity.hurtTime > 0);
             replacedEntityBase.setBaby(livingEntity.isBaby());
+            replacedEntityBase.setDead(livingEntity.isDeadOrDying());
         }
 
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
@@ -704,6 +705,11 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(state, poseStack, bufferSource, packedLight,
                 OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
+    }
+
+    @Override
+    protected float getDeathMaxRotation(LivingEntity entity) {
+        return 0;
     }
 
     /**
