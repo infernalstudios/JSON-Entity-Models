@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "org.infernalstudios.jsonentitymodels.mixin",
+  "refmap": "json-entity-models.refmap.json",
+  "compatibilityLevel": "JAVA_17",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "LivingEntityMixin"
+  ]
+}

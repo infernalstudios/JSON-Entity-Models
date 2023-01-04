@@ -2,6 +2,9 @@ package org.infernalstudios.jsonentitymodels.client.model;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import org.infernalstudios.jsonentitymodels.data.LivingEntityData;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedEntityBase;
 import org.infernalstudios.jsonentitymodels.util.ResourceUtil;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -14,7 +17,7 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 import java.util.List;
 import java.util.Random;
 
-public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase & IAnimatable> extends AnimatedGeoModel<T> {
+public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase & IAnimatable, U extends Mob> extends AnimatedGeoModel<T> {
     private final String entityName;
     private final Random rand = new Random();
     private ResourceLocation MODEL;
@@ -32,6 +35,20 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
             List<ResourceLocation> models = ResourceUtil.fetchModelsForEntity(this.entityName, object.getBaby());
 
             if (models.isEmpty() && object.getBaby()) {
+                models = ResourceUtil.fetchModelsForEntity(this.entityName, false);
+            }
+
+            MODEL = models.get(rand.nextInt(models.size()));
+        }
+
+        return MODEL;
+    }
+
+    public ResourceLocation getModelResource(T replacedEntity, LivingEntity entity) {
+        if (MODEL == null) {
+            List<ResourceLocation> models = ResourceUtil.fetchModelsForEntity(this.entityName, entity.isBaby());
+
+            if (models.isEmpty() && entity.isBaby()) {
                 models = ResourceUtil.fetchModelsForEntity(this.entityName, false);
             }
 
@@ -59,6 +76,23 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
         return TEXTURE;
     }
 
+    public ResourceLocation getTextureResource(T replacedEntity, LivingEntity entity) {
+        if (MODEL != null && ((LivingEntityData) entity).getTextureLocation() == null) {
+            String[] modelPath = MODEL.getPath().split("/");
+            String modelName = modelPath[modelPath.length - 1].replace(".geo.json", "");;
+
+            List<ResourceLocation> textures = ResourceUtil.fetchTexturesForModel(this.entityName, modelName, entity.isBaby());
+
+            if (textures.isEmpty() && entity.isBaby()) {
+                textures = ResourceUtil.fetchTexturesForModel(this.entityName, modelName, false);
+            }
+
+            ((LivingEntityData) entity).setTextureLocation(textures.get(rand.nextInt(textures.size())));
+        }
+
+        return ((LivingEntityData) entity).getTextureLocation();
+    }
+
     @Override
     public ResourceLocation getAnimationResource(T animatable) {
         if (MODEL != null && ANIMATION == null) {
@@ -68,6 +102,23 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
             List<ResourceLocation> animations = ResourceUtil.fetchAnimationsForModel(this.entityName, modelName, animatable.getBaby());
 
             if (animations.isEmpty() && animatable.getBaby()) {
+                animations = ResourceUtil.fetchAnimationsForModel(this.entityName, modelName, false);
+            }
+
+            ANIMATION = animations.get(rand.nextInt(animations.size()));
+        }
+
+        return ANIMATION;
+    }
+
+    public ResourceLocation getAnimationResource(T animatable, LivingEntity entity) {
+        if (MODEL != null && ANIMATION == null) {
+            String[] modelPath = MODEL.getPath().split("/");
+            String modelName = modelPath[modelPath.length - 1].replace(".geo.json", "");
+
+            List<ResourceLocation> animations = ResourceUtil.fetchAnimationsForModel(this.entityName, modelName, entity.isBaby());
+
+            if (animations.isEmpty() && entity.isBaby()) {
                 animations = ResourceUtil.fetchAnimationsForModel(this.entityName, modelName, false);
             }
 

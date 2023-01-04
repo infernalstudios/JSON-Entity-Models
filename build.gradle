@@ -2,18 +2,21 @@ buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://plugins.gradle.org/m2/' }
+        maven { url = 'https://repo.spongepowered.org/maven/' }
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle',           name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'org.spongepowered',                   name: 'mixingradle', version: '0.7-SNAPSHOT'
         classpath group: 'gradle.plugin.com.modrinth.minotaur', name: 'Minotaur', version: '1.2.1'
-        classpath group: 'gradle.plugin.com.matthewprenger',  name: 'CurseGradle', version: '1.4.0'
+        classpath group: 'gradle.plugin.com.matthewprenger',    name: 'CurseGradle', version: '1.4.0'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.matthewprenger.cursegradle'
 
 // This initializes the config. Please try to modify the variables in the config file, if needed, add more if you see a reason to.
@@ -33,11 +36,12 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+            arg '-mixin.config=json-entity-models.mixins.json'
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             property 'geckolib.disable_examples', 'true'
             mods {
-                modid {
+                jsonentitymodels {
                     source sourceSets.main
                 }
           }
@@ -45,11 +49,12 @@ minecraft {
 
       server {
           workingDirectory project.file('run')
+          arg '-mixin.config=json-entity-models.mixins.json'
           property 'forge.logging.markers', 'REGISTRIES'
           property 'forge.logging.console.level', 'debug'
           property 'geckolib.disable_examples', 'true'
           mods {
-              modid {
+              jsonentitymodels {
                   source sourceSets.main
               }
           }
@@ -62,7 +67,7 @@ minecraft {
           property 'geckolib.disable_examples', 'true'
           args '--mod', config.MOD_ID, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
           mods {
-              modid {
+              jsonentitymodels {
                   source sourceSets.main
               }
           }
@@ -70,12 +75,18 @@ minecraft {
     }
 }
 
+mixin {
+    add sourceSets.main, 'json-entity-models.refmap.json'
+}
+
 repositories {
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    maven { url = 'https://repo.spongepowered.org/maven/' }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${config.MINECRAFT_VERSION}-${config.FORGE_VERSION}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.19:${config.GECKOLIB_VERSION}")
 }
 
@@ -87,7 +98,8 @@ jar {
             'Specification-Version' : '1',
             'Implementation-Title'  : config.TITLE,
             'Implementation-Version': config.VERSION,
-            'Implementation-Vendor' : config.AUTHOR
+            'Implementation-Vendor' : config.AUTHOR,
+            'MixinConfigs'          : 'json-entity-models.mixins.json'
         ])
     }
 }

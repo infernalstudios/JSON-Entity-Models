@@ -47,6 +47,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.apache.commons.lang3.StringUtils;
+import org.infernalstudios.jsonentitymodels.client.model.HeadTurningAnimatedGeoModel;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedEntityBase;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.processor.IBone;
@@ -178,7 +179,7 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
             replacedEntityBase.setBaby(livingEntity.isBaby());
             replacedEntityBase.setDead(livingEntity.isDeadOrDying());
 
-            if (livingEntity.isBaby() && !this.modelProvider.getModelResource(animatable).toString().contains("/baby/")) {
+            if (livingEntity.isBaby() && this.modelProvider instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel && !headTurningAnimatedGeoModel.getModelResource((ReplacedEntityBase) animatable, livingEntity).toString().contains("/baby/")) {
                 poseStack.scale(0.5F, 0.5F, 0.5F);
             }
         }
@@ -190,7 +191,20 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
 
     @Override
     public ResourceLocation getTextureLocation(Entity entity) {
+        if (this.modelProvider instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
+            return headTurningAnimatedGeoModel.getTextureResource((ReplacedEntityBase) this.currentAnimatable, (LivingEntity) entity);
+        }
+
         return super.getTextureLocation(entity);
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(Object animatable) {
+        if (this.modelProvider instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
+            return headTurningAnimatedGeoModel.getTextureResource((ReplacedEntityBase) this.currentAnimatable, (LivingEntity) animatable);
+        }
+
+        return super.getTextureLocation(animatable);
     }
 
     @Override
