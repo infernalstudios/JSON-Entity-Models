@@ -2,8 +2,8 @@ package org.infernalstudios.jsonentitymodels.client.model;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import org.infernalstudios.jsonentitymodels.JSONEntityModels;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedEntityBase;
+import org.infernalstudios.jsonentitymodels.util.ResourceUtil;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
@@ -11,38 +11,70 @@ import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
+import java.util.List;
+import java.util.Random;
+
 public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase & IAnimatable> extends AnimatedGeoModel<T> {
-    private final ResourceLocation MODEL;
-    private final ResourceLocation BABY_MODEL;
-    private final ResourceLocation TEXTURE;
-    private final ResourceLocation BABY_TEXTURE;
-    private final ResourceLocation ANIMATION;
-    private final ResourceLocation BABY_ANIMATION;
+    private final String entityName;
+    private final Random rand = new Random();
+    private ResourceLocation MODEL;
+    private ResourceLocation TEXTURE;
+    private ResourceLocation ANIMATION;
 
     public HeadTurningAnimatedGeoModel(String entityName) {
-        this.MODEL = new ResourceLocation(JSONEntityModels.MOD_ID, "geo/" + entityName + "/" + entityName + ".geo.json");
-        this.TEXTURE = new ResourceLocation(JSONEntityModels.MOD_ID, "textures/entity/" + entityName + "/" + entityName + ".png");
-        this.ANIMATION = new ResourceLocation(JSONEntityModels.MOD_ID, "animations/" + entityName + "/" + entityName + ".animation.json");
-
-        this.BABY_MODEL = new ResourceLocation(JSONEntityModels.MOD_ID, "geo/" + entityName + "/" + entityName + "_baby.geo.json");
-        this.BABY_TEXTURE = new ResourceLocation(JSONEntityModels.MOD_ID, "textures/entity/" + entityName + "/" + entityName + "_baby.png");
-        this.BABY_ANIMATION = new ResourceLocation(JSONEntityModels.MOD_ID, "animations/" + entityName + "/" + entityName + "_baby.animation.json");
+        this.entityName = entityName;
     }
 
 
     @Override
     public ResourceLocation getModelResource(T object) {
-        return object.getBaby() ? BABY_MODEL : MODEL;
+        if (MODEL == null) {
+            List<ResourceLocation> models = ResourceUtil.fetchModelsForEntity(this.entityName, object.getBaby());
+
+            if (models.isEmpty() && object.getBaby()) {
+                models = ResourceUtil.fetchModelsForEntity(this.entityName, false);
+            }
+
+            MODEL = models.get(rand.nextInt(models.size()));
+        }
+
+        return MODEL;
     }
 
     @Override
     public ResourceLocation getTextureResource(T object) {
-        return object.getBaby() ? BABY_TEXTURE : TEXTURE;
+        if (MODEL != null && TEXTURE == null) {
+            String[] modelPath = MODEL.getPath().split("/");
+            String modelName = modelPath[modelPath.length - 1].replace(".geo.json", "");;
+
+            List<ResourceLocation> textures = ResourceUtil.fetchTexturesForModel(this.entityName, modelName, object.getBaby());
+
+            if (textures.isEmpty() && object.getBaby()) {
+                textures = ResourceUtil.fetchTexturesForModel(this.entityName, modelName, false);
+            }
+
+            TEXTURE = textures.get(rand.nextInt(textures.size()));
+        }
+
+        return TEXTURE;
     }
 
     @Override
     public ResourceLocation getAnimationResource(T animatable) {
-        return animatable.getBaby() ? BABY_ANIMATION : ANIMATION;
+        if (MODEL != null && ANIMATION == null) {
+            String[] modelPath = MODEL.getPath().split("/");
+            String modelName = modelPath[modelPath.length - 1].replace(".geo.json", "");
+
+            List<ResourceLocation> animations = ResourceUtil.fetchAnimationsForModel(this.entityName, modelName, animatable.getBaby());
+
+            if (animations.isEmpty() && animatable.getBaby()) {
+                animations = ResourceUtil.fetchAnimationsForModel(this.entityName, modelName, false);
+            }
+
+            ANIMATION = animations.get(rand.nextInt(animations.size()));
+        }
+
+        return ANIMATION;
     }
 
     @Override

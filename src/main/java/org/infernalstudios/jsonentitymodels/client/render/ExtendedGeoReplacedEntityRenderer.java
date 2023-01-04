@@ -177,6 +177,10 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
             replacedEntityBase.setHurt(livingEntity.hurtTime > 0);
             replacedEntityBase.setBaby(livingEntity.isBaby());
             replacedEntityBase.setDead(livingEntity.isDeadOrDying());
+
+            if (livingEntity.isBaby() && !this.modelProvider.getModelResource(animatable).toString().contains("/baby/")) {
+                poseStack.scale(0.5F, 0.5F, 0.5F);
+            }
         }
 
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
