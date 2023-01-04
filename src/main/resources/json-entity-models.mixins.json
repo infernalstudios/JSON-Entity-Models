@@ -9,5 +9,8 @@
   },
   "mixins": [
     "LivingEntityMixin"
+  ],
+  "client": [
+    "client.GeoReplacedEntityRendererMixin"
   ]
 }

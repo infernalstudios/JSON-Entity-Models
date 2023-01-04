@@ -10,7 +10,7 @@ import java.util.Map;
 public class ResourceUtil {
 
     public static List<ResourceLocation> fetchModelsForEntity(String entityName, boolean isBaby) {
-        String path = "geo/" + entityName + (isBaby ? "/baby" : "");
+        String path = "geo/" + entityName + (isBaby ? "/baby" : "/adult");
 
         Map<ResourceLocation, Resource> map = Minecraft.getInstance().getResourceManager().listResources(path,
                 filename -> filename.toString().endsWith(".json"));
@@ -18,7 +18,7 @@ public class ResourceUtil {
     }
 
     public static List<ResourceLocation> fetchAnimationsForModel(String entityName, String modelName, boolean isBaby) {
-        String path = "animations/" + entityName + "/" + modelName + (isBaby ? "/baby" : "");
+        String path = "animations/" + entityName + (isBaby ? "/baby/" : "/adult/") + modelName;
 
         Map<ResourceLocation, Resource> map = Minecraft.getInstance().getResourceManager().listResources(path,
                 filename -> filename.toString().endsWith(".json"));
@@ -26,7 +26,7 @@ public class ResourceUtil {
     }
 
     public static List<ResourceLocation> fetchTexturesForModel(String entityName, String modelName, boolean isBaby) {
-        String path = "textures/entity/" + entityName + "/" + modelName + (isBaby ? "/baby" : "");
+        String path = "textures/entity/" + entityName  + (isBaby ? "/baby/" : "/adult/") + modelName;
 
         Map<ResourceLocation, Resource> map = Minecraft.getInstance().getResourceManager().listResources(path,
                 filename -> filename.toString().endsWith(".png"));
