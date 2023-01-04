@@ -32,5 +32,4 @@ public class JSONEntityModels {
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
     }
 
-
 }

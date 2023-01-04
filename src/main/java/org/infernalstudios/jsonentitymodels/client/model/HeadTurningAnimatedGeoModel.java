@@ -20,13 +20,13 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
     private final ResourceLocation BABY_ANIMATION;
 
     public HeadTurningAnimatedGeoModel(String entityName) {
-        this.MODEL = new ResourceLocation(JSONEntityModels.MOD_ID, "geo/" + entityName + ".geo.json");
-        this.TEXTURE = new ResourceLocation(JSONEntityModels.MOD_ID, "textures/entity/" + entityName + ".png");
-        this.ANIMATION = new ResourceLocation(JSONEntityModels.MOD_ID, "animations/" + entityName + ".animation.json");
+        this.MODEL = new ResourceLocation(JSONEntityModels.MOD_ID, "geo/" + entityName + "/" + entityName + ".geo.json");
+        this.TEXTURE = new ResourceLocation(JSONEntityModels.MOD_ID, "textures/entity/" + entityName + "/" + entityName + ".png");
+        this.ANIMATION = new ResourceLocation(JSONEntityModels.MOD_ID, "animations/" + entityName + "/" + entityName + ".animation.json");
 
-        this.BABY_MODEL = new ResourceLocation(JSONEntityModels.MOD_ID, "geo/" + entityName + "_baby.geo.json");
-        this.BABY_TEXTURE = new ResourceLocation(JSONEntityModels.MOD_ID, "textures/entity/" + entityName + "_baby.png");
-        this.BABY_ANIMATION = new ResourceLocation(JSONEntityModels.MOD_ID, "animations/" + entityName + "_baby.animation.json");
+        this.BABY_MODEL = new ResourceLocation(JSONEntityModels.MOD_ID, "geo/" + entityName + "/" + entityName + "_baby.geo.json");
+        this.BABY_TEXTURE = new ResourceLocation(JSONEntityModels.MOD_ID, "textures/entity/" + entityName + "/" + entityName + "_baby.png");
+        this.BABY_ANIMATION = new ResourceLocation(JSONEntityModels.MOD_ID, "animations/" + entityName + "/" + entityName + "_baby.animation.json");
     }
 
 
