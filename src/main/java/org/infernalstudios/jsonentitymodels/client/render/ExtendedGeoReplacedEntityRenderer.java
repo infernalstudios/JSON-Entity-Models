@@ -179,32 +179,20 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
             replacedEntityBase.setBaby(livingEntity.isBaby());
             replacedEntityBase.setDead(livingEntity.isDeadOrDying());
 
-            if (livingEntity.isBaby() && this.modelProvider instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel && !headTurningAnimatedGeoModel.getModelResource((ReplacedEntityBase) animatable, livingEntity).toString().contains("/baby/")) {
-                poseStack.scale(0.5F, 0.5F, 0.5F);
+            if (this.modelProvider instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
+                headTurningAnimatedGeoModel.setCurrentEntity(livingEntity);
+
+                if (livingEntity.isBaby() && !headTurningAnimatedGeoModel.getModelResource((ReplacedEntityBase) animatable).toString().contains("/baby/")) {
+                    poseStack.scale(0.5F, 0.5F, 0.5F);
+                }
             }
+
+
         }
 
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
         // Now, render the heads
         renderHeads(poseStack, bufferSource, packedLight);
-    }
-
-    @Override
-    public ResourceLocation getTextureLocation(Entity entity) {
-        if (this.modelProvider instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
-            return headTurningAnimatedGeoModel.getTextureResource((ReplacedEntityBase) this.currentAnimatable, (LivingEntity) entity);
-        }
-
-        return super.getTextureLocation(entity);
-    }
-
-    @Override
-    public ResourceLocation getTextureLocation(Object animatable) {
-        if (this.modelProvider instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
-            return headTurningAnimatedGeoModel.getTextureResource((ReplacedEntityBase) this.currentAnimatable, (LivingEntity) animatable);
-        }
-
-        return super.getTextureLocation(animatable);
     }
 
     @Override
