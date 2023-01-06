@@ -18,13 +18,19 @@ import java.util.List;
 import java.util.Random;
 
 public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase & IAnimatable, U extends Mob> extends AnimatedGeoModel<T> {
+    private final String namespace;
     private final String entityName;
     private final Random rand = new Random();
 
     private LivingEntity currentEntity;
 
-    public HeadTurningAnimatedGeoModel(String entityName) {
+    public HeadTurningAnimatedGeoModel(String namespace, String entityName) {
+        this.namespace = namespace;
         this.entityName = entityName;
+    }
+
+    public HeadTurningAnimatedGeoModel(String entityName) {
+        this("minecraft", entityName);
     }
 
     @Override
@@ -32,10 +38,10 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
         LivingEntityData entityData = (LivingEntityData) this.currentEntity;
 
         if (entityData.getModelLocation() == null) {
-            List<ResourceLocation> models = ResourceUtil.fetchModelsForEntity(this.entityName, this.currentEntity.isBaby());
+            List<ResourceLocation> models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, this.currentEntity.isBaby());
 
             if (models.isEmpty() && this.currentEntity.isBaby()) {
-                models = ResourceUtil.fetchModelsForEntity(this.entityName, false);
+                models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, false);
             }
 
             entityData.setModelLocation(models.get(rand.nextInt(models.size())));
@@ -50,12 +56,12 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
 
         if (entityData.getModelLocation() != null && entityData.getTextureLocation() == null) {
             String[] modelPath = entityData.getModelLocation().getPath().split("/");
-            String modelName = modelPath[modelPath.length - 1].replace(".geo.json", "");;
+            String modelName = modelPath[modelPath.length - 1].replaceAll("(\\.geo)?\\.json$", "");;
 
-            List<ResourceLocation> textures = ResourceUtil.fetchTexturesForModel(this.entityName, modelName, this.currentEntity.isBaby());
+            List<ResourceLocation> textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, this.currentEntity.isBaby());
 
             if (textures.isEmpty() && this.currentEntity.isBaby()) {
-                textures = ResourceUtil.fetchTexturesForModel(this.entityName, modelName, false);
+                textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, false);
             }
 
             entityData.setTextureLocation(textures.get(rand.nextInt(textures.size())));
@@ -70,12 +76,12 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
 
         if (entityData.getModelLocation() != null && entityData.getAnimationLocation() == null) {
             String[] modelPath = entityData.getModelLocation().getPath().split("/");
-            String modelName = modelPath[modelPath.length - 1].replace(".geo.json", "");
+            String modelName = modelPath[modelPath.length - 1].replaceAll("(\\.geo)?\\.json$", "");
 
-            List<ResourceLocation> animations = ResourceUtil.fetchAnimationsForModel(this.entityName, modelName, this.currentEntity.isBaby());
+            List<ResourceLocation> animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, this.currentEntity.isBaby());
 
             if (animations.isEmpty() && this.currentEntity.isBaby()) {
-                animations = ResourceUtil.fetchAnimationsForModel(this.entityName, modelName, false);
+                animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, false);
             }
 
             entityData.setAnimationLocation(animations.get(rand.nextInt(animations.size())));
