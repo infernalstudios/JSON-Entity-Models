@@ -6,6 +6,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import org.infernalstudios.jsonentitymodels.data.LivingEntityData;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedEntityBase;
+import org.infernalstudios.jsonentitymodels.util.RandomUtil;
 import org.infernalstudios.jsonentitymodels.util.ResourceUtil;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
@@ -15,12 +16,10 @@ import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 import java.util.List;
-import java.util.Random;
 
 public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase & IAnimatable, U extends Mob> extends AnimatedGeoModel<T> {
     private final String namespace;
     private final String entityName;
-    private final Random rand = new Random();
 
     private LivingEntity currentEntity;
 
@@ -44,7 +43,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
                 models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, false);
             }
 
-            entityData.setModelLocation(models.get(rand.nextInt(models.size())));
+            entityData.setModelLocation(models.get(RandomUtil.getRandomInt(this.currentEntity.getUUID(), models.size())));
         }
 
         return entityData.getModelLocation();
@@ -64,7 +63,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
                 textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, false);
             }
 
-            entityData.setTextureLocation(textures.get(rand.nextInt(textures.size())));
+            entityData.setTextureLocation(textures.get(RandomUtil.getRandomInt(this.currentEntity.getUUID(), textures.size())));
         }
 
         return entityData.getTextureLocation();
@@ -84,7 +83,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
                 animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, false);
             }
 
-            entityData.setAnimationLocation(animations.get(rand.nextInt(animations.size())));
+            entityData.setAnimationLocation(animations.get(RandomUtil.getRandomInt(this.currentEntity.getUUID(), animations.size())));
         }
 
         return entityData.getAnimationLocation();
