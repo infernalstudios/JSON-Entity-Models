@@ -36,7 +36,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
     public ResourceLocation getModelResource(T object) {
         LivingEntityData entityData = (LivingEntityData) this.currentEntity;
 
-        if (entityData.getModelLocation() == null) {
+        if (!ResourceUtil.isEntityInReloadedHashSet(this.currentEntity) || entityData.getModelLocation() == null) {
             List<ResourceLocation> models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, this.currentEntity.isBaby());
 
             if (models.isEmpty() && this.currentEntity.isBaby()) {
@@ -53,7 +53,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
     public ResourceLocation getTextureResource(T object) {
         LivingEntityData entityData = (LivingEntityData) this.currentEntity;
 
-        if (entityData.getModelLocation() != null && entityData.getTextureLocation() == null) {
+        if (!ResourceUtil.isEntityInReloadedHashSet(this.currentEntity) || (entityData.getModelLocation() != null && entityData.getTextureLocation() == null)) {
             String[] modelPath = entityData.getModelLocation().getPath().split("/");
             String modelName = modelPath[modelPath.length - 1].replaceAll("(\\.geo)?\\.json$", "");;
 
@@ -64,6 +64,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
             }
 
             entityData.setTextureLocation(textures.get(RandomUtil.getRandomInt(this.currentEntity.getUUID(), textures.size())));
+            ResourceUtil.addEntityToReloadedHashSet(this.currentEntity);
         }
 
         return entityData.getTextureLocation();
@@ -73,7 +74,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
     public ResourceLocation getAnimationResource(T animatable) {
         LivingEntityData entityData = (LivingEntityData) this.currentEntity;
 
-        if (entityData.getModelLocation() != null && entityData.getAnimationLocation() == null) {
+        if (!ResourceUtil.isEntityInReloadedHashSet(this.currentEntity) || (entityData.getModelLocation() != null && entityData.getAnimationLocation() == null)) {
             String[] modelPath = entityData.getModelLocation().getPath().split("/");
             String modelName = modelPath[modelPath.length - 1].replaceAll("(\\.geo)?\\.json$", "");
 
@@ -91,6 +92,8 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
 
     @Override
     public void setCustomAnimations(T animatable, int instanceId, AnimationEvent animationEvent) {
+        animatable.setModelInstance(this);
+
         super.setCustomAnimations(animatable, instanceId, animationEvent);
         IBone head = this.getAnimationProcessor().getBone("head");
 
