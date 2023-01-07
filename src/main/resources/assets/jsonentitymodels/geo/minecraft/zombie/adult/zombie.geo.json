@@ -36,7 +36,7 @@
 					"parent": "body",
 					"pivot": [0, 24, 0],
 					"cubes": [
-						{"origin": [-4, 12, -2], "size": [8.5, 12, 4.5], "uv": [16, 32]}
+						{"origin": [-4, 12, -2], "size": [8, 12, 4], "uv": [16, 32]}
 					]
 				},
 				{
@@ -58,13 +58,14 @@
 				{
 					"name": "botharms",
 					"parent": "body",
-					"pivot": [0, 22, 0]
+					"pivot": [0, 22, 0],
+					"rotation": [-77.5, 0, 0]
 				},
 				{
 					"name": "leftarm",
 					"parent": "botharms",
 					"pivot": [5, 22, 0],
-					"rotation": [-77.5, 2.5, 0],
+					"rotation": [0, 0, -1],
 					"cubes": [
 						{"origin": [4, 12, -2], "size": [4, 12, 4], "uv": [40, 16], "mirror": true}
 					]
@@ -86,7 +87,7 @@
 					"name": "rightarm",
 					"parent": "botharms",
 					"pivot": [-5, 22, 0],
-					"rotation": [-77.5, -2.5, 0],
+					"rotation": [0, 0, 1],
 					"cubes": [
 						{"origin": [-8, 12, -2], "size": [4, 12, 4], "uv": [40, 16]}
 					]

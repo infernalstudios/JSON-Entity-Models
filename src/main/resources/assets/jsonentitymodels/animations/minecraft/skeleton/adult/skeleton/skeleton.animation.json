@@ -67,7 +67,7 @@
 				}
 			}
 		},
-		"aim_idle": {
+		"aggressive_idle": {
 			"loop": true,
 			"animation_length": 5,
 			"bones": {
@@ -247,7 +247,7 @@
 				}
 			}
 		},
-		"aim_walk": {
+		"aggressive_walk": {
 			"loop": true,
 			"animation_length": 1.5,
 			"bones": {
@@ -418,20 +418,32 @@
 				}
 			}
 		},
-		"aim_hurt": {
+		"aggressive_hurt": {
 			"animation_length": 0.5,
 			"bones": {
 				"body": {
 					"rotation": {
 						"0.0": {
-							"vector": [0, 0, 0]
+							"vector": [
+								0,
+								0,
+								0
+							]
 						},
 						"0.25": {
-							"vector": [-10, 0, 0],
+							"vector": [
+								-10,
+								0,
+								0
+							],
 							"easing": "easeInOutBack"
 						},
 						"0.5": {
-							"vector": [0, 0, 0],
+							"vector": [
+								0,
+								0,
+								0
+							],
 							"easing": "easeInOutSine"
 						}
 					}
@@ -453,7 +465,7 @@
 				}
 			}
 		},
-		"aggressivemelee": {
+		"aggressive_melee": {
 			"loop": true,
 			"animation_length": 4,
 			"bones": {
@@ -494,7 +506,7 @@
 				}
 			}
 		},
-		"aggressivebow": {
+		"aggressive_bow": {
 			"loop": true,
 			"animation_length": 4,
 			"bones": {
@@ -572,6 +584,22 @@
 						"4.0": {
 							"vector": [-90, 0, 0],
 							"easing": "easeInOutSine"
+						}
+					}
+				}
+			}
+		},
+		"death": {
+			"animation_length": 1,
+			"bones": {
+				"all": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.5": {
+							"vector": [0, 0, -90],
+							"easing": "easeOutSine"
 						}
 					}
 				}

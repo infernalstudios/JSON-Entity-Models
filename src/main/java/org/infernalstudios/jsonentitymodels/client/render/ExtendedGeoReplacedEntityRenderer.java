@@ -519,8 +519,13 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
         if (boneItem != null) {
 
             poseStack.pushPose();
-            poseStack.mulPose(Vector3f.XN.rotationDegrees(90.0F));
-            poseStack.translate(0.0D, 0.125D, -0.1D);
+
+            if (bone.getName().equals("rightitem")) {
+                poseStack.mulPose(Vector3f.XN.rotationDegrees(90.0F));
+                poseStack.translate(0.0D, 0.125D, -0.1D);
+            } else if (bone.getName().equals("leftitem")) {
+                poseStack.translate(0.0D, -0.325D, -0.4D);
+            }
 
             preRenderItem(poseStack, boneItem, bone.getName(), this.currentEntityBeingRendered, bone);
             renderItemStack(poseStack, getCurrentRTB(), packedLight, boneItem, bone.getName());

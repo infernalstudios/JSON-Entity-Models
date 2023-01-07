@@ -60,27 +60,6 @@
 				}
 			}
 		},
-		"attack_idle": {
-			"loop": true,
-			"animation_length": 6,
-			"bones": {
-				"head": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"3.0": {
-							"vector": [1, 0, 0],
-							"easing": "easeInOutSine"
-						},
-						"6.0": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutSine"
-						}
-					}
-				}
-			}
-		},
 		"walk": {
 			"loop": true,
 			"animation_length": 1.5,
@@ -223,7 +202,122 @@
 				}
 			}
 		},
-		"attack_walk": {
+		"hurt": {
+			"loop": true,
+			"animation_length": 0.5,
+			"bones": {
+				"body": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.1667": {
+							"vector": [5, 0, 0],
+							"easing": "easeOutSine"
+						},
+						"0.5": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"rightarm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.1667": {
+							"vector": [-15, 0, 0],
+							"easing": "easeOutSine"
+						},
+						"0.5": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"leftarm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.1667": {
+							"vector": [-15, 0, 0],
+							"easing": "easeOutSine"
+						},
+						"0.5": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"armorhead": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.1667": {
+							"vector": [5, 0, 0],
+							"easing": "easeOutSine"
+						},
+						"0.5": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				}
+			}
+		},
+		"aggressive": {
+			"loop": true,
+			"animation_length": 5,
+			"bones": {
+				"botharms": {
+					"rotation": {
+						"vector": [-22.5, 0, 0]
+					}
+				},
+				"leftarm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.25": {
+							"vector": [-1, 0, 0],
+							"easing": "easeOutSine"
+						},
+						"3.75": {
+							"vector": [1, 0, 0],
+							"easing": "easeInOutSine"
+						},
+						"5.0": {
+							"vector": [0, 0, 0],
+							"easing": "easeInSine"
+						}
+					}
+				},
+				"rightarm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.25": {
+							"vector": [1, 0, 0],
+							"easing": "easeOutSine"
+						},
+						"3.75": {
+							"vector": [-1, 0, 0],
+							"easing": "easeInOutSine"
+						},
+						"5.0": {
+							"vector": [0, 0, 0],
+							"easing": "easeInSine"
+						}
+					}
+				}
+			}
+		},
+		"aggressive_walk": {
 			"loop": true,
 			"animation_length": 1.5,
 			"bones": {
@@ -286,7 +380,28 @@
 				}
 			}
 		},
-		"attack_hurt": {
+		"aggressive_idle": {
+			"loop": true,
+			"animation_length": 6,
+			"bones": {
+				"head": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"3.0": {
+							"vector": [1, 0, 0],
+							"easing": "easeInOutSine"
+						},
+						"6.0": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				}
+			}
+		},
+		"aggressive_hurt": {
 			"loop": true,
 			"animation_length": 0.5,
 			"bones": {
@@ -307,78 +422,17 @@
 				}
 			}
 		},
-		"aggressive": {
-			"loop": true,
-			"animation_length": 0.5,
+		"death": {
+			"animation_length": 1,
 			"bones": {
-				"botharms": {
-					"rotation": {
-						"vector": [-22.5, 0, 0]
-					}
-				}
-			}
-		},
-		"hurt": {
-			"loop": true,
-			"animation_length": 0.5,
-			"bones": {
-				"body": {
+				"all": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.1667": {
-							"vector": [5, 0, 0],
-							"easing": "easeOutSine"
-						},
 						"0.5": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutSine"
-						}
-					}
-				},
-				"rightarm": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.1667": {
-							"vector": [-15, 0, 0],
-							"easing": "easeOutSine"
-						},
-						"0.5": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutSine"
-						}
-					}
-				},
-				"leftarm": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.1667": {
-							"vector": [-15, 0, 0],
-							"easing": "easeOutSine"
-						},
-						"0.5": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutSine"
-						}
-					}
-				},
-				"armorhead": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.1667": {
-							"vector": [5, 0, 0],
-							"easing": "easeOutSine"
-						},
-						"0.5": {
-							"vector": [0, 0, 0],
-							"easing": "easeInOutSine"
+							"vector": [0, 0, 90],
+							"easing": "easeOutQuad"
 						}
 					}
 				}

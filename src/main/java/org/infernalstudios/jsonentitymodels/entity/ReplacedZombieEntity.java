@@ -19,12 +19,14 @@ public class ReplacedZombieEntity extends ReplacedEntityBase implements IAnimata
     }
 
     private <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-        if (this.isHurt) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAggressive ? "attack_hurt" : "hurt", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+        if (this.isDead) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+        } else if (this.isHurt) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAggressive ? "aggressive_hurt" : "hurt", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
         } else if (!(event.getLimbSwingAmount() > -0.10F && event.getLimbSwingAmount() < 0.10F)) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAggressive ? "attack_walk" : "walk", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAggressive ? "aggressive_walk" : "walk", ILoopType.EDefaultLoopTypes.LOOP));
         } else {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAggressive ? "attack_idle" : "idle", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAggressive ? "aggressive_idle" : "idle", ILoopType.EDefaultLoopTypes.LOOP));
         }
         return PlayState.CONTINUE;
     }

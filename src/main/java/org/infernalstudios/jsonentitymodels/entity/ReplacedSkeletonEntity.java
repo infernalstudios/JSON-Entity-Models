@@ -31,12 +31,14 @@ public class ReplacedSkeletonEntity extends ReplacedEntityBase implements IAnima
     }
 
     private <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-        if (this.isHurt) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAiming || this.isAggressive ? "aim_hurt" : "hurt", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+        if (this.isDead) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+        } else if (this.isHurt) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAiming || this.isAggressive ? "aggressive_hurt" : "hurt", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
         } else if (!(event.getLimbSwingAmount() > -0.10F && event.getLimbSwingAmount() < 0.10F)) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAiming || this.isAggressive ? "aim_walk" : "walk", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAiming || this.isAggressive ? "aggressive_walk" : "walk", ILoopType.EDefaultLoopTypes.LOOP));
         } else {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAiming || this.isAggressive ? "aim_idle" : "idle", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAiming || this.isAggressive ? "aggressive_idle" : "idle", ILoopType.EDefaultLoopTypes.LOOP));
         }
         return PlayState.CONTINUE;
     }
@@ -47,9 +49,9 @@ public class ReplacedSkeletonEntity extends ReplacedEntityBase implements IAnima
             return PlayState.CONTINUE;
         } else if (this.isAggressive) {
             if (this.hasBow) {
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("aggressivebow", ILoopType.EDefaultLoopTypes.LOOP));
+                event.getController().setAnimation(new AnimationBuilder().addAnimation("aggressive_bow", ILoopType.EDefaultLoopTypes.LOOP));
             } else {
-                event.getController().setAnimation(new AnimationBuilder().addAnimation("aggressivemelee", ILoopType.EDefaultLoopTypes.LOOP));
+                event.getController().setAnimation(new AnimationBuilder().addAnimation("aggressive_melee", ILoopType.EDefaultLoopTypes.LOOP));
             }
             return PlayState.CONTINUE;
         }
