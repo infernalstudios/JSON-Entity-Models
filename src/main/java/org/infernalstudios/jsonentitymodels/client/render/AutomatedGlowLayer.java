@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.infernalstudios.jsonentitymodels.JSONEntityModels;
+import org.infernalstudios.jsonentitymodels.client.JEMsRenderTypes;
 import org.infernalstudios.jsonentitymodels.client.model.HeadTurningAnimatedGeoModel;
 import org.infernalstudios.jsonentitymodels.data.LivingEntityData;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
@@ -28,7 +29,7 @@ public class AutomatedGlowLayer extends GeoLayerRenderer {
             ResourceLocation glowLocation = new ResourceLocation(JSONEntityModels.MOD_ID, renderedEntity.getTextureLocation().getPath().replace(".png", "_glow.png"));
 
             if (Minecraft.getInstance().getResourceManager().getResource(glowLocation).isPresent()) {
-                RenderType renderType = RenderType.entityTranslucentEmissive(glowLocation);
+                RenderType renderType = JEMsRenderTypes.eyes(glowLocation);
 
                 matrixStackIn.pushPose();
 
