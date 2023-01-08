@@ -72,6 +72,10 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
 
     @Override
     public ResourceLocation getAnimationResource(T animatable) {
+        if (this.currentEntity == null) {
+            return null;
+        }
+
         LivingEntityData entityData = (LivingEntityData) this.currentEntity;
 
         if (!ResourceUtil.isEntityInReloadedHashSet(this.currentEntity) || (entityData.getModelLocation() != null && entityData.getAnimationLocation() == null)) {
@@ -108,5 +112,9 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
 
     public void setCurrentEntity(LivingEntity currentEntity) {
         this.currentEntity = currentEntity;
+    }
+
+    public LivingEntity getCurrentEntity() {
+        return this.currentEntity;
     }
 }

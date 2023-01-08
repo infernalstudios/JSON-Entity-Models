@@ -108,6 +108,8 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
                                         T animatable, float widthScale, float heightScale, float shadowSize) {
         super(renderManager, modelProvider, animatable);
 
+        this.addLayer(new AutomatedGlowLayer(this));
+
         this.shadowRadius = shadowSize;
         this.widthScale = widthScale;
         this.heightScale = heightScale;
@@ -193,6 +195,10 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
         // Now, render the heads
         renderHeads(poseStack, bufferSource, packedLight);
+
+        // Since we rendered at least once at this point, let's set the cycle to
+        // repeated
+        setCurrentModelRenderCycle(EModelRenderCycle.REPEATED);
     }
 
     @Override
@@ -672,37 +678,35 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
 
     // Auto UV recalculations for texturePerBone
     @Override
-    public void createVerticesOfQuad(GeoQuad quad, Matrix4f poseState, Vector3f normal, VertexConsumer buffer,
-                                     int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void createVerticesOfQuad(GeoQuad quad, Matrix4f matrix4f, Vector3f normal, VertexConsumer bufferIn,
+                                     int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         // If no textureForBone is used we can proceed normally
         if (this.textureForBone == null) {
-            super.createVerticesOfQuad(quad, poseState, normal, buffer, packedLight, packedOverlay, red, green,
+            super.createVerticesOfQuad(quad, matrix4f, normal, bufferIn, packedLightIn, packedOverlayIn, red, green,
                     blue, alpha);
         }
-        IntIntPair boneTextureSize = computeTextureSize(this.textureForBone);
-        IntIntPair entityTextureSize = computeTextureSize(getTextureLocation(this.currentEntityBeingRendered));
+        Tuple<Integer, Integer> tfbSize = this.getOrCreateTextureSize(this.textureForBone);
+        Tuple<Integer, Integer> textureSize = this
+                .getOrCreateTextureSize(this.getTextureLocation(this.currentEntityBeingRendered));
 
-        if (boneTextureSize == null || entityTextureSize == null) {
-            super.createVerticesOfQuad(quad, poseState, normal, buffer, packedLight, packedOverlay, red, green,
+        if (tfbSize == null || textureSize == null) {
+            super.createVerticesOfQuad(quad, matrix4f, normal, bufferIn, packedLightIn, packedOverlayIn, red, green,
                     blue, alpha);
-
+            // Exit here, cause texture sizes are null
             return;
         }
 
         for (GeoVertex vertex : quad.vertices) {
-            Vector4f vector4f = new Vector4f(vertex.position.x(), vertex.position.y(), vertex.position.z(), 1);
-            float texU = (vertex.textureU * entityTextureSize.firstInt()) / boneTextureSize.firstInt();
-            float texV = (vertex.textureV * entityTextureSize.secondInt()) / boneTextureSize.secondInt();
+            Vector4f vector4f = new Vector4f(vertex.position.x(), vertex.position.y(), vertex.position.z(), 1.0F);
+            vector4f.transform(matrix4f);
 
-            vector4f.transform(poseState);
+            // Recompute the UV coordinates to the texture override
+            float texU = (vertex.textureU * textureSize.getA()) / tfbSize.getA();
+            float texV = (vertex.textureV * textureSize.getB()) / tfbSize.getB();
 
-            buffer.vertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, texU, texV,
-                    packedOverlay, packedLight, normal.x(), normal.y(), normal.z());
+            bufferIn.vertex(vector4f.x(), vector4f.y(), vector4f.z(), red, green, blue, alpha, texU, texV,
+                    packedOverlayIn, packedLightIn, normal.x(), normal.y(), normal.z());
         }
-    }
-
-    protected IntIntPair computeTextureSize(ResourceLocation texture) {
-        return TEXTURE_DIMENSIONS_CACHE.computeIfAbsent(texture, RenderUtils::getTextureDimensions);
     }
 
     protected void renderBlock(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight,

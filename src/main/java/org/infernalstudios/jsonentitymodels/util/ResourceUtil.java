@@ -33,7 +33,7 @@ public class ResourceUtil {
         String path = "textures/entity/" + namespace + "/" + entityName  + (isBaby ? "/baby/" : "/adult/") + modelName;
 
         Map<ResourceLocation, Resource> map = Minecraft.getInstance().getResourceManager().listResources(path,
-                filename -> filename.getNamespace().equals("jsonentitymodels") && filename.toString().endsWith(".png"));
+                filename -> filename.getNamespace().equals("jsonentitymodels") && filename.toString().endsWith(".png") && !filename.toString().endsWith("_glow.png"));
         return map.keySet().stream().toList();
     }
 
