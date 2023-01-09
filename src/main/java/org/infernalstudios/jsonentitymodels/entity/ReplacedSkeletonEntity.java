@@ -7,11 +7,8 @@ import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
 
-public class ReplacedSkeletonEntity extends ReplacedEntityBase implements IAnimatable {
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
+public class ReplacedSkeletonEntity extends ReplacedEntityBase {
     private boolean isAiming;
 
     private boolean isAggressive;
@@ -30,7 +27,8 @@ public class ReplacedSkeletonEntity extends ReplacedEntityBase implements IAnima
         this.hasBow = hasBow;
     }
 
-    private <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+    @Override
+    protected <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
         if (this.isDead) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
         } else if (this.isHurt) {
@@ -62,12 +60,7 @@ public class ReplacedSkeletonEntity extends ReplacedEntityBase implements IAnima
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<>(this, "main_controller", 0, this::predicate));
+        super.registerControllers(data);
         data.addAnimationController(new AnimationController<>(this, "aim_controller", 0, this::aimPredicate));
-    }
-
-    @Override
-    public AnimationFactory getFactory() {
-        return this.factory;
     }
 }

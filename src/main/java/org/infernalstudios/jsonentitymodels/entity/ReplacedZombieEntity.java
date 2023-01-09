@@ -7,18 +7,16 @@ import software.bernie.geckolib3.core.builder.ILoopType;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
 
-public class ReplacedZombieEntity extends ReplacedEntityBase implements IAnimatable {
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
+public class ReplacedZombieEntity extends ReplacedEntityBase {
     private boolean isAggressive;
 
     public void setAggressive(boolean isAgressive) {
         this.isAggressive = isAgressive;
     }
 
-    private <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+    @Override
+    protected  <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
         if (this.isDead) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
         } else if (this.isHurt) {
@@ -31,7 +29,7 @@ public class ReplacedZombieEntity extends ReplacedEntityBase implements IAnimata
         return PlayState.CONTINUE;
     }
 
-    private <P extends IAnimatable> PlayState attackpredicate(AnimationEvent<P> event) {
+    private <P extends IAnimatable> PlayState attackPredicate(AnimationEvent<P> event) {
         if (this.isAggressive) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("aggressive", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
@@ -43,12 +41,7 @@ public class ReplacedZombieEntity extends ReplacedEntityBase implements IAnimata
 
     @Override
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<>(this, "main_controller", 0, this::predicate));
-        data.addAnimationController(new AnimationController<>(this, "attack_controller", 0, this::attackpredicate));
-    }
-
-    @Override
-    public AnimationFactory getFactory() {
-        return this.factory;
+        super.registerControllers(data);
+        data.addAnimationController(new AnimationController<>(this, "attack_controller", 0, this::attackPredicate));
     }
 }
