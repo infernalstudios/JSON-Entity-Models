@@ -21,5 +21,7 @@ public class JSONEntityModelsEvents {
             event.registerEntityRenderer(EntityType.ZOMBIE, ReplacedZombieRenderer::new);
             event.registerEntityRenderer(EntityType.SKELETON, ReplacedSkeletonRenderer::new);
             event.registerEntityRenderer(EntityType.IRON_GOLEM, ReplacedIronGolemRenderer::new);
+
+            // TODO: Add remaining 5 mobs here to actually replace the renderers
     }
 }
