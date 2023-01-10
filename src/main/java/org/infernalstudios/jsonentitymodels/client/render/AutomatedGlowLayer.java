@@ -28,7 +28,7 @@ public class AutomatedGlowLayer extends GeoLayerRenderer {
 
             ResourceLocation glowLocation = new ResourceLocation(JSONEntityModels.MOD_ID, renderedEntity.getTextureLocation().getPath().replace(".png", "_glow.png"));
 
-            if (Minecraft.getInstance().getResourceManager().getResource(glowLocation).isPresent()) {
+            if (Minecraft.getInstance().getResourceManager().hasResource(glowLocation)) {
                 RenderType renderType = JEMsRenderTypes.eyes(glowLocation);
 
                 matrixStackIn.pushPose();

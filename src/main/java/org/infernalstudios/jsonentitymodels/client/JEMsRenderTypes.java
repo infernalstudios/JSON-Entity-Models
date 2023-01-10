@@ -16,7 +16,7 @@ public class JEMsRenderTypes extends RenderType {
 
     public static @NotNull RenderType eyes(@NotNull ResourceLocation texture) {
         return RenderType.create("jsonentitymodels-eyes", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, CompositeState.builder()
-                .setShaderState(RenderStateShard.RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
+                .setShaderState(RenderStateShard.RENDERTYPE_EYES_SHADER)
                 .setCullState(NO_CULL)
                 .setTextureState(new TextureStateShard(texture, false, false))
                 .setTransparencyState(ADDITIVE_TRANSPARENCY)

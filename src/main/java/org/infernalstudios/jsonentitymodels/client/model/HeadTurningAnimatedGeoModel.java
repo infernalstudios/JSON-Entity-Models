@@ -33,7 +33,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
     }
 
     @Override
-    public ResourceLocation getModelResource(T object) {
+    public ResourceLocation getModelLocation(T object) {
         LivingEntityData entityData = (LivingEntityData) this.currentEntity;
 
         if (!ResourceUtil.isEntityInReloadedHashSet(this.currentEntity) || entityData.getModelLocation() == null) {
@@ -50,7 +50,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
     }
 
     @Override
-    public ResourceLocation getTextureResource(T object) {
+    public ResourceLocation getTextureLocation(T object) {
         LivingEntityData entityData = (LivingEntityData) this.currentEntity;
 
         if (!ResourceUtil.isEntityInReloadedHashSet(this.currentEntity) || (entityData.getModelLocation() != null && entityData.getTextureLocation() == null)) {
@@ -71,7 +71,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
     }
 
     @Override
-    public ResourceLocation getAnimationResource(T animatable) {
+    public ResourceLocation getAnimationFileLocation(T animatable) {
         if (this.currentEntity == null) {
             return null;
         }

@@ -18,6 +18,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.matthewprenger.cursegradle'
+apply from: "https://moddingtutorials.org/applesilicon.gradle"
 
 // This initializes the config. Please try to modify the variables in the config file, if needed, add more if you see a reason to.
 ext.config = parseConfig(file('build.properties'))
@@ -87,7 +88,7 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${config.MINECRAFT_VERSION}-${config.FORGE_VERSION}"
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.19:${config.GECKOLIB_VERSION}")
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.18:${config.GECKOLIB_VERSION}")
 }
 
 jar {

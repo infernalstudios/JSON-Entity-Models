@@ -184,7 +184,7 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
             if (this.modelProvider instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
                 headTurningAnimatedGeoModel.setCurrentEntity(livingEntity);
 
-                if (livingEntity.isBaby() && !headTurningAnimatedGeoModel.getModelResource((ReplacedEntityBase) animatable).toString().contains("/baby/")) {
+                if (livingEntity.isBaby() && !headTurningAnimatedGeoModel.getModelLocation((ReplacedEntityBase) animatable).toString().contains("/baby/")) {
                     poseStack.scale(0.5F, 0.5F, 0.5F);
                 }
             }
