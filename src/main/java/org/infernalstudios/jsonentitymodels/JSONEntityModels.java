@@ -25,6 +25,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.infernalstudios.jsonentitymodels.util.ResourceUtil;
+import software.bernie.example.GeckoLibMod;
 
 @Mod(JSONEntityModels.MOD_ID)
 public class JSONEntityModels {
@@ -34,6 +35,8 @@ public class JSONEntityModels {
     public JSONEntityModels() {
         final ModLoadingContext modLoadingContext = ModLoadingContext.get();
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        GeckoLibMod.DISABLE_IN_DEV = true;
 
         modEventBus.addListener(this::onClientSetup);
     }
