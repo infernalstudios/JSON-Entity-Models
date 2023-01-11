@@ -1,4 +1,4 @@
-package org.infernalstudios.jsonentitymodels.client.render;
+package org.infernalstudios.jsonentitymodels.client.render.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;

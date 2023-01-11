@@ -48,6 +48,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.apache.commons.lang3.StringUtils;
 import org.infernalstudios.jsonentitymodels.client.model.HeadTurningAnimatedGeoModel;
+import org.infernalstudios.jsonentitymodels.client.render.layer.AutomatedGlowLayer;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedEntityBase;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.processor.IBone;
