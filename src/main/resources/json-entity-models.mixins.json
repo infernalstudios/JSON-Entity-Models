@@ -10,6 +10,7 @@
   "client": [
     "AnimationControllerMixin",
     "EntityMixin",
+    "EntityRenderersEventAddLayersMixin",
     "LivingEntityMixin"
   ]
 }
