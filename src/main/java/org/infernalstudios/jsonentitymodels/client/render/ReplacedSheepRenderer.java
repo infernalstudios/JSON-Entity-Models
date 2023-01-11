@@ -34,7 +34,7 @@ public class ReplacedSheepRenderer extends ExtendedGeoReplacedEntityRenderer<Rep
 
     @Override
     public void renderRecursively(GeoBone bone, PoseStack stack, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        if (bone.getName().equals("wool")) {
+        if (bone.getName().startsWith("wool")) {
             bone.setHidden(this.currentEntityBeingRendered.isSheared(), this.currentEntityBeingRendered.isSheared());
 
             if (this.currentEntityBeingRendered.hasCustomName() && "jeb_".equals(this.currentEntityBeingRendered.getName().getString())) {
