@@ -7,6 +7,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.infernalstudios.jsonentitymodels.client.render.ReplacedCreeperRenderer;
 import org.infernalstudios.jsonentitymodels.client.render.ReplacedIronGolemRenderer;
+import org.infernalstudios.jsonentitymodels.client.render.ReplacedSheepRenderer;
 import org.infernalstudios.jsonentitymodels.client.render.ReplacedSkeletonRenderer;
 import org.infernalstudios.jsonentitymodels.client.render.ReplacedSpiderRenderer;
 import org.infernalstudios.jsonentitymodels.client.render.ReplacedZombieRenderer;
@@ -21,7 +22,8 @@ public class JSONEntityModelsEvents {
             event.registerEntityRenderer(EntityType.ZOMBIE, ReplacedZombieRenderer::new);
             event.registerEntityRenderer(EntityType.SKELETON, ReplacedSkeletonRenderer::new);
             event.registerEntityRenderer(EntityType.IRON_GOLEM, ReplacedIronGolemRenderer::new);
+            event.registerEntityRenderer(EntityType.SHEEP, ReplacedSheepRenderer::new);
 
-            // TODO: Add remaining 5 mobs here to actually replace the renderers
+            // TODO: Add remaining 4 mobs here to actually replace the renderers
     }
 }
