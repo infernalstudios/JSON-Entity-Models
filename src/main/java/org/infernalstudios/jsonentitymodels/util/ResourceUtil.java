@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.List;
@@ -14,27 +13,21 @@ public class ResourceUtil {
     private static final IntOpenHashSet resourceReloadedEntities = new IntOpenHashSet();
 
     public static List<ResourceLocation> fetchModelsForEntity(String namespace, String entityName, boolean isBaby) {
-        String path = "geo/" + namespace + "/" + entityName + (isBaby ? "/baby" : "/adult");
+        Map<String, List<ResourceLocation>> modelsMap = isBaby ? ResourceCache.getInstance().getBabyModels() : ResourceCache.getInstance().getAdultModels();
 
-        Map<ResourceLocation, Resource> map = Minecraft.getInstance().getResourceManager().listResources(path,
-                filename -> filename.getNamespace().equals("jsonentitymodels") && filename.toString().endsWith(".json"));
-        return map.keySet().stream().toList();
+        return modelsMap.get(namespace + ":" + entityName);
     }
 
     public static List<ResourceLocation> fetchAnimationsForModel(String namespace, String entityName, String modelName, boolean isBaby) {
-        String path = "animations/" + namespace + "/" + entityName + (isBaby ? "/baby/" : "/adult/") + modelName;
+        Map<String, List<ResourceLocation>> animationsMap = isBaby ? ResourceCache.getInstance().getBabyAnimations() : ResourceCache.getInstance().getAdultAnimations();
 
-        Map<ResourceLocation, Resource> map = Minecraft.getInstance().getResourceManager().listResources(path,
-                filename -> filename.getNamespace().equals("jsonentitymodels") && filename.toString().endsWith(".json"));
-        return map.keySet().stream().toList();
+        return animationsMap.get(namespace + ":" + entityName + "/" + modelName);
     }
 
     public static List<ResourceLocation> fetchTexturesForModel(String namespace, String entityName, String modelName, boolean isBaby) {
-        String path = "textures/entity/" + namespace + "/" + entityName  + (isBaby ? "/baby/" : "/adult/") + modelName;
+        Map<String, List<ResourceLocation>> texturesMap = isBaby ? ResourceCache.getInstance().getBabyTextures() : ResourceCache.getInstance().getAdultTextures();
 
-        Map<ResourceLocation, Resource> map = Minecraft.getInstance().getResourceManager().listResources(path,
-                filename -> filename.getNamespace().equals("jsonentitymodels") && filename.toString().endsWith(".png") && !filename.toString().endsWith("_glow.png"));
-        return map.keySet().stream().toList();
+        return texturesMap.get(namespace + ":" + entityName + "/" + modelName);
     }
 
     public static void addEntityToReloadedHashSet(LivingEntity entity) {
@@ -58,5 +51,6 @@ public class ResourceUtil {
                 .getResourceManager();
 
         reloadable.registerReloadListener(new ResourceListener());
+        reloadable.registerReloadListener(ResourceCache.getInstance()::reload);
     }
 }
