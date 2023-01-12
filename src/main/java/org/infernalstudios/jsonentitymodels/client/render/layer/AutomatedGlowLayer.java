@@ -11,7 +11,6 @@ import net.minecraft.world.entity.LivingEntity;
 import org.infernalstudios.jsonentitymodels.JSONEntityModels;
 import org.infernalstudios.jsonentitymodels.client.JEMsRenderTypes;
 import org.infernalstudios.jsonentitymodels.client.model.HeadTurningAnimatedGeoModel;
-import org.infernalstudios.jsonentitymodels.data.LivingEntityData;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
@@ -24,9 +23,7 @@ public class AutomatedGlowLayer extends GeoLayerRenderer {
     @Override
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, Entity entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if (this.getEntityModel() instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
-            LivingEntityData renderedEntity = (LivingEntityData) headTurningAnimatedGeoModel.getCurrentEntity();
-
-            ResourceLocation glowLocation = new ResourceLocation(JSONEntityModels.MOD_ID, renderedEntity.getTextureLocation().getPath().replace(".png", "_glow.png"));
+            ResourceLocation glowLocation = new ResourceLocation(JSONEntityModels.MOD_ID, headTurningAnimatedGeoModel.getTextureLocation(null).getPath().replace(".png", "_glow.png"));
 
             if (Minecraft.getInstance().getResourceManager().hasResource(glowLocation)) {
                 RenderType renderType = JEMsRenderTypes.eyes(glowLocation);
@@ -34,7 +31,7 @@ public class AutomatedGlowLayer extends GeoLayerRenderer {
                 matrixStackIn.pushPose();
 
                 this.getRenderer().render(
-                        this.getEntityModel().getModel(renderedEntity.getModelLocation()),
+                        this.getEntityModel().getModel(headTurningAnimatedGeoModel.getModelLocation(null)),
                         entityLivingBaseIn,
                         partialTicks,
                         renderType,
@@ -42,7 +39,7 @@ public class AutomatedGlowLayer extends GeoLayerRenderer {
                         bufferIn,
                         bufferIn.getBuffer(renderType),
                         packedLightIn,
-                        LivingEntityRenderer.getOverlayCoords((LivingEntity) renderedEntity, 0.0F),
+                        LivingEntityRenderer.getOverlayCoords((LivingEntity) entityLivingBaseIn, 0.0F),
                         1f, 1f, 1f, 1f);
 
                 matrixStackIn.popPose();

@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import org.infernalstudios.jsonentitymodels.data.LivingEntityData;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedEntityBase;
 import org.infernalstudios.jsonentitymodels.util.RandomUtil;
 import org.infernalstudios.jsonentitymodels.util.ResourceUtil;
@@ -15,6 +14,7 @@ import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase & IAnimatable, U extends Mob> extends AnimatedGeoModel<T> {
@@ -33,65 +33,42 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
     }
 
     @Override
-    public ResourceLocation getModelLocation(T object) {
-        LivingEntityData entityData = (LivingEntityData) this.currentEntity;
+    public ResourceLocation getModelLocation(@Nullable T object) {
+        List<ResourceLocation> models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, this.currentEntity.isBaby());
 
-        if (!ResourceUtil.isEntityInReloadedHashSet(this.currentEntity) || entityData.getModelLocation() == null) {
-            List<ResourceLocation> models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, this.currentEntity.isBaby());
-
-            if (models == null || models.isEmpty() && this.currentEntity.isBaby()) {
-                models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, false);
-            }
-
-            entityData.setModelLocation(models.get(RandomUtil.getPseudoRandomInt(this.currentEntity.getUUID(), models.size())));
+        if (models == null || models.isEmpty() && this.currentEntity.isBaby()) {
+            models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, false);
         }
 
-        return entityData.getModelLocation();
+        return models.get(RandomUtil.getPseudoRandomInt(this.currentEntity.getUUID(), models.size()));
     }
 
     @Override
-    public ResourceLocation getTextureLocation(T object) {
-        LivingEntityData entityData = (LivingEntityData) this.currentEntity;
+    public ResourceLocation getTextureLocation(@Nullable T object) {
+        String[] modelPath = this.getModelLocation(object).getPath().split("/");
+        String modelName = modelPath[modelPath.length - 1].replaceAll("(\\.geo)?\\.json$", "");;
 
-        if (!ResourceUtil.isEntityInReloadedHashSet(this.currentEntity) || (entityData.getModelLocation() != null && entityData.getTextureLocation() == null)) {
-            String[] modelPath = entityData.getModelLocation().getPath().split("/");
-            String modelName = modelPath[modelPath.length - 1].replaceAll("(\\.geo)?\\.json$", "");;
+        List<ResourceLocation> textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, this.currentEntity.isBaby());
 
-            List<ResourceLocation> textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, this.currentEntity.isBaby());
-
-            if (textures == null || textures.isEmpty() && this.currentEntity.isBaby()) {
-                textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, false);
-            }
-
-            entityData.setTextureLocation(textures.get(RandomUtil.getPseudoRandomInt(this.currentEntity.getUUID(), textures.size())));
-            ResourceUtil.addEntityToReloadedHashSet(this.currentEntity);
+        if (textures == null || textures.isEmpty() && this.currentEntity.isBaby()) {
+            textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, false);
         }
 
-        return entityData.getTextureLocation();
+        return textures.get(RandomUtil.getPseudoRandomInt(this.currentEntity.getUUID(), textures.size()));
     }
 
     @Override
-    public ResourceLocation getAnimationFileLocation(T animatable) {
-        if (this.currentEntity == null) {
-            return null;
+    public ResourceLocation getAnimationFileLocation(@Nullable T animatable) {
+        String[] modelPath = this.getModelLocation(animatable).getPath().split("/");
+        String modelName = modelPath[modelPath.length - 1].replaceAll("(\\.geo)?\\.json$", "");
+
+        List<ResourceLocation> animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, this.currentEntity.isBaby());
+
+        if (animations == null || animations.isEmpty() && this.currentEntity.isBaby()) {
+            animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, false);
         }
 
-        LivingEntityData entityData = (LivingEntityData) this.currentEntity;
-
-        if (!ResourceUtil.isEntityInReloadedHashSet(this.currentEntity) || (entityData.getModelLocation() != null && entityData.getAnimationLocation() == null)) {
-            String[] modelPath = entityData.getModelLocation().getPath().split("/");
-            String modelName = modelPath[modelPath.length - 1].replaceAll("(\\.geo)?\\.json$", "");
-
-            List<ResourceLocation> animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, this.currentEntity.isBaby());
-
-            if (animations == null || animations.isEmpty() && this.currentEntity.isBaby()) {
-                animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, false);
-            }
-
-            entityData.setAnimationLocation(animations.get(RandomUtil.getPseudoRandomInt(this.currentEntity.getUUID(), animations.size())));
-        }
-
-        return entityData.getAnimationLocation();
+        return animations.get(RandomUtil.getPseudoRandomInt(this.currentEntity.getUUID(), animations.size()));
     }
 
     @Override
