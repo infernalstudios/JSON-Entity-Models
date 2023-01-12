@@ -6,34 +6,27 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.world.entity.LivingEntity;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class ResourceUtil {
     private static final IntOpenHashSet resourceReloadedEntities = new IntOpenHashSet();
 
     public static List<ResourceLocation> fetchModelsForEntity(String namespace, String entityName, boolean isBaby) {
-        String path = "geo/" + namespace + "/" + entityName + (isBaby ? "/baby" : "/adult");
-
-        Collection<ResourceLocation> map = Minecraft.getInstance().getResourceManager().listResources(path,
-                filename -> filename.endsWith(".json"));
-        return map.stream().toList();
+        Map<String, List<ResourceLocation>> modelsMap = isBaby ? ResourceCache.getInstance().getBabyModels() : ResourceCache.getInstance().getAdultModels();
+        return modelsMap.get(namespace + ":" + entityName);
     }
 
     public static List<ResourceLocation> fetchAnimationsForModel(String namespace, String entityName, String modelName, boolean isBaby) {
-        String path = "animations/" + namespace + "/" + entityName + (isBaby ? "/baby/" : "/adult/") + modelName;
+        Map<String, List<ResourceLocation>> animationsMap = isBaby ? ResourceCache.getInstance().getBabyAnimations() : ResourceCache.getInstance().getAdultAnimations();
 
-        Collection<ResourceLocation> map = Minecraft.getInstance().getResourceManager().listResources(path,
-                filename -> filename.endsWith(".json"));
-        return map.stream().toList();
+        return animationsMap.get(namespace + ":" + entityName + "/" + modelName);
     }
 
     public static List<ResourceLocation> fetchTexturesForModel(String namespace, String entityName, String modelName, boolean isBaby) {
-        String path = "textures/entity/" + namespace + "/" + entityName  + (isBaby ? "/baby/" : "/adult/") + modelName;
+        Map<String, List<ResourceLocation>> texturesMap = isBaby ? ResourceCache.getInstance().getBabyTextures() : ResourceCache.getInstance().getAdultTextures();
 
-        Collection<ResourceLocation> map = Minecraft.getInstance().getResourceManager().listResources(path,
-                filename -> filename.endsWith(".png") && !filename.endsWith("_glow.png"));
-        return map.stream().toList();
+        return texturesMap.get(namespace + ":" + entityName + "/" + modelName);
     }
 
     public static void addEntityToReloadedHashSet(LivingEntity entity) {
@@ -57,5 +50,6 @@ public class ResourceUtil {
                 .getResourceManager();
 
         reloadable.registerReloadListener(new ResourceListener());
+        reloadable.registerReloadListener(ResourceCache.getInstance()::reload);
     }
 }

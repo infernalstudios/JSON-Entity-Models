@@ -39,7 +39,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
         if (!ResourceUtil.isEntityInReloadedHashSet(this.currentEntity) || entityData.getModelLocation() == null) {
             List<ResourceLocation> models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, this.currentEntity.isBaby());
 
-            if (models.isEmpty() && this.currentEntity.isBaby()) {
+            if (models == null || models.isEmpty() && this.currentEntity.isBaby()) {
                 models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, false);
             }
 
@@ -59,7 +59,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
 
             List<ResourceLocation> textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, this.currentEntity.isBaby());
 
-            if (textures.isEmpty() && this.currentEntity.isBaby()) {
+            if (textures == null || textures.isEmpty() && this.currentEntity.isBaby()) {
                 textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, false);
             }
 
@@ -84,7 +84,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
 
             List<ResourceLocation> animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, this.currentEntity.isBaby());
 
-            if (animations.isEmpty() && this.currentEntity.isBaby()) {
+            if (animations == null || animations.isEmpty() && this.currentEntity.isBaby()) {
                 animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, false);
             }
 
