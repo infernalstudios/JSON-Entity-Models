@@ -17,7 +17,9 @@ public class ReplacedIronGolemEntity extends ReplacedEntityBase {
 
     @Override
     protected <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-        if (!(event.getLimbSwingAmount() > -0.10F && event.getLimbSwingAmount() < 0.10F)) {
+        if (this.inWater) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", ILoopType.EDefaultLoopTypes.LOOP));
+        } else if (!(event.getLimbSwingAmount() > -0.10F && event.getLimbSwingAmount() < 0.10F)) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAttacking ? "attack_walk" : "walk", ILoopType.EDefaultLoopTypes.LOOP));
         } else {
             event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAttacking ? "attack_idle" : "idle", ILoopType.EDefaultLoopTypes.LOOP));

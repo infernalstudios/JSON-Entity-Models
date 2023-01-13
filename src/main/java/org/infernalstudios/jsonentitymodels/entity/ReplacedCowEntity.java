@@ -13,11 +13,13 @@ public class ReplacedCowEntity extends ReplacedEntityBase {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
         } else if (this.isHurt) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("hurt", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+        } else if (this.inWater) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", ILoopType.EDefaultLoopTypes.LOOP));
         } else if (!(event.getLimbSwingAmount() > -0.10F && event.getLimbSwingAmount() < 0.10F)) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", ILoopType.EDefaultLoopTypes.LOOP));
         } else if (!(event.getLimbSwingAmount() > -0.15F && event.getLimbSwingAmount() < 0.15F)) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("sprint", ILoopType.EDefaultLoopTypes.LOOP));
-        } else {
+        }  else {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP));
         }
         return PlayState.CONTINUE;
