@@ -180,6 +180,7 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
             replacedEntityBase.setHurt(livingEntity.hurtTime > 0);
             replacedEntityBase.setBaby(livingEntity.isBaby());
             replacedEntityBase.setDead(livingEntity.isDeadOrDying());
+            replacedEntityBase.setInWater(livingEntity.isInWater());
 
             if (this.modelProvider instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
                 headTurningAnimatedGeoModel.setCurrentEntity(livingEntity);

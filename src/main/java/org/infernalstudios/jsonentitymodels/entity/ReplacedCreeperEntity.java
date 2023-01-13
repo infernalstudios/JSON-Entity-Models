@@ -15,7 +15,9 @@ public class ReplacedCreeperEntity extends ReplacedEntityBase {
 
     @Override
     protected  <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
-        if (!(event.getLimbSwingAmount() > -0.15F && event.getLimbSwingAmount() < 0.15F)) {
+        if (this.inWater) {
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", ILoopType.EDefaultLoopTypes.LOOP));
+        } else if (!(event.getLimbSwingAmount() > -0.15F && event.getLimbSwingAmount() < 0.15F)) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", ILoopType.EDefaultLoopTypes.LOOP));
         } else if (this.isFusing) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("fuse", ILoopType.EDefaultLoopTypes.LOOP));
