@@ -43,7 +43,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
                 models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, false);
             }
 
-            entityData.setModelLocation(models.get(RandomUtil.getPseudoRandomInt(this.currentEntity.getUUID(), models.size())));
+            entityData.setModelLocation(models.get(RandomUtil.getPseudoRandomInt(this.currentEntity.getUUID().getMostSignificantBits(), RandomUtil.modelUUID.getMostSignificantBits(), models.size())));
         }
 
         return entityData.getModelLocation();
@@ -63,7 +63,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
                 textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, false);
             }
 
-            entityData.setTextureLocation(textures.get(RandomUtil.getPseudoRandomInt(this.currentEntity.getUUID(), textures.size())));
+            entityData.setTextureLocation(textures.get(RandomUtil.getPseudoRandomInt(this.currentEntity.getUUID().getLeastSignificantBits(), RandomUtil.textureUUID.getLeastSignificantBits(), textures.size())));
             ResourceUtil.addEntityToReloadedHashSet(this.currentEntity);
         }
 
@@ -88,7 +88,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
                 animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, false);
             }
 
-            entityData.setAnimationLocation(animations.get(RandomUtil.getPseudoRandomInt(this.currentEntity.getUUID(), animations.size())));
+            entityData.setAnimationLocation(animations.get(RandomUtil.getPseudoRandomInt(this.currentEntity.getUUID().getLeastSignificantBits() ^ this.currentEntity.getUUID().getMostSignificantBits(), RandomUtil.animationUUID.getMostSignificantBits(), animations.size())));
         }
 
         return entityData.getAnimationLocation();
