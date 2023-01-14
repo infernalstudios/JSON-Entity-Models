@@ -176,6 +176,8 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
     public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack,
                        MultiBufferSource bufferSource, int packedLight) {
 
+        ((HeadTurningAnimatedGeoModel) this.getGeoModelProvider()).setCurrentEntity((LivingEntity) entity);
+
         if (entity instanceof LivingEntity livingEntity && animatable instanceof ReplacedEntityBase replacedEntityBase) {
             replacedEntityBase.setHurt(livingEntity.hurtTime > 0);
             replacedEntityBase.setBaby(livingEntity.isBaby());
@@ -183,8 +185,6 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
             replacedEntityBase.setInWater(livingEntity.isInWater());
 
             if (this.modelProvider instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
-                headTurningAnimatedGeoModel.setCurrentEntity(livingEntity);
-
                 if (livingEntity.isBaby() && !headTurningAnimatedGeoModel.getModelResource((ReplacedEntityBase) animatable).toString().contains("/baby/")) {
                     poseStack.scale(0.5F, 0.5F, 0.5F);
                 }

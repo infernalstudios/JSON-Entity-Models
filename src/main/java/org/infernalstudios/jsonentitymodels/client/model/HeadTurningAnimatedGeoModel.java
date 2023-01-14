@@ -53,6 +53,8 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
     public ResourceLocation getTextureResource(T object) {
         LivingEntityData entityData = (LivingEntityData) this.currentEntity;
 
+        this.getModelResource(object);
+
         if (!ResourceUtil.isEntityInReloadedHashSet(this.currentEntity) || (entityData.getModelLocation() != null && entityData.getTextureLocation() == null)) {
             String[] modelPath = entityData.getModelLocation().getPath().split("/");
             String modelName = modelPath[modelPath.length - 1].replaceAll("(\\.geo)?\\.json$", "");;
@@ -72,11 +74,9 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
 
     @Override
     public ResourceLocation getAnimationResource(T animatable) {
-        if (this.currentEntity == null) {
-            return null;
-        }
-
         LivingEntityData entityData = (LivingEntityData) this.currentEntity;
+
+        this.getModelResource(animatable);
 
         if (!ResourceUtil.isEntityInReloadedHashSet(this.currentEntity) || (entityData.getModelLocation() != null && entityData.getAnimationLocation() == null)) {
             String[] modelPath = entityData.getModelLocation().getPath().split("/");
