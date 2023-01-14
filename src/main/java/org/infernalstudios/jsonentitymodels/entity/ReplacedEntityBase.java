@@ -15,6 +15,8 @@ public abstract class ReplacedEntityBase implements IAnimatable {
     protected boolean isBaby;
     protected boolean isDead;
 
+    protected boolean inWater;
+
     private HeadTurningAnimatedGeoModel modelInstance;
 
     public void setHurt(boolean isHurt) {
@@ -31,6 +33,10 @@ public abstract class ReplacedEntityBase implements IAnimatable {
 
     public void setDead(boolean isDead) {
         this.isDead = isDead;
+    }
+
+    public void setInWater(boolean inWater) {
+        this.inWater = inWater;
     }
 
     public void setModelInstance(HeadTurningAnimatedGeoModel modelInstance) {
