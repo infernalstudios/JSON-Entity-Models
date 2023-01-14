@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.infernalstudios.jsonentitymodels.client.model.ReplacedIronGolemModel;
 import org.infernalstudios.jsonentitymodels.client.render.layer.IronGolemCrackLayer;
@@ -26,6 +27,7 @@ public class ReplacedIronGolemRenderer extends ExtendedGeoReplacedEntityRenderer
     public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         if (entity instanceof IronGolem ironGolem && animatable instanceof ReplacedIronGolemEntity replacedIronGolem) {
             replacedIronGolem.setAttacking(ironGolem.getAttackAnimationTick() > 0);
+            replacedIronGolem.setOfferingFlower(ironGolem.getOfferFlowerTick() > 0);
         }
 
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
@@ -40,6 +42,10 @@ public class ReplacedIronGolemRenderer extends ExtendedGeoReplacedEntityRenderer
     @Nullable
     @Override
     protected BlockState getHeldBlockForBone(String boneName, IronGolem animatable) {
+        if (animatable.getOfferFlowerTick() > 0 && boneName.equals("rightitem")) {
+            return Blocks.POPPY.defaultBlockState();
+        }
+
         return null;
     }
 
