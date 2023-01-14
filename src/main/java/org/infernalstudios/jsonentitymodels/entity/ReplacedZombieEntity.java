@@ -22,7 +22,7 @@ public class ReplacedZombieEntity extends ReplacedEntityBase {
         } else if (this.isHurt) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAggressive ? "aggressive_hurt" : "hurt", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
         } else if (this.inWater) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("sink", ILoopType.EDefaultLoopTypes.LOOP));
         } else if (!(event.getLimbSwingAmount() > -0.10F && event.getLimbSwingAmount() < 0.10F)) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAggressive ? "aggressive_walk" : "walk", ILoopType.EDefaultLoopTypes.LOOP));
         } else {
