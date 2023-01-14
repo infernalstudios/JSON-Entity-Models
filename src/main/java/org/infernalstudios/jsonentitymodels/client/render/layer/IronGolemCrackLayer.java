@@ -29,7 +29,7 @@ public class IronGolemCrackLayer extends GeoLayerRenderer {
                 IronGolem.Crackiness crackLevel = ironGolem.getCrackiness();
 
                 if (crackLevel != IronGolem.Crackiness.NONE) {
-                    ResourceLocation cracksResource = this.getCracksResource(crackLevel, headTurningAnimatedGeoModel.getTextureResource(null));
+                    ResourceLocation cracksResource = this.getCracksResource(crackLevel, headTurningAnimatedGeoModel.getTextureLocation(null));
 
                     if (cracksResource != null &&
                             Minecraft.getInstance().getResourceManager().hasResource(cracksResource)) {
@@ -37,7 +37,7 @@ public class IronGolemCrackLayer extends GeoLayerRenderer {
                         RenderType renderType = RenderType.entityCutoutNoCull(cracksResource);
 
                         this.getRenderer().render(
-                                headTurningAnimatedGeoModel.getModel(headTurningAnimatedGeoModel.getModelResource(null)),
+                                headTurningAnimatedGeoModel.getModel(headTurningAnimatedGeoModel.getModelLocation(null)),
                                 entityLivingBaseIn,
                                 partialTicks,
                                 renderType,
