@@ -17,7 +17,6 @@ import net.minecraft.client.model.geom.ModelPart.Cube;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.blockentity.SkullBlockRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -177,14 +176,15 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
     public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack,
                        MultiBufferSource bufferSource, int packedLight) {
 
+        ((HeadTurningAnimatedGeoModel) this.getGeoModelProvider()).setCurrentEntity((LivingEntity) entity);
+
         if (entity instanceof LivingEntity livingEntity && animatable instanceof ReplacedEntityBase replacedEntityBase) {
             replacedEntityBase.setHurt(livingEntity.hurtTime > 0);
             replacedEntityBase.setBaby(livingEntity.isBaby());
             replacedEntityBase.setDead(livingEntity.isDeadOrDying());
+            replacedEntityBase.setInWater(livingEntity.isInWater());
 
             if (this.modelProvider instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
-                headTurningAnimatedGeoModel.setCurrentEntity(livingEntity);
-
                 if (livingEntity.isBaby() && !headTurningAnimatedGeoModel.getModelResource((ReplacedEntityBase) animatable).toString().contains("/baby/")) {
                     poseStack.scale(0.5F, 0.5F, 0.5F);
                 }
@@ -529,9 +529,10 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
 
             if (bone.getName().equals("rightitem")) {
                 poseStack.mulPose(Vector3f.XN.rotationDegrees(90.0F));
-                poseStack.translate(0.0D, 0.125D, -0.1D);
+                poseStack.translate(0D, 0.125D, -0.125D);
             } else if (bone.getName().equals("leftitem")) {
-                poseStack.translate(0.0D, -0.325D, -0.4D);
+                poseStack.mulPose(Vector3f.XN.rotationDegrees(90.0F));
+                poseStack.translate(0D, 0.125D, -0.125D);
             }
 
             preRenderItem(poseStack, boneItem, bone.getName(), this.currentEntityBeingRendered, bone);
@@ -551,7 +552,7 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
     protected void renderItemStack(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, ItemStack stack,
                                    String boneName) {
         Minecraft.getInstance().getItemRenderer().renderStatic(this.currentEntityBeingRendered, stack,
-                getCameraTransformForItemAtBone(stack, boneName), false, poseStack, bufferSource, null, packedLight,
+                getCameraTransformForItemAtBone(stack, boneName), boneName.equals("leftitem"), poseStack, bufferSource, null, packedLight,
                 LivingEntityRenderer.getOverlayCoords(this.currentEntityBeingRendered, 0.0F),
                 currentEntityBeingRendered.getId());
     }
@@ -594,7 +595,7 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
         return null;
     }
 
-    protected TransformType getCameraTransformForItemAtBone(ItemStack stack, String boneName) {
+    protected ItemTransforms.TransformType getCameraTransformForItemAtBone(ItemStack stack, String boneName) {
         if (boneName.equals("rightitem")) {
             return ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND;
         } else if (boneName.equals("leftitem")) {
@@ -637,26 +638,44 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
 
     @Nullable
     protected EquipmentSlot getEquipmentSlotForArmorBone(String boneName, U animatable) {
-        return switch (boneName) {
-            case "armorhead" -> EquipmentSlot.HEAD;
-            case "armorbody", "armorrightarm", "armorleftarm" -> EquipmentSlot.CHEST;
-            case "armorpelvis", "armorrightleg", "armorleftleg" -> EquipmentSlot.LEGS;
-            case "armorrightfoot", "armorleftfoot" -> EquipmentSlot.FEET;
-            default -> null;
-        };
+        if (boneName.startsWith("armorhead")) {
+            return EquipmentSlot.HEAD;
+        } else if (boneName.startsWith("armorbody") ||
+                boneName.startsWith("armorrightarm") ||
+                boneName.startsWith("armorleftarm")) {
+            return EquipmentSlot.CHEST;
+        } else if (boneName.startsWith("armorpelvis") ||
+                boneName.startsWith("armorrightleg") ||
+                boneName.startsWith("armorleftleg")) {
+            return EquipmentSlot.LEGS;
+        } else if (boneName.startsWith("armorrightfoot") ||
+                boneName.startsWith("armorleftfoot")) {
+            return EquipmentSlot.FEET;
+        } else {
+            return null;
+        }
     }
 
     @Nullable
     protected ModelPart getArmorPartForBone(String name, HumanoidModel<?> armorModel) {
-        return switch (name) {
-            case "armorhead" -> armorModel.head;
-            case "armorbody", "armorpelvis" -> armorModel.body;
-            case "armorrightarm" -> armorModel.rightArm;
-            case "armorleftarm" -> armorModel.leftArm;
-            case "armorrightleg", "armorrightfoot" -> armorModel.rightLeg;
-            case "armorleftleg", "armorleftfoot" -> armorModel.leftLeg;
-            default -> null;
-        };
+        if (name.startsWith("armorhead")) {
+            return armorModel.head;
+        } else if (name.startsWith("armorbody") ||
+                name.startsWith("armorpelvis")) {
+            return armorModel.body;
+        } else if (name.startsWith("armorrightarm")) {
+            return armorModel.rightArm;
+        } else if (name.startsWith("armorleftarm")) {
+            return armorModel.leftArm;
+        } else if (name.startsWith("armorrightleg") ||
+                name.startsWith("armorrightfoot")) {
+            return armorModel.rightLeg;
+        } else if (name.startsWith("armorleftleg") ||
+                name.startsWith("armorleftfoot")) {
+            return armorModel.leftLeg;
+        } else {
+            return null;
+        }
     }
 
     protected ResourceLocation getArmorResource(Entity entity, ItemStack stack, EquipmentSlot slot, @Nonnull String type) {

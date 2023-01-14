@@ -25,7 +25,7 @@ public class ReplacedCreeperRenderer extends ExtendedGeoReplacedEntityRenderer<R
     @Override
     public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         if (entity instanceof Creeper creeper && animatable instanceof ReplacedCreeperEntity replacedCreeper) {
-            replacedCreeper.setFusing(creeper.getSwelling(partialTick) > 0);
+            replacedCreeper.setSwelling(creeper.getSwelling(partialTick) > 0);
         }
 
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
