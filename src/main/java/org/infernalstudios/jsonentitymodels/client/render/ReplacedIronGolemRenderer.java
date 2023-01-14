@@ -9,6 +9,7 @@ import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.infernalstudios.jsonentitymodels.client.model.ReplacedIronGolemModel;
+import org.infernalstudios.jsonentitymodels.client.render.layer.IronGolemCrackLayer;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedIronGolemEntity;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -18,6 +19,7 @@ public class ReplacedIronGolemRenderer extends ExtendedGeoReplacedEntityRenderer
 
     public ReplacedIronGolemRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ReplacedIronGolemModel(), new ReplacedIronGolemEntity());
+        this.addLayer(new IronGolemCrackLayer(this));
     }
 
     @Override

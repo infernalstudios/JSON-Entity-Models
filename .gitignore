@@ -25,3 +25,6 @@ logs
 
 # Files from Forge MDK
 forge*changelog.txt
+
+# Mac
+*.DS_STORE
