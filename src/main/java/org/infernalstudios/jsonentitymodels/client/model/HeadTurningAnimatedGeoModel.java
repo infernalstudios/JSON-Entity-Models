@@ -16,6 +16,7 @@ import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase & IAnimatable, U extends Mob> extends AnimatedGeoModel<T> {
     private final String namespace;
@@ -34,13 +35,13 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
 
     @Override
     public ResourceLocation getModelResource(@Nullable T object) {
-        List<ResourceLocation> models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, this.currentEntity.isBaby());
+        List<ResourceLocation> models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, this.currentEntity != null && this.currentEntity.isBaby());
 
-        if (models == null || models.isEmpty() && this.currentEntity.isBaby()) {
+        if (models == null || models.isEmpty() && this.currentEntity != null && this.currentEntity.isBaby()) {
             models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, false);
         }
 
-        return models.get(RandomUtil.getPseudoRandomInt(this.currentEntity.getUUID(), models.size()));
+        return models.get(RandomUtil.getPseudoRandomInt(this.currentEntity != null ? this.currentEntity.getUUID().getMostSignificantBits() : UUID.randomUUID().getMostSignificantBits(), RandomUtil.modelUUID.getMostSignificantBits(), models.size()));
     }
 
     @Override
@@ -48,13 +49,13 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
         String[] modelPath = this.getModelResource(object).getPath().split("/");
         String modelName = modelPath[modelPath.length - 1].replaceAll("(\\.geo)?\\.json$", "");;
 
-        List<ResourceLocation> textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, this.currentEntity.isBaby());
+        List<ResourceLocation> textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, this.currentEntity != null && this.currentEntity.isBaby());
 
-        if (textures == null || textures.isEmpty() && this.currentEntity.isBaby()) {
+        if (textures == null || textures.isEmpty() && this.currentEntity != null && this.currentEntity.isBaby()) {
             textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, false);
         }
 
-        return textures.get(RandomUtil.getPseudoRandomInt(this.currentEntity.getUUID(), textures.size()));
+        return textures.get(RandomUtil.getPseudoRandomInt(this.currentEntity != null ? this.currentEntity.getUUID().getLeastSignificantBits() : UUID.randomUUID().getLeastSignificantBits(), RandomUtil.textureUUID.getLeastSignificantBits(), textures.size()));
     }
 
     @Override
@@ -62,13 +63,15 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
         String[] modelPath = this.getModelResource(animatable).getPath().split("/");
         String modelName = modelPath[modelPath.length - 1].replaceAll("(\\.geo)?\\.json$", "");
 
-        List<ResourceLocation> animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, this.currentEntity.isBaby());
+        List<ResourceLocation> animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, this.currentEntity != null && this.currentEntity.isBaby());
 
-        if (animations == null || animations.isEmpty() && this.currentEntity.isBaby()) {
+        if (animations == null || animations.isEmpty() && this.currentEntity != null && this.currentEntity.isBaby()) {
             animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, false);
         }
 
-        return animations.get(RandomUtil.getPseudoRandomInt(this.currentEntity.getUUID(), animations.size()));
+        return animations.get(RandomUtil.getPseudoRandomInt(this.currentEntity != null ?
+                        this.currentEntity.getUUID().getLeastSignificantBits() ^ this.currentEntity.getUUID().getMostSignificantBits() :
+                        UUID.randomUUID().getLeastSignificantBits() ^ UUID.randomUUID().getMostSignificantBits(), RandomUtil.animationUUID.getMostSignificantBits(), animations.size()));
     }
 
     @Override

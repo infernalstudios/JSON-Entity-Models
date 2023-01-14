@@ -10,7 +10,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.IronGolem;
 import org.infernalstudios.jsonentitymodels.JSONEntityModels;
 import org.infernalstudios.jsonentitymodels.client.model.HeadTurningAnimatedGeoModel;
-import org.infernalstudios.jsonentitymodels.data.LivingEntityData;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
@@ -26,12 +25,11 @@ public class IronGolemCrackLayer extends GeoLayerRenderer {
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, Entity entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if (entityLivingBaseIn instanceof IronGolem ironGolem && this.getEntityModel() instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
             if (!ironGolem.isInvisible()) {
-                LivingEntityData renderedEntity = (LivingEntityData) headTurningAnimatedGeoModel.getCurrentEntity();
 
                 IronGolem.Crackiness crackLevel = ironGolem.getCrackiness();
 
                 if (crackLevel != IronGolem.Crackiness.NONE) {
-                    ResourceLocation cracksResource = this.getCracksResource(crackLevel, renderedEntity.getTextureLocation());
+                    ResourceLocation cracksResource = this.getCracksResource(crackLevel, headTurningAnimatedGeoModel.getTextureResource(null));
 
                     if (cracksResource != null &&
                             Minecraft.getInstance().getResourceManager().getResource(cracksResource).isPresent()) {
@@ -39,7 +37,7 @@ public class IronGolemCrackLayer extends GeoLayerRenderer {
                         RenderType renderType = RenderType.entityCutoutNoCull(cracksResource);
 
                         this.getRenderer().render(
-                                headTurningAnimatedGeoModel.getModel(renderedEntity.getModelLocation()),
+                                headTurningAnimatedGeoModel.getModel(headTurningAnimatedGeoModel.getModelResource(null)),
                                 entityLivingBaseIn,
                                 partialTicks,
                                 renderType,
