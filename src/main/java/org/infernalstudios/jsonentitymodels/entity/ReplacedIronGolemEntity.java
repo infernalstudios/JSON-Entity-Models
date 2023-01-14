@@ -27,7 +27,7 @@ public class ReplacedIronGolemEntity extends ReplacedEntityBase {
         } else if (this.isHurt) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAttacking ? "attack_hurt" : "hurt", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
         } else if (this.offeringFlower) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("offer_flower", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("start_offer_flower", ILoopType.EDefaultLoopTypes.PLAY_ONCE).addAnimation("offer_flower_loop", ILoopType.EDefaultLoopTypes.LOOP));
         } else if (!(event.getLimbSwingAmount() > -0.10F && event.getLimbSwingAmount() < 0.10F)) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAttacking ? "attack_walk" : "walk", ILoopType.EDefaultLoopTypes.LOOP));
         } else {
