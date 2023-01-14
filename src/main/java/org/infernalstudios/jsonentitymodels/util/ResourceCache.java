@@ -136,7 +136,8 @@ public class ResourceCache {
                                                       String type, BiConsumer<String, List<ResourceLocation>> adults, BiConsumer<String, List<ResourceLocation>> babies) {
         return CompletableFuture.supplyAsync(
                         () -> resourceManager.listResources(type, fileName -> fileName.endsWith(".png") &&
-                                !fileName.endsWith("_glow.png")), executor)
+                                !fileName.endsWith("_glow.png") &&
+                                !fileName.contains("crackiness")), executor)
                 .thenApplyAsync(resources -> {
                     Map<String, List<ResourceLocation>> adultTextures = new Object2ObjectOpenHashMap<>();
                     Map<String, List<ResourceLocation>> babyTextures = new Object2ObjectOpenHashMap<>();
