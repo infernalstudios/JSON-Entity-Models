@@ -638,26 +638,44 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
 
     @Nullable
     protected EquipmentSlot getEquipmentSlotForArmorBone(String boneName, U animatable) {
-        return switch (boneName) {
-            case "armorhead" -> EquipmentSlot.HEAD;
-            case "armorbody", "armorrightarm", "armorleftarm" -> EquipmentSlot.CHEST;
-            case "armorpelvis", "armorrightleg", "armorleftleg" -> EquipmentSlot.LEGS;
-            case "armorrightfoot", "armorleftfoot" -> EquipmentSlot.FEET;
-            default -> null;
-        };
+        if (boneName.startsWith("armorhead")) {
+            return EquipmentSlot.HEAD;
+        } else if (boneName.startsWith("armorbody") ||
+                boneName.startsWith("armorrightarm") ||
+                boneName.startsWith("armorleftarm")) {
+            return EquipmentSlot.CHEST;
+        } else if (boneName.startsWith("armorpelvis") ||
+                boneName.startsWith("armorrightleg") ||
+                boneName.startsWith("armorleftleg")) {
+            return EquipmentSlot.LEGS;
+        } else if (boneName.startsWith("armorrightfoot") ||
+                boneName.startsWith("armorleftfoot")) {
+            return EquipmentSlot.FEET;
+        } else {
+            return null;
+        }
     }
 
     @Nullable
     protected ModelPart getArmorPartForBone(String name, HumanoidModel<?> armorModel) {
-        return switch (name) {
-            case "armorhead" -> armorModel.head;
-            case "armorbody", "armorpelvis" -> armorModel.body;
-            case "armorrightarm" -> armorModel.rightArm;
-            case "armorleftarm" -> armorModel.leftArm;
-            case "armorrightleg", "armorrightfoot" -> armorModel.rightLeg;
-            case "armorleftleg", "armorleftfoot" -> armorModel.leftLeg;
-            default -> null;
-        };
+        if (name.startsWith("armorhead")) {
+            return armorModel.head;
+        } else if (name.startsWith("armorbody") ||
+                name.startsWith("armorpelvis")) {
+            return armorModel.body;
+        } else if (name.startsWith("armorrightarm")) {
+            return armorModel.rightArm;
+        } else if (name.startsWith("armorleftarm")) {
+            return armorModel.leftArm;
+        } else if (name.startsWith("armorrightleg") ||
+                name.startsWith("armorrightfoot")) {
+            return armorModel.rightLeg;
+        } else if (name.startsWith("armorleftleg") ||
+                name.startsWith("armorleftfoot")) {
+            return armorModel.leftLeg;
+        } else {
+            return null;
+        }
     }
 
     protected ResourceLocation getArmorResource(Entity entity, ItemStack stack, EquipmentSlot slot, @Nonnull String type) {
