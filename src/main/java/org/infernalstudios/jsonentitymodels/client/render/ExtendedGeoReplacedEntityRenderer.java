@@ -562,6 +562,11 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
         return getRenderType(animatable, partialTick, poseStack, bufferSource, buffer, packedLight, texture);
     }
 
+    @Override
+    public RenderType getRenderType(Object animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @org.jetbrains.annotations.Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
+        return RenderType.entityCutoutNoCull(texture);
+    }
+
     // Internal use only. Basically renders the passed "part" of the armor model on
     // a pre-setup location
     protected void renderArmorPart(PoseStack poseStack, ModelPart sourceLimb, int packedLight, int packedOverlay,
