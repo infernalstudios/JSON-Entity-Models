@@ -2,10 +2,13 @@ package org.infernalstudios.jsonentitymodels.util;
 
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
+import org.infernalstudios.jsonentitymodels.JSONEntityModels;
+import org.infernalstudios.jsonentitymodels.JSONEntityModelsEvents;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,7 +82,13 @@ public class ResourceCache {
                     this.babyTextures = babyTextures;
                     this.adultAnimations = adultAnimations;
                     this.babyAnimations = babyAnimations;
-                }, gameExecutor);
+
+                    JSONEntityModelsEvents.replaceRenderers();
+
+                    if (!Minecraft.getInstance().getEntityRenderDispatcher().renderers.isEmpty()) {
+                        Minecraft.getInstance().getEntityRenderDispatcher().onResourceManagerReload(resourceManager);
+                    }
+            }, gameExecutor);
     }
 
     private static CompletableFuture<Void> loadModels(Executor executor, ResourceManager resourceManager,
@@ -91,7 +100,7 @@ public class ResourceCache {
                     Map<String, List<ResourceLocation>> babyModels = new Object2ObjectOpenHashMap<>();
 
                     for (ResourceLocation resource : resources) {
-                        if (!resource.getNamespace().equals("jsonentitymodels")) continue;
+                        if (!resource.getNamespace().equals(JSONEntityModels.MOD_ID)) continue;
 
                         String[] splitPath = resource.getPath().split("/");
 
@@ -143,7 +152,7 @@ public class ResourceCache {
                     Map<String, List<ResourceLocation>> babyTextures = new Object2ObjectOpenHashMap<>();
 
                     for (ResourceLocation resource : resources) {
-                        if (!resource.getNamespace().equals("jsonentitymodels")) continue;
+                        if (!resource.getNamespace().equals(JSONEntityModels.MOD_ID)) continue;
 
                         String[] splitPath = resource.getPath().split("/");
 
@@ -193,7 +202,7 @@ public class ResourceCache {
                     Map<String, List<ResourceLocation>> babyAnimations = new Object2ObjectOpenHashMap<>();
 
                     for (ResourceLocation resource : resources) {
-                        if (!resource.getNamespace().equals("jsonentitymodels")) continue;
+                        if (!resource.getNamespace().equals(JSONEntityModels.MOD_ID)) continue;
 
                         String[] splitPath = resource.getPath().split("/");
 
