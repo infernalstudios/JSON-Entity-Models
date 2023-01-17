@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import org.infernalstudios.jsonentitymodels.JSONEntityModels;
 import org.infernalstudios.jsonentitymodels.JSONEntityModelsEvents;
 
 import java.util.ArrayList;
@@ -198,7 +197,7 @@ public class ResourceCache {
                 .thenApplyAsync(resources -> {
                     Map<String, List<ResourceLocation>> adultAnimations = new Object2ObjectOpenHashMap<>();
                     Map<String, List<ResourceLocation>> babyAnimations = new Object2ObjectOpenHashMap<>();
-                    
+
                     for (ResourceLocation resource : resources.keySet()) {
                         String[] splitPath = resource.getPath().split("/");
 

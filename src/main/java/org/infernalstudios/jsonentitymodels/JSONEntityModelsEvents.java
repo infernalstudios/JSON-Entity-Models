@@ -3,7 +3,9 @@ package org.infernalstudios.jsonentitymodels;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,7 +24,6 @@ import org.infernalstudios.jsonentitymodels.client.render.ReplacedSpiderRenderer
 import org.infernalstudios.jsonentitymodels.client.render.ReplacedZombieRenderer;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedDefaultEntity;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,28 +51,27 @@ public class JSONEntityModelsEvents {
     }
 
     public static void replaceRenderers() {
-        for (EntityType<?> entity : ForgeRegistries.ENTITIES) {
-            if (entity.getRegistryName().toString().equals("minecraft:player")) continue;
+        for (Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entityEntry : ForgeRegistries.ENTITY_TYPES.getEntries()) {
+            ResourceLocation entityResourceLocation = entityEntry.getKey().location();
 
-            if (doesEntityHaveResource(entity)) {
-                ResourceLocation registryName = entity.getRegistryName();
+            if (entityResourceLocation.toString().equals("minecraft:player")) continue;
 
-                EntityRenderers.register(entity, (EntityRendererProvider<Entity>) RENDERER_MAP.getOrDefault(entity, (context) -> new ReplacedDefaultRenderer(context,
-                    new ReplacedDefaultModel(registryName.getNamespace(), registryName.getPath()), new ReplacedDefaultEntity())));
+            if (doesEntityHaveResource(entityResourceLocation)) {
+                EntityRenderers.register(entityEntry.getValue(), (EntityRendererProvider<Entity>) RENDERER_MAP.getOrDefault(entityEntry.getValue(), (context) -> new ReplacedDefaultRenderer(context,
+                    new ReplacedDefaultModel(entityResourceLocation.getNamespace(), entityResourceLocation.getPath()), new ReplacedDefaultEntity())));
             } else {
-                EntityRenderers.register(entity, (EntityRendererProvider<Entity>) DEFAULT_RENDERERS.get(entity));
+                EntityRenderers.register(entityEntry.getValue(), (EntityRendererProvider<Entity>) DEFAULT_RENDERERS.get(entityEntry.getValue()));
             }
 
         }
     }
 
-    private static boolean doesEntityHaveResource(EntityType<?> entityType) {
-        ResourceLocation entityTypeRegistry = entityType.getRegistryName();
-        String resourceType = "geo/" + entityTypeRegistry.getNamespace() + "/" + entityTypeRegistry.getPath();
+    private static boolean doesEntityHaveResource(ResourceLocation entityResourceLocation) {
+        String resourceType = "geo/" + entityResourceLocation.getNamespace() + "/" + entityResourceLocation.getPath();
 
-        Collection<ResourceLocation> resources = Minecraft.getInstance().getResourceManager().listResources(resourceType,
-            (filename) -> filename.endsWith(".json"));
+        Map<ResourceLocation, Resource> resources = Minecraft.getInstance().getResourceManager().listResources(resourceType,
+            (filename) -> filename.getNamespace().equals("jsonentitymodels") && filename.getPath().endsWith(".json"));
 
-        return resources.stream().anyMatch(resourceLocation -> resourceLocation.getNamespace().equals(JSONEntityModels.MOD_ID));
+        return !resources.isEmpty();
     }
 }
