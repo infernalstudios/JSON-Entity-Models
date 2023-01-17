@@ -19,6 +19,7 @@ import org.infernalstudios.jsonentitymodels.client.model.ReplacedDefaultModel;
 import org.infernalstudios.jsonentitymodels.client.render.ReplacedCreeperRenderer;
 import org.infernalstudios.jsonentitymodels.client.render.ReplacedDefaultRenderer;
 import org.infernalstudios.jsonentitymodels.client.render.ReplacedIronGolemRenderer;
+import org.infernalstudios.jsonentitymodels.client.render.ReplacedPigRenderer;
 import org.infernalstudios.jsonentitymodels.client.render.ReplacedSheepRenderer;
 import org.infernalstudios.jsonentitymodels.client.render.ReplacedSkeletonRenderer;
 import org.infernalstudios.jsonentitymodels.client.render.ReplacedSpiderRenderer;
@@ -42,8 +43,9 @@ public class JSONEntityModelsEvents {
         RENDERER_MAP.put(EntityType.SKELETON, ReplacedSkeletonRenderer::new);
         RENDERER_MAP.put(EntityType.IRON_GOLEM, ReplacedIronGolemRenderer::new);
         RENDERER_MAP.put(EntityType.SHEEP, ReplacedSheepRenderer::new);
+        RENDERER_MAP.put(EntityType.PIG, ReplacedPigRenderer::new);
 
-        // TODO: Add 4 remaining mobs for Beta 1
+        // TODO: Add 3 remaining mobs for Beta 1
     }
 
     private static Map<EntityType<?>, EntityRendererProvider<?>> DEFAULT_RENDERERS = new HashMap<>();
