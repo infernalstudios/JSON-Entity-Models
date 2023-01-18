@@ -8,7 +8,6 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.infernalstudios.jsonentitymodels.JSONEntityModels;
-import org.infernalstudios.jsonentitymodels.JSONEntityModelsEvents;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -83,7 +82,7 @@ public class ResourceCache {
                     this.adultAnimations = adultAnimations;
                     this.babyAnimations = babyAnimations;
 
-                    JSONEntityModelsEvents.replaceRenderers();
+                    ResourceUtil.replaceRenderers();
 
                     if (!Minecraft.getInstance().getEntityRenderDispatcher().renderers.isEmpty()) {
                         Minecraft.getInstance().getEntityRenderDispatcher().onResourceManagerReload(resourceManager);
