@@ -28,7 +28,6 @@ import org.infernalstudios.jsonentitymodels.entity.ReplacedDefaultEntity;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,9 +91,6 @@ public class JSONEntityModelsEvents {
         ResourceLocation entityTypeRegistry = entityType.getRegistryName();
         String resourceType = "geo/" + entityTypeRegistry.getNamespace() + "/" + entityTypeRegistry.getPath();
 
-        Collection<ResourceLocation> resources = Minecraft.getInstance().getResourceManager().listResources(resourceType,
-            (filename) -> filename.endsWith(".json"));
-
-        return resources.stream().anyMatch(resourceLocation -> resourceLocation.getNamespace().equals(JSONEntityModels.MOD_ID));
+        return Minecraft.getInstance().getResourceManager().hasResource(new ResourceLocation(JSONEntityModels.MOD_ID, resourceType));
     }
 }
