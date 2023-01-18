@@ -71,9 +71,6 @@ public class JSONEntityModelsEvents {
     private static boolean doesEntityHaveResource(ResourceLocation entityResourceLocation) {
         String resourceType = "geo/" + entityResourceLocation.getNamespace() + "/" + entityResourceLocation.getPath();
 
-        Map<ResourceLocation, Resource> resources = Minecraft.getInstance().getResourceManager().listResources(resourceType,
-            (filename) -> filename.getNamespace().equals("jsonentitymodels") && filename.getPath().endsWith(".json"));
-
-        return !resources.isEmpty();
+        return Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation(JSONEntityModels.MOD_ID, resourceType)).isPresent();
     }
 }
