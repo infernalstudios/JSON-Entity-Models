@@ -7,8 +7,8 @@
 				"texture_width": 64,
 				"texture_height": 64,
 				"visible_bounds_width": 3,
-				"visible_bounds_height": 2.5,
-				"visible_bounds_offset": [0, 0.75, 0]
+				"visible_bounds_height": 3.5,
+				"visible_bounds_offset": [0, 1.25, 0]
 			},
 			"bones": [
 				{
@@ -80,16 +80,15 @@
 					"pivot": [0, 10, -8],
 					"rotation": [90, 0, 0],
 					"cubes": [
-						{"origin": [-5, -6, -12], "size": [10, 16, 8], "inflate": 0.2, "uv": [0, 40]}
+						{"origin": [-5, -6, -12], "size": [10, 16, 6], "uv": [0, 40]}
 					]
 				},
 				{
 					"name": "armorpelvis",
 					"parent": "body",
-					"pivot": [0, 10, -8],
-					"rotation": [90, 0, 0],
+					"pivot": [0, 24, 4],
 					"cubes": [
-						{"origin": [-5, -6, -12], "size": [10, 16, 8], "inflate": 0.15, "uv": [0, 40]}
+						{"origin": [-5, 7, 0], "size": [10, 17, 8], "inflate": 0.15, "uv": [0, 40]}
 					]
 				},
 				{
