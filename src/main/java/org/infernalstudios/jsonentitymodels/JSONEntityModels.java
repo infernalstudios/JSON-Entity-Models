@@ -30,6 +30,7 @@ import software.bernie.example.GeckoLibMod;
 public class JSONEntityModels {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "jsonentitymodels";
+    public static final String CURR_VERSION = "0.0.1";
 
     public JSONEntityModels() {
         JSONEntityModels.registerReloadListeners();
@@ -40,6 +41,7 @@ public class JSONEntityModels {
 
     synchronized public static void registerReloadListeners() {
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ResourceUtil::registerReloadListener);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ResourceUtil::loadResourcePacks);
     }
 
 }
