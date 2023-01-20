@@ -28,10 +28,7 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeableArmorItem;
@@ -445,6 +442,10 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
                                   int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (this.getCurrentRTB() == null) {
             throw new IllegalStateException("RenderTypeBuffer must never be null at this point!");
+        }
+
+        if (this.currentEntityBeingRendered instanceof Saddleable saddleable && bone.getName().equals("saddle")) {
+            bone.setHidden(!saddleable.isSaddled(), !saddleable.isSaddled());
         }
 
         if (this.getCurrentModelRenderCycle() != EModelRenderCycle.INITIAL) {
