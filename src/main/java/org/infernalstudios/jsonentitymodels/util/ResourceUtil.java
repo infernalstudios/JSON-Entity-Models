@@ -98,7 +98,7 @@ public class ResourceUtil {
 
         FallbackResourceManager packs = ((MultiPackResourceManager) ((ReloadableResourceManager) Minecraft.getInstance().getResourceManager()).resources).namespacedManagers.get(JSONEntityModels.MOD_ID);
 
-        if (!resourceLocation.getPath().contains("..")) {
+        if (!resourceLocation.getPath().contains("..") && packs != null) {
             for (PackResources packResources : packs.listPacks().toList()) {
                 if (packResources instanceof FolderPackResources folderPackResources) {
                     String path = String.format("%s/%s/%s", PackType.CLIENT_RESOURCES.getDirectory(), resourceLocation.getNamespace(), resourceLocation.getPath());
