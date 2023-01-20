@@ -24,9 +24,20 @@ public class ReplacedEnderManRenderer extends ExtendedGeoReplacedEntityRenderer<
     public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         if (entity instanceof EnderMan enderman && animatable instanceof ReplacedEnderManEntity replacedEnderMan) {
             replacedEnderMan.setScreaming(enderman.isCreepy());
+            replacedEnderMan.setHoldingBlock(enderman.getCarriedBlock() != null);
         }
 
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+    }
+
+    @Nullable
+    @Override
+    protected ItemStack getHeldItemForBone(String boneName, EnderMan animatable) {
+        if (boneName.equals("block")) {
+            return animatable.getCarriedBlock().getBlock().asItem().getDefaultInstance().copy();
+        }
+
+        return super.getHeldItemForBone(boneName, animatable);
     }
 
     @Nullable
