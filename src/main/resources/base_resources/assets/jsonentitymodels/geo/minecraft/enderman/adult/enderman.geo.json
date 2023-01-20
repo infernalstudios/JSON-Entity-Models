@@ -1,0 +1,197 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.enderman",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 4.5,
+				"visible_bounds_offset": [0, 1.75, 0]
+			},
+			"bones": [
+				{
+					"name": "scream",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "all",
+					"parent": "scream",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "torso",
+					"parent": "all",
+					"pivot": [0, 30, 0]
+				},
+				{
+					"name": "head",
+					"parent": "torso",
+					"pivot": [0, 42, 0]
+				},
+				{
+					"name": "skull",
+					"parent": "head",
+					"pivot": [0, 42, 0],
+					"cubes": [
+						{"origin": [-4, 41.5, -4], "size": [8, 8, 8], "inflate": -0.4, "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "armorhead",
+					"parent": "skull",
+					"pivot": [0, 42, 0],
+					"cubes": [
+						{"origin": [-4, 41.5, -4], "size": [8, 8, 8], "inflate": -0.3, "uv": [0, 48]}
+					]
+				},
+				{
+					"name": "jaw",
+					"parent": "head",
+					"pivot": [0, 42, 0],
+					"cubes": [
+						{"origin": [-4, 41.5, -4], "size": [8, 8, 8], "inflate": -0.5, "uv": [0, 16]}
+					]
+				},
+				{
+					"name": "body",
+					"parent": "torso",
+					"pivot": [0, 42, 0],
+					"cubes": [
+						{"origin": [-4, 30, -2], "size": [8, 12, 4], "uv": [32, 16]}
+					]
+				},
+				{
+					"name": "armorbody",
+					"parent": "body",
+					"pivot": [0, 42, 0],
+					"cubes": [
+						{"origin": [-4, 30, -2], "size": [8, 12, 4], "inflate": 0.1, "uv": [0, 48]}
+					]
+				},
+				{
+					"name": "armorpelvis",
+					"parent": "armorbody",
+					"pivot": [0, 42, 0],
+					"cubes": [
+						{"origin": [-4, 30, -2], "size": [8, 12, 4], "inflate": 0.15, "uv": [0, 48]}
+					]
+				},
+				{
+					"name": "botharms",
+					"parent": "torso",
+					"pivot": [0, 40, 0]
+				},
+				{
+					"name": "leftarm",
+					"parent": "botharms",
+					"pivot": [5, 40, 0],
+					"mirror": true,
+					"cubes": [
+						{"origin": [4, 12, -1], "size": [2, 30, 2], "uv": [56, 0]}
+					]
+				},
+				{
+					"name": "leftitem",
+					"parent": "leftarm",
+					"pivot": [5, 15, 0]
+				},
+				{
+					"name": "armorleftarm",
+					"parent": "leftarm",
+					"pivot": [5, 40, 0],
+					"mirror": true,
+					"cubes": [
+						{"origin": [5, 12, -1], "size": [2, 30, 2], "inflate": 0.5, "uv": [0, 32]}
+					]
+				},
+				{
+					"name": "rightarm",
+					"parent": "botharms",
+					"pivot": [-3, 40, 0],
+					"cubes": [
+						{"origin": [-6, 12, -1], "size": [2, 30, 2], "uv": [56, 32]}
+					]
+				},
+				{
+					"name": "rightitem",
+					"parent": "rightarm",
+					"pivot": [-5, 15, 0]
+				},
+				{
+					"name": "armorrightarm",
+					"parent": "rightarm",
+					"pivot": [-5, 40, 0],
+					"mirror": true,
+					"cubes": [
+						{"origin": [-7, 12, -1], "size": [2, 30, 2], "inflate": 0.5, "uv": [0, 32], "mirror": false}
+					]
+				},
+				{
+					"name": "block",
+					"parent": "botharms",
+					"pivot": [0, 14, 0]
+				},
+				{
+					"name": "bothlegs",
+					"parent": "all",
+					"pivot": [0, 30, 0]
+				},
+				{
+					"name": "leftleg",
+					"parent": "bothlegs",
+					"pivot": [2, 30, 0],
+					"mirror": true,
+					"cubes": [
+						{"origin": [1, 0, -1], "size": [2, 30, 2], "uv": [47, 32]}
+					]
+				},
+				{
+					"name": "armorleftleg",
+					"parent": "leftleg",
+					"pivot": [2, 30, 0],
+					"mirror": true,
+					"cubes": [
+						{"origin": [1, 1, -1], "size": [2, 28, 2], "inflate": 1, "uv": [0, 32]}
+					]
+				},
+				{
+					"name": "armorleftfoot",
+					"parent": "armorleftleg",
+					"pivot": [2, 30, 0],
+					"mirror": true,
+					"cubes": [
+						{"origin": [1, 1, -1], "size": [2, 28, 2], "inflate": 1, "uv": [0, 32]}
+					]
+				},
+				{
+					"name": "rightleg",
+					"parent": "bothlegs",
+					"pivot": [-2, 30, 0],
+					"cubes": [
+						{"origin": [-3, 0, -1], "size": [2, 30, 2], "uv": [38, 32]}
+					]
+				},
+				{
+					"name": "armorrightleg",
+					"parent": "rightleg",
+					"pivot": [-2, 30, 0],
+					"mirror": true,
+					"cubes": [
+						{"origin": [-3, 1, -1], "size": [2, 28, 2], "inflate": 1, "uv": [0, 32], "mirror": false}
+					]
+				},
+				{
+					"name": "armorrightfoot",
+					"parent": "armorrightleg",
+					"pivot": [-2, 30, 0],
+					"mirror": true,
+					"cubes": [
+						{"origin": [-3, 1, -1], "size": [2, 28, 2], "inflate": 1, "uv": [0, 32], "mirror": false}
+					]
+				}
+			]
+		}
+	]
+}

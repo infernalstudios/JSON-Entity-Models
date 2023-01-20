@@ -1,6 +1,7 @@
 package org.infernalstudios.jsonentitymodels.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -54,7 +55,11 @@ public class ReplacedEnderManRenderer extends ExtendedGeoReplacedEntityRenderer<
 
     @Override
     protected void preRenderItem(PoseStack poseStack, ItemStack stack, String boneName, EnderMan animatable, IBone bone) {
-
+        if (boneName.equals("block")) {
+            poseStack.pushPose();
+            poseStack.scale(0.7F, 0.7F, 0.7F);
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
+        }
     }
 
     @Override
@@ -64,7 +69,9 @@ public class ReplacedEnderManRenderer extends ExtendedGeoReplacedEntityRenderer<
 
     @Override
     protected void postRenderItem(PoseStack poseStack, ItemStack stack, String boneName, EnderMan animatable, IBone bone) {
-
+        if (boneName.equals("block")) {
+            poseStack.popPose();
+        }
     }
 
     @Override
