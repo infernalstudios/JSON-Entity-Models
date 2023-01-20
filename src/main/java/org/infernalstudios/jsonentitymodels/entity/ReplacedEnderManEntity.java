@@ -33,7 +33,7 @@ public class ReplacedEnderManEntity extends ReplacedEntityBase {
 
     protected <P extends IAnimatable> PlayState screamPredicate(AnimationEvent<P> event) {
         if (this.isScreaming) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("scream", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(new AnimationBuilder().addAnimation("scream_start", ILoopType.EDefaultLoopTypes.PLAY_ONCE).addAnimation("scream_loop", ILoopType.EDefaultLoopTypes.LOOP));
             return PlayState.CONTINUE;
         }
 
