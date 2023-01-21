@@ -49,7 +49,7 @@ public class ReplacedEnderManRenderer extends ExtendedGeoReplacedEntityRenderer<
     @Nullable
     @Override
     protected ItemStack getHeldItemForBone(String boneName, EnderMan animatable) {
-        if (boneName.equals("block")) {
+        if (boneName.equals("block") && animatable.getCarriedBlock() != null) {
             return animatable.getCarriedBlock().getBlock().asItem().getDefaultInstance().copy();
         }
 
