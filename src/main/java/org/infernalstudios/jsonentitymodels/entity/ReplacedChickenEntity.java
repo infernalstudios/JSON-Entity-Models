@@ -23,7 +23,7 @@ public class ReplacedChickenEntity extends ReplacedEntityBase {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("flap", ILoopType.EDefaultLoopTypes.LOOP));
         } else if (this.inWater) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", ILoopType.EDefaultLoopTypes.LOOP));
-        } else if (!(event.getLimbSwingAmount() > -0.55F && event.getLimbSwingAmount() < 0.55F)) {
+        } else if (!(event.getLimbSwingAmount() > -0.6F && event.getLimbSwingAmount() < 0.6F)) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("sprint", ILoopType.EDefaultLoopTypes.LOOP));
         }  else if (!(event.getLimbSwingAmount() > -0.15F && event.getLimbSwingAmount() < 0.15F)) {
             event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", ILoopType.EDefaultLoopTypes.LOOP));
