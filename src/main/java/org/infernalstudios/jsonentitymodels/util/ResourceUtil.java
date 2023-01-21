@@ -16,7 +16,17 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.io.FileUtils;
 import org.infernalstudios.jsonentitymodels.JSONEntityModels;
 import org.infernalstudios.jsonentitymodels.client.model.ReplacedDefaultModel;
-import org.infernalstudios.jsonentitymodels.client.render.*;
+import org.infernalstudios.jsonentitymodels.client.render.ReplacedChickenRenderer;
+import org.infernalstudios.jsonentitymodels.client.render.ReplacedCowRenderer;
+import org.infernalstudios.jsonentitymodels.client.render.ReplacedCreeperRenderer;
+import org.infernalstudios.jsonentitymodels.client.render.ReplacedDefaultRenderer;
+import org.infernalstudios.jsonentitymodels.client.render.ReplacedEnderManRenderer;
+import org.infernalstudios.jsonentitymodels.client.render.ReplacedIronGolemRenderer;
+import org.infernalstudios.jsonentitymodels.client.render.ReplacedPigRenderer;
+import org.infernalstudios.jsonentitymodels.client.render.ReplacedSheepRenderer;
+import org.infernalstudios.jsonentitymodels.client.render.ReplacedSkeletonRenderer;
+import org.infernalstudios.jsonentitymodels.client.render.ReplacedSpiderRenderer;
+import org.infernalstudios.jsonentitymodels.client.render.ReplacedZombieRenderer;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedDefaultEntity;
 
 import java.io.File;
