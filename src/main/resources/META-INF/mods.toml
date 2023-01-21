@@ -23,28 +23,26 @@ displayName = "JSON Entity Models" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
 updateJSONURL="https://infernalstudios.org/api/mods/jsonentitymodels/forge" #optional
 
-# MATCH_VERSION means that your mod will cause a red X if the versions on client and server differ. This is the default behaviour and should be what you choose if you have server and client elements to your mod.
-# IGNORE_SERVER_VERSION means that your mod will not cause a red X if it's present on the server but not on the client. This is what you should use if you're a server only mod.
-# IGNORE_ALL_VERSION means that your mod will not cause a red X if it's present on the client or the server. This is a special case and should only be used if your mod has no server component.
-# NONE means that no display test is set on your mod. You need to do this yourself, see IExtensionPoint.DisplayTest for more information. You can define any scheme you wish with this value.
-# IMPORTANT NOTE: this is NOT an instruction as to which environments (CLIENT or DEDICATED SERVER) your mod loads on. Your mod should load (and maybe do nothing!) whereever it finds itself.
-displayTest="IGNORE_ALL_VERSION" # MATCH_VERSION is the default if nothing is specified (#optional)
-
 # A URL for the "homepage" for this mod, displayed in the mod UI
 #displayURL="https://discord.gg/UYGSn94" #optional
 
 # A file name (in the root of the mod JAR) containing a logo for display
-#logoFile = "logo.png" #optional
+logoFile = "JSON_Entity_Models_Logo_Small.png" #optional
 
 # A text field displayed in the mod UI
-credits = "" #optional
+credits = "See the description!" #optional
 
 # A text field displayed in the mod UI
-authors = "HellionGames" #optional
+authors = "Infernal Studios" #optional
 
 # The description text for the mod (multi line!) (#mandatory)
 description = '''
+JEMs is a client-side Forge mod that aims to replace Optifine's Custom Entity Model resource pack format with a system that is far more flexible and offers infinitely more mod compatibility.
+See the CurseForge page for info on how to make a pack!
 
+Credits
+HellionGames - Developers
+Nekomaster1000 - Artist, Modeler, and Animator
 '''
 
 [[dependencies.jsonentitymodels]]
