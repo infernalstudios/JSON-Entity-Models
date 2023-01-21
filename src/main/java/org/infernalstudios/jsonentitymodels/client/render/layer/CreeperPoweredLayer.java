@@ -40,11 +40,11 @@ public class CreeperPoweredLayer extends GeoLayerRenderer {
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, Entity entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 
         if (entityLivingBaseIn instanceof Creeper creeper && creeper.isPowered() && this.getEntityModel() instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
-            String poweredPath = headTurningAnimatedGeoModel.getTextureLocation(null).getPath().replace(".png", "_powered.png");
+            String poweredPath = headTurningAnimatedGeoModel.getTextureResource(null).getPath().replace(".png", "_powered.png");
 
             ResourceLocation poweredResource = new ResourceLocation(JSONEntityModels.MOD_ID, poweredPath);
 
-            if (!Minecraft.getInstance().getResourceManager().hasResource(poweredResource)) {
+            if (Minecraft.getInstance().getResourceManager().getResource(poweredResource).isEmpty()) {
                 poweredResource = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
             }
 
@@ -53,7 +53,7 @@ public class CreeperPoweredLayer extends GeoLayerRenderer {
             RenderType renderType = RenderType.energySwirl(poweredResource, this.xOffset(f) % 1.0F, f * 0.01F % 1.0F);
 
             this.getRenderer().render(
-                    headTurningAnimatedGeoModel.getModel(headTurningAnimatedGeoModel.getModelLocation(null)),
+                    headTurningAnimatedGeoModel.getModel(headTurningAnimatedGeoModel.getModelResource(null)),
                     entityLivingBaseIn,
                     partialTicks,
                     renderType,
