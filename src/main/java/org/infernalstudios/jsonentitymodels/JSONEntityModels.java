@@ -32,7 +32,7 @@ import software.bernie.example.GeckoLibMod;
 public class JSONEntityModels {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "jsonentitymodels";
-    public static final String CURR_VERSION = "0.0.1";
+    public static final String CURR_VERSION = "0.1.0";
 
     public JSONEntityModels() {
         JSONEntityModels.registerReloadListeners();
