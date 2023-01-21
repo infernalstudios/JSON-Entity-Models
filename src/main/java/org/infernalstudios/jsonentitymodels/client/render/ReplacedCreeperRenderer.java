@@ -26,6 +26,7 @@ import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.infernalstudios.jsonentitymodels.client.model.ReplacedCreeperModel;
+import org.infernalstudios.jsonentitymodels.client.render.layer.CreeperPoweredLayer;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedCreeperEntity;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -35,6 +36,7 @@ public class ReplacedCreeperRenderer extends ExtendedGeoReplacedEntityRenderer<R
 
     public ReplacedCreeperRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new ReplacedCreeperModel(), new ReplacedCreeperEntity());
+        this.addLayer(new CreeperPoweredLayer(this));
     }
 
     @Override
