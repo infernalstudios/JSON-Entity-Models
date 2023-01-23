@@ -1,62 +1,20 @@
 package org.infernalstudios.jsonentitymodels.util;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.FolderPackResources;
-import net.minecraft.server.packs.PackResources;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.FallbackResourceManager;
-import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.io.FileUtils;
 import org.infernalstudios.jsonentitymodels.JSONEntityModels;
-import org.infernalstudios.jsonentitymodels.client.model.ReplacedDefaultModel;
-import org.infernalstudios.jsonentitymodels.client.render.ReplacedChickenRenderer;
-import org.infernalstudios.jsonentitymodels.client.render.ReplacedCowRenderer;
-import org.infernalstudios.jsonentitymodels.client.render.ReplacedCreeperRenderer;
-import org.infernalstudios.jsonentitymodels.client.render.ReplacedDefaultRenderer;
-import org.infernalstudios.jsonentitymodels.client.render.ReplacedEnderManRenderer;
-import org.infernalstudios.jsonentitymodels.client.render.ReplacedIronGolemRenderer;
-import org.infernalstudios.jsonentitymodels.client.render.ReplacedPigRenderer;
-import org.infernalstudios.jsonentitymodels.client.render.ReplacedSheepRenderer;
-import org.infernalstudios.jsonentitymodels.client.render.ReplacedSkeletonRenderer;
-import org.infernalstudios.jsonentitymodels.client.render.ReplacedSpiderRenderer;
-import org.infernalstudios.jsonentitymodels.client.render.ReplacedZombieRenderer;
-import org.infernalstudios.jsonentitymodels.entity.ReplacedDefaultEntity;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ResourceUtil {
-    private static Map<EntityType<?>, EntityRendererProvider<?>> DEFAULT_RENDERERS = new HashMap<>();
-
-    private static final Map<EntityType<? extends Entity>, EntityRendererProvider<? extends Entity>> RENDERER_MAP = new HashMap();
-
-    static {
-        RENDERER_MAP.put(EntityType.CREEPER, ReplacedCreeperRenderer::new);
-        RENDERER_MAP.put(EntityType.SPIDER, ReplacedSpiderRenderer::new);
-        RENDERER_MAP.put(EntityType.ZOMBIE, ReplacedZombieRenderer::new);
-        RENDERER_MAP.put(EntityType.SKELETON, ReplacedSkeletonRenderer::new);
-        RENDERER_MAP.put(EntityType.IRON_GOLEM, ReplacedIronGolemRenderer::new);
-        RENDERER_MAP.put(EntityType.SHEEP, ReplacedSheepRenderer::new);
-        RENDERER_MAP.put(EntityType.PIG, ReplacedPigRenderer::new);
-        RENDERER_MAP.put(EntityType.COW, ReplacedCowRenderer::new);
-        RENDERER_MAP.put(EntityType.CHICKEN, ReplacedChickenRenderer::new);
-        RENDERER_MAP.put(EntityType.ENDERMAN, ReplacedEnderManRenderer::new);
-    }
-
     public static boolean packLoaded = false;
     public static boolean packDeleted = false;
 
@@ -83,59 +41,6 @@ public class ResourceUtil {
                 .getResourceManager();
 
         reloadable.registerReloadListener(ResourceCache.getInstance()::reload);
-    }
-
-    public static void storeDefaultRenderers() {
-        if (DEFAULT_RENDERERS.isEmpty()) {
-            DEFAULT_RENDERERS = new HashMap<>(EntityRenderers.PROVIDERS);
-            replaceRenderers();
-        }
-    }
-
-
-    public static void replaceRenderers() {
-        for (Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entityEntry : ForgeRegistries.ENTITY_TYPES.getEntries()) {
-            ResourceLocation entityResourceLocation = entityEntry.getKey().location();
-            if (entityResourceLocation.toString().equals("minecraft:player")) continue;
-
-            if (doesEntityHaveResource(entityResourceLocation)) {
-
-                JSONEntityModels.LOGGER.info("JEMs found resource for entity: " + entityResourceLocation);
-
-                EntityRenderers.register(entityEntry.getValue(), (EntityRendererProvider<Entity>) RENDERER_MAP.getOrDefault(entityEntry.getValue(), (context) -> new ReplacedDefaultRenderer(context,
-                        new ReplacedDefaultModel(entityResourceLocation.getNamespace(), entityResourceLocation.getPath()), new ReplacedDefaultEntity())));
-            } else if (DEFAULT_RENDERERS.containsKey(entityEntry.getValue())) {
-                EntityRenderers.register(entityEntry.getValue(), (EntityRendererProvider<Entity>) DEFAULT_RENDERERS.get(entityEntry.getValue()));
-            }
-        }
-    }
-
-    private static boolean doesEntityHaveResource(ResourceLocation entityResourceLocation) {
-        ResourceLocation resourceLocation = new ResourceLocation(JSONEntityModels.MOD_ID, "geo/" + entityResourceLocation.getNamespace() + "/" + entityResourceLocation.getPath());
-
-        FallbackResourceManager packs = ((MultiPackResourceManager) ((ReloadableResourceManager) Minecraft.getInstance().getResourceManager()).resources).namespacedManagers.get(JSONEntityModels.MOD_ID);
-
-        if (!resourceLocation.getPath().contains("..") && packs != null) {
-            for (PackResources packResources : packs.listPacks().toList()) {
-                if (packResources instanceof FolderPackResources folderPackResources) {
-                    String path = String.format("%s/%s/%s", PackType.CLIENT_RESOURCES.getDirectory(), resourceLocation.getNamespace(), resourceLocation.getPath());
-                    File tempFile = new File(folderPackResources.file, path);
-
-                    try {
-                        if (tempFile.isDirectory() && FolderPackResources.validatePath(tempFile, path)) {
-                            return true;
-                        }
-                    } catch (IOException ignored) {
-                    }
-                } else {
-                    if (packResources.hasResource(PackType.CLIENT_RESOURCES, resourceLocation)) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
     }
 
     public static void loadResourcePacks() {

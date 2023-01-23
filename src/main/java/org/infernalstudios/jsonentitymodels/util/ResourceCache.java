@@ -2,7 +2,6 @@ package org.infernalstudios.jsonentitymodels.util;
 
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -80,12 +79,6 @@ public class ResourceCache {
                     this.babyTextures = babyTextures;
                     this.adultAnimations = adultAnimations;
                     this.babyAnimations = babyAnimations;
-
-                    ResourceUtil.replaceRenderers();
-
-                    if (!Minecraft.getInstance().getEntityRenderDispatcher().renderers.isEmpty()) {
-                        Minecraft.getInstance().getEntityRenderDispatcher().onResourceManagerReload(resourceManager);
-                    }
             }, gameExecutor);
     }
 

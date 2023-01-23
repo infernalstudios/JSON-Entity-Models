@@ -9,8 +9,7 @@
   },
   "client": [
     "AnimationControllerMixin",
-    "EntityRenderersEventAddLayersMixin",
-    "EntityRenderersMixin",
+    "EntityRenderDispatcherMixin",
     "MinecraftMixin"
   ]
 }

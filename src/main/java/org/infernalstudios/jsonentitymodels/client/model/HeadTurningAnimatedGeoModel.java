@@ -19,15 +19,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import org.infernalstudios.jsonentitymodels.JSONEntityModels;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedEntityBase;
 import org.infernalstudios.jsonentitymodels.util.RandomUtil;
 import org.infernalstudios.jsonentitymodels.util.ResourceUtil;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.builder.Animation;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.processor.IBone;
+import software.bernie.geckolib3.file.AnimationFile;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3.resource.GeckoLibCache;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -52,8 +56,8 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
     public ResourceLocation getModelResource(@Nullable T object) {
         List<ResourceLocation> models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, this.currentEntity != null && this.currentEntity.isBaby());
 
-        if (models == null || models.isEmpty() && this.currentEntity != null && this.currentEntity.isBaby()) {
-            models = ResourceUtil.fetchModelsForEntity(this.namespace, this.entityName, false);
+        if (models == null || models.isEmpty()) {
+            return null;
         }
 
         return models.get(RandomUtil.getPseudoRandomInt(this.currentEntity != null ? this.currentEntity.getUUID().getMostSignificantBits() : UUID.randomUUID().getMostSignificantBits(), RandomUtil.modelUUID.getMostSignificantBits(), models.size()));
@@ -66,8 +70,8 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
 
         List<ResourceLocation> textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, this.currentEntity != null && this.currentEntity.isBaby());
 
-        if (textures == null || textures.isEmpty() && this.currentEntity != null && this.currentEntity.isBaby()) {
-            textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, false);
+        if (textures == null || textures.isEmpty()) {
+            return new ResourceLocation(JSONEntityModels.MOD_ID, "textures/entity/" + this.namespace + "/" + this.entityName + "/" + (this.currentEntity != null && this.currentEntity.isBaby() ? "baby/" : "adult/") + modelName + "/");
         }
 
         return textures.get(RandomUtil.getPseudoRandomInt(this.currentEntity != null ? this.currentEntity.getUUID().getLeastSignificantBits() : UUID.randomUUID().getLeastSignificantBits(), RandomUtil.textureUUID.getLeastSignificantBits(), textures.size()));
@@ -80,13 +84,24 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
 
         List<ResourceLocation> animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, this.currentEntity != null && this.currentEntity.isBaby());
 
-        if (animations == null || animations.isEmpty() && this.currentEntity != null && this.currentEntity.isBaby()) {
-            animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, false);
+        if (animations == null || animations.isEmpty()) {
+            return null;
         }
 
         return animations.get(RandomUtil.getPseudoRandomInt(this.currentEntity != null ?
                         this.currentEntity.getUUID().getLeastSignificantBits() ^ this.currentEntity.getUUID().getMostSignificantBits() :
                         UUID.randomUUID().getLeastSignificantBits() ^ UUID.randomUUID().getMostSignificantBits(), RandomUtil.animationUUID.getMostSignificantBits(), animations.size()));
+    }
+
+    @Override
+    public Animation getAnimation(String name, IAnimatable animatable) {
+        AnimationFile animation = GeckoLibCache.getInstance().getAnimations().get(this.getAnimationResource((T) animatable));
+
+        if (animation == null) {
+            return null;
+        }
+
+        return animation.getAnimation(name);
     }
 
     @Override
@@ -107,9 +122,5 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
 
     public void setCurrentEntity(LivingEntity currentEntity) {
         this.currentEntity = currentEntity;
-    }
-
-    public LivingEntity getCurrentEntity() {
-        return this.currentEntity;
     }
 }
