@@ -184,14 +184,6 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
             replacedEntityBase.setBaby(livingEntity.isBaby());
             replacedEntityBase.setDead(livingEntity.isDeadOrDying());
             replacedEntityBase.setInWater(livingEntity.isInWater());
-
-            if (this.modelProvider instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
-                if (livingEntity.isBaby() && !headTurningAnimatedGeoModel.getModelLocation((ReplacedEntityBase) animatable).toString().contains("/baby/")) {
-                    poseStack.scale(0.5F, 0.5F, 0.5F);
-                }
-            }
-
-
         }
 
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
