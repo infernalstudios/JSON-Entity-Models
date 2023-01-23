@@ -107,8 +107,8 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
     @Override
     public void setCustomAnimations(T animatable, int instanceId, AnimationEvent animationEvent) {
         animatable.setModelInstance(this);
-
         super.setCustomAnimations(animatable, instanceId, animationEvent);
+
         IBone head = this.getAnimationProcessor().getBone("head");
 
         EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
@@ -122,5 +122,9 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
 
     public void setCurrentEntity(LivingEntity currentEntity) {
         this.currentEntity = currentEntity;
+    }
+
+    public LivingEntity getCurrentEntity() {
+        return this.currentEntity;
     }
 }

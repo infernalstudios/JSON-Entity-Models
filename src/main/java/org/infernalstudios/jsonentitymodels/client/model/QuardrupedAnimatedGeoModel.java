@@ -1,4 +1,5 @@
 /*
+ *
  * Copyright 2023 Infernal Studios
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,18 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.infernalstudios.jsonentitymodels.client.model;
 
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.animal.Chicken;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedEntityBase;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
-public class ReplacedChickenModel extends HeadTurningAnimatedGeoModel {
-    public ReplacedChickenModel() {
-        super("chicken");
+public class QuardrupedAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
+
+    public QuardrupedAnimatedGeoModel(String entityName) {
+        super(entityName);
     }
 
     @Override
@@ -33,25 +35,19 @@ public class ReplacedChickenModel extends HeadTurningAnimatedGeoModel {
             EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
 
             IBone head = this.getAnimationProcessor().getBone("head");
-            IBone rightLeg = this.getAnimationProcessor().getBone("rightleg");
-            IBone leftLeg = this.getAnimationProcessor().getBone("leftleg");
-            IBone rightWing = this.getAnimationProcessor().getBone("wingright");
-            IBone leftWing = this.getAnimationProcessor().getBone("wingleft");
+            IBone rightHindLeg = this.getAnimationProcessor().getBone("rightlegback");
+            IBone leftHindLeg = this.getAnimationProcessor().getBone("leftlegback");
+            IBone rightFrontLeg = this.getAnimationProcessor().getBone("rightlegfront");
+            IBone leftFrontLeg = this.getAnimationProcessor().getBone("leftlegfront");
 
-            head.setRotationX(extraData.headPitch * ((float) Math.PI / 180F));
-            head.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F));
-            rightLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F) * 1.4F * animationEvent.getLimbSwingAmount());
-            leftLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F + (float) Math.PI) * 1.4F * animationEvent.getLimbSwingAmount());
-            rightWing.setRotationZ(this.getBob((Chicken) this.getCurrentEntity(), animationEvent.getPartialTick()));
-            leftWing.setRotationZ(-this.getBob((Chicken) this.getCurrentEntity(), animationEvent.getPartialTick()));
+            head.setRotationX(extraData.headPitch * ((float)Math.PI / 180F));
+            head.setRotationY(extraData.netHeadYaw * ((float)Math.PI / 180F));
+            rightHindLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F) * 1.4F * animationEvent.getLimbSwingAmount());
+            leftHindLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F + (float)Math.PI) * 1.4F * animationEvent.getLimbSwingAmount());
+            rightFrontLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F + (float)Math.PI) * 1.4F * animationEvent.getLimbSwingAmount());
+            leftFrontLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F) * 1.4F * animationEvent.getLimbSwingAmount());
         } else {
             super.setCustomAnimations(animatable, instanceId, animationEvent);
         }
-    }
-
-    protected float getBob(Chicken chicken, float partialTick) {
-        float f = Mth.lerp(partialTick, chicken.oFlap, chicken.flap);
-        float f1 = Mth.lerp(partialTick, chicken.oFlapSpeed, chicken.flapSpeed);
-        return (Mth.sin(f) + 1.0F) * f1;
     }
 }
