@@ -15,8 +15,25 @@
  */
 package org.infernalstudios.jsonentitymodels.client.model;
 
-public class ReplacedSheepModel extends HeadTurningAnimatedGeoModel {
+import net.minecraft.world.entity.animal.Sheep;
+import org.infernalstudios.jsonentitymodels.entity.ReplacedEntityBase;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.processor.IBone;
+
+public class ReplacedSheepModel extends QuardrupedAnimatedGeoModel {
     public ReplacedSheepModel() {
         super("sheep");
+    }
+
+    @Override
+    public void setCustomAnimations(ReplacedEntityBase animatable, int instanceId, AnimationEvent animationEvent) {
+        super.setCustomAnimations(animatable, instanceId, animationEvent);
+
+        if (this.getAnimationResource(animatable) == null) {
+            IBone head = this.getAnimationProcessor().getBone("head");
+
+            head.setPositionY(-((Sheep) this.getCurrentEntity()).getHeadEatPositionScale(animationEvent.getPartialTick()) * 9.0F);
+            head.setRotationX(-((Sheep) this.getCurrentEntity()).getHeadEatAngleScale(animationEvent.getPartialTick()));
+        }
     }
 }

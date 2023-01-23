@@ -15,7 +15,7 @@
  */
 package org.infernalstudios.jsonentitymodels.client.model;
 
-public class ReplacedPigModel extends HeadTurningAnimatedGeoModel {
+public class ReplacedPigModel extends QuardrupedAnimatedGeoModel {
     public ReplacedPigModel() {
         super("pig");
     }

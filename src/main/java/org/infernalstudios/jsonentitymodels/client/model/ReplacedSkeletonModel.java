@@ -15,8 +15,59 @@
  */
 package org.infernalstudios.jsonentitymodels.client.model;
 
-public class ReplacedSkeletonModel extends HeadTurningAnimatedGeoModel {
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import org.infernalstudios.jsonentitymodels.entity.ReplacedEntityBase;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.core.processor.IBone;
+import software.bernie.geckolib3.model.provider.data.EntityModelData;
+
+public class ReplacedSkeletonModel extends HumanoidAnimatedGeoModel {
     public ReplacedSkeletonModel() {
         super("skeleton");
+    }
+
+    @Override
+    public void setCustomAnimations(ReplacedEntityBase animatable, int instanceId, AnimationEvent animationEvent) {
+        super.setCustomAnimations(animatable, instanceId, animationEvent);
+
+        if (this.getAnimationResource(animatable) == null) {
+            EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
+
+            IBone rightArm = this.getAnimationProcessor().getBone("rightarm");
+            IBone leftArm = this.getAnimationProcessor().getBone("leftarm");
+
+            this.rightArmPose = HumanoidModel.ArmPose.EMPTY;
+            this.leftArmPose = HumanoidModel.ArmPose.EMPTY;
+            ItemStack itemstack = this.getCurrentEntity().getItemInHand(InteractionHand.MAIN_HAND);
+            if (itemstack.is(Items.BOW) && ((Skeleton) this.getCurrentEntity()).isAggressive()) {
+                if (this.getCurrentEntity().getMainArm() == HumanoidArm.RIGHT) {
+                    this.rightArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
+                } else {
+                    this.leftArmPose = HumanoidModel.ArmPose.BOW_AND_ARROW;
+                }
+            }
+
+            if (((Skeleton) this.getCurrentEntity()).isAggressive() && (itemstack.isEmpty() || !itemstack.is(Items.BOW))) {
+                float attackTime = this.getCurrentEntity().getAttackAnim(animationEvent.getPartialTick());
+
+                float f = Mth.sin(attackTime * (float)Math.PI);
+                float f1 = Mth.sin((1.0F - (1.0F - attackTime) * (1.0F - attackTime)) * (float)Math.PI);
+                rightArm.setRotationZ(0.0F);
+                leftArm.setRotationZ(0.0F);
+                rightArm.setRotationY(-(0.1F - f * 0.6F));
+                leftArm.setRotationY(0.1F - f * 0.6F);
+                rightArm.setRotationX((-(float)Math.PI / 2F));
+                leftArm.setRotationX((-(float)Math.PI / 2F));
+                rightArm.setRotationX(rightArm.getRotationX() - f * 1.2F - f1 * 0.4F);
+                leftArm.setRotationX(leftArm.getRotationX() - f * 1.2F - f1 * 0.4F);
+                this.bobArms(rightArm, leftArm, animationEvent.getPartialTick());
+            }
+        }
     }
 }

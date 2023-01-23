@@ -43,6 +43,10 @@ public class ReplacedCreeperRenderer extends ExtendedGeoReplacedEntityRenderer<R
     public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         if (entity instanceof Creeper creeper && animatable instanceof ReplacedCreeperEntity replacedCreeper) {
             replacedCreeper.setSwelling(creeper.getSwelling(partialTick) > 0);
+
+            if (this.modelProvider.getAnimationResource(animatable) == null) {
+                this.scale(creeper, poseStack, partialTick);
+            }
         }
 
         super.render(entity, animatable, entityYaw, partialTick, poseStack, bufferSource, packedLight);
@@ -78,6 +82,17 @@ public class ReplacedCreeperRenderer extends ExtendedGeoReplacedEntityRenderer<R
     @Override
     protected void postRenderBlock(PoseStack poseStack, BlockState state, String boneName, Creeper animatable) {
 
+    }
+
+    protected void scale(Creeper creeper, PoseStack stack, float partialTicks) {
+        float f = creeper.getSwelling(partialTicks);
+        float f1 = 1.0F + Mth.sin(f * 100.0F) * f * 0.01F;
+        f = Mth.clamp(f, 0.0F, 1.0F);
+        f *= f;
+        f *= f;
+        float f2 = (1.0F + f * 0.4F) * f1;
+        float f3 = (1.0F + f * 0.1F) / f1;
+        stack.scale(f2, f3, f2);
     }
 
     @Override
