@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase & IAnimatable, U extends Mob> extends AnimatedGeoModel<T> {
+public abstract class HeadTurningAnimatedGeoModel<T extends IAnimatable, U extends Mob> extends AnimatedGeoModel<T> {
     private final String namespace;
     private final String entityName;
 
@@ -106,18 +106,22 @@ public abstract class HeadTurningAnimatedGeoModel<T extends ReplacedEntityBase &
 
     @Override
     public void setCustomAnimations(T animatable, int instanceId, AnimationEvent animationEvent) {
-        animatable.setModelInstance(this);
+        if (animatable instanceof ReplacedEntityBase replacedEntityBase) {
+            replacedEntityBase.setModelInstance(this);
+        }
         super.setCustomAnimations(animatable, instanceId, animationEvent);
 
         IBone head = this.getAnimationProcessor().getBone("head");
 
-        EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
+        if (head != null) {
+            EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
 
-        AnimationData manager = animatable.getFactory().getOrCreateAnimationData(instanceId);
-        int unpausedMultiplier = !Minecraft.getInstance().isPaused() || manager.shouldPlayWhilePaused ? 1 : 0;
+            AnimationData manager = animatable.getFactory().getOrCreateAnimationData(instanceId);
+            int unpausedMultiplier = !Minecraft.getInstance().isPaused() || manager.shouldPlayWhilePaused ? 1 : 0;
 
-        head.setRotationX(head.getRotationX() + extraData.headPitch * ((float) Math.PI / 180F) * unpausedMultiplier);
-        head.setRotationY(head.getRotationY() + extraData.netHeadYaw * ((float) Math.PI / 180F) * unpausedMultiplier);
+            head.setRotationX(head.getRotationX() + extraData.headPitch * ((float) Math.PI / 180F) * unpausedMultiplier);
+            head.setRotationY(head.getRotationY() + extraData.netHeadYaw * ((float) Math.PI / 180F) * unpausedMultiplier);
+        }
     }
 
     public void setCurrentEntity(LivingEntity currentEntity) {

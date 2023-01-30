@@ -18,7 +18,7 @@
 package org.infernalstudios.jsonentitymodels.client.model;
 
 import net.minecraft.util.Mth;
-import org.infernalstudios.jsonentitymodels.entity.ReplacedEntityBase;
+import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
@@ -30,7 +30,7 @@ public class QuardrupedAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
     }
 
     @Override
-    public void setCustomAnimations(ReplacedEntityBase animatable, int instanceId, AnimationEvent animationEvent) {
+    public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
         if (this.getAnimationResource(animatable) == null) {
             EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
 
