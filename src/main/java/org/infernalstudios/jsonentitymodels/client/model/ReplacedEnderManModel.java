@@ -20,7 +20,6 @@ import net.minecraft.world.entity.monster.EnderMan;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 public class ReplacedEnderManModel extends HumanoidAnimatedGeoModel {
     private float defaultHeadY;
@@ -35,73 +34,74 @@ public class ReplacedEnderManModel extends HumanoidAnimatedGeoModel {
     @Override
     public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
         super.setCustomAnimations(animatable, instanceId, animationEvent);
-        LivingEntity livingEntity = this.getCurrentEntity();
 
-        EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
+        if (this.getAnimationResource(animatable) == null) {
+            LivingEntity livingEntity = this.getCurrentEntity();
+            
+            IBone skull = this.getAnimationProcessor().getBone("skull");
+            IBone body = this.getAnimationProcessor().getBone("body");
+            IBone rightArm = this.getAnimationProcessor().getBone("rightarm");
+            IBone leftArm = this.getAnimationProcessor().getBone("leftarm");
+            IBone bothArms = this.getAnimationProcessor().getBone("botharms");
+            IBone rightLeg = this.getAnimationProcessor().getBone("rightleg");
+            IBone leftLeg = this.getAnimationProcessor().getBone("leftleg");
 
-        IBone skull = this.getAnimationProcessor().getBone("skull");
-        IBone body = this.getAnimationProcessor().getBone("body");
-        IBone rightArm = this.getAnimationProcessor().getBone("rightarm");
-        IBone leftArm = this.getAnimationProcessor().getBone("leftarm");
-        IBone bothArms = this.getAnimationProcessor().getBone("botharms");
-        IBone rightLeg = this.getAnimationProcessor().getBone("rightleg");
-        IBone leftLeg = this.getAnimationProcessor().getBone("leftleg");
+            body.setRotationX(0.0F);
+            rightArm.setRotationX(rightArm.getRotationX() * 0.5F);
+            leftArm.setRotationX(leftArm.getRotationX() * 0.5F);
+            rightLeg.setRotationX(rightLeg.getRotationX() * 0.5F);
+            leftLeg.setRotationX(leftLeg.getRotationX() * 0.5F);
 
-        body.setRotationX(0.0F);
-        rightArm.setRotationX(rightArm.getRotationX() * 0.5F);
-        leftArm.setRotationX(leftArm.getRotationX() * 0.5F);
-        rightLeg.setRotationX(rightLeg.getRotationX() * 0.5F);
-        leftLeg.setRotationX(leftLeg.getRotationX() * 0.5F);
-
-        if (rightArm.getRotationX() > 0.4F) {
-            rightArm.setRotationX(0.4F);
-        }
-
-        if (leftArm.getRotationX() > 0.4F) {
-            leftArm.setRotationX(0.4F);
-        }
-
-        if (rightArm.getRotationX() < -0.4F) {
-            rightArm.setRotationX(-0.4F);
-        }
-
-        if (leftArm.getRotationX() < -0.4F) {
-            leftArm.setRotationX(-0.4F);
-        }
-
-        if (rightLeg.getRotationX() > 0.4F) {
-            rightLeg.setRotationX(0.4F);
-        }
-
-        if (leftLeg.getRotationX() > 0.4F) {
-            leftLeg.setRotationX(0.4F);
-        }
-
-        if (rightLeg.getRotationX() < -0.4F) {
-            rightLeg.setRotationX(-0.4F);
-        }
-
-        if (leftLeg.getRotationX() < -0.4F) {
-            leftLeg.setRotationX(-0.4F);
-        }
-
-        if (((EnderMan) livingEntity).getCarriedBlock() != null) {
-            if (bothArms != null) {
-                bothArms.setRotationX(0.5F);
-                rightArm.setRotationX(0.0F);
-                leftArm.setRotationX(0.0F);
-            } else {
-                rightArm.setRotationX(0.5F);
-                leftArm.setRotationX(0.5F);
-                rightArm.setRotationZ(-0.05F);
-                leftArm.setRotationZ(0.05F);
+            if (rightArm.getRotationX() > 0.4F) {
+                rightArm.setRotationX(0.4F);
             }
-        }
 
-        if (((EnderMan) livingEntity).isCreepy()) {
-            skull.setPositionY(this.defaultHeadY + 5.0F);
-        } else {
-            skull.setPositionY(this.defaultHeadY);
+            if (leftArm.getRotationX() > 0.4F) {
+                leftArm.setRotationX(0.4F);
+            }
+
+            if (rightArm.getRotationX() < -0.4F) {
+                rightArm.setRotationX(-0.4F);
+            }
+
+            if (leftArm.getRotationX() < -0.4F) {
+                leftArm.setRotationX(-0.4F);
+            }
+
+            if (rightLeg.getRotationX() > 0.4F) {
+                rightLeg.setRotationX(0.4F);
+            }
+
+            if (leftLeg.getRotationX() > 0.4F) {
+                leftLeg.setRotationX(0.4F);
+            }
+
+            if (rightLeg.getRotationX() < -0.4F) {
+                rightLeg.setRotationX(-0.4F);
+            }
+
+            if (leftLeg.getRotationX() < -0.4F) {
+                leftLeg.setRotationX(-0.4F);
+            }
+
+            if (((EnderMan) livingEntity).getCarriedBlock() != null) {
+                if (bothArms != null) {
+                    bothArms.setRotationX(0.5F);
+                    rightArm.setRotationX(0.0F);
+                    leftArm.setRotationX(0.0F);
+                } else {
+                    rightArm.setRotationX(0.5F);
+                    leftArm.setRotationX(0.5F);
+                    rightArm.setRotationZ(-0.05F);
+                    leftArm.setRotationZ(0.05F);
+                }
+            }
+
+            if (((EnderMan) livingEntity).isCreepy()) {
+                skull.setPositionY(this.defaultHeadY + 5.0F);
+            } else {
+                skull.setPositionY(this.defaultHeadY);
+            }
         }
     }
 }
