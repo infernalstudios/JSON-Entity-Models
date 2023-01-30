@@ -15,6 +15,7 @@
  */
 package org.infernalstudios.jsonentitymodels.entity;
 
+import net.minecraft.world.entity.LivingEntity;
 import org.infernalstudios.jsonentitymodels.client.model.HeadTurningAnimatedGeoModel;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -31,6 +32,7 @@ public abstract class ReplacedEntityBase implements IAnimatable {
     protected boolean isDead;
 
     protected boolean inWater;
+    protected LivingEntity originalEntity;
 
     private HeadTurningAnimatedGeoModel modelInstance;
 
@@ -62,6 +64,10 @@ public abstract class ReplacedEntityBase implements IAnimatable {
         return this.modelInstance;
     }
 
+    public void setOriginalEntity(LivingEntity entity) {
+        this.originalEntity = entity;
+    }
+
     protected abstract <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event);
 
     @Override
@@ -71,6 +77,10 @@ public abstract class ReplacedEntityBase implements IAnimatable {
 
     @Override
     public AnimationFactory getFactory() {
+        if (this.originalEntity instanceof IAnimatable animatable) {
+            return animatable.getFactory();
+        }
+
         return this.factory;
     }
 }

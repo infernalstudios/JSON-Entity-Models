@@ -16,7 +16,7 @@
 package org.infernalstudios.jsonentitymodels.client.model;
 
 import net.minecraft.world.entity.animal.Sheep;
-import org.infernalstudios.jsonentitymodels.entity.ReplacedEntityBase;
+import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 
@@ -26,7 +26,7 @@ public class ReplacedSheepModel extends QuardrupedAnimatedGeoModel {
     }
 
     @Override
-    public void setCustomAnimations(ReplacedEntityBase animatable, int instanceId, AnimationEvent animationEvent) {
+    public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
         super.setCustomAnimations(animatable, instanceId, animationEvent);
 
         if (this.getAnimationResource(animatable) == null) {
