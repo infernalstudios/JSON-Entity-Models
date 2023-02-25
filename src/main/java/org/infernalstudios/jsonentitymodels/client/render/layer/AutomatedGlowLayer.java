@@ -16,18 +16,21 @@
 package org.infernalstudios.jsonentitymodels.client.render.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import org.infernalstudios.jsonentitymodels.JSONEntityModels;
 import org.infernalstudios.jsonentitymodels.client.JEMsRenderTypes;
 import org.infernalstudios.jsonentitymodels.client.model.HeadTurningAnimatedGeoModel;
+import org.infernalstudios.jsonentitymodels.util.RandomUtil;
+import org.infernalstudios.jsonentitymodels.util.ResourceCache;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+
+import java.util.List;
+import java.util.Map;
 
 public class AutomatedGlowLayer extends GeoLayerRenderer {
 
@@ -38,10 +41,18 @@ public class AutomatedGlowLayer extends GeoLayerRenderer {
     @Override
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, Entity entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if (this.getEntityModel() instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
-            ResourceLocation glowLocation = new ResourceLocation(JSONEntityModels.MOD_ID, headTurningAnimatedGeoModel.getTextureLocation(null).getPath().replace(".png", "_glow.png"));
+            Map<String, List<ResourceLocation>> textures = ((LivingEntity) entityLivingBaseIn).isBaby() ? ResourceCache.getInstance().getBabyTextures() : ResourceCache.getInstance().getAdultTextures();
 
-            if (Minecraft.getInstance().getResourceManager().hasResource(glowLocation)) {
-                RenderType renderType = JEMsRenderTypes.eyes(glowLocation);
+            String[] splitPath = headTurningAnimatedGeoModel.getModelLocation(null).getPath().split("/");
+
+            String glowKey = splitPath[1] + ":" + splitPath[2] + "/" + splitPath[4] + "/glow";
+
+            glowKey = glowKey.replace(".geo.json", "");
+
+            List<ResourceLocation> glowResources = textures.get(glowKey);
+
+            if (glowResources != null && !glowResources.isEmpty()) {
+                RenderType renderType = JEMsRenderTypes.eyes(glowResources.get(RandomUtil.getPseudoRandomInt(entityLivingBaseIn.getUUID().getLeastSignificantBits(), RandomUtil.textureUUID.getMostSignificantBits(), glowResources.size())));
 
                 matrixStackIn.pushPose();
 
