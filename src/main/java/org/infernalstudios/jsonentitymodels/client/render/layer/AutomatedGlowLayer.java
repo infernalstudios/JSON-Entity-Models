@@ -43,11 +43,9 @@ public class AutomatedGlowLayer extends GeoLayerRenderer {
         if (this.getEntityModel() instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
             Map<String, List<ResourceLocation>> textures = ((LivingEntity) entityLivingBaseIn).isBaby() ? ResourceCache.getInstance().getBabyTextures() : ResourceCache.getInstance().getAdultTextures();
 
-            String[] splitPath = headTurningAnimatedGeoModel.getModelResource(null).getPath().split("/");
+            String[] splitPath = headTurningAnimatedGeoModel.getTextureResource(null).getPath().split("/");
 
-            String glowKey = splitPath[1] + ":" + splitPath[2] + "/" + splitPath[4] + "/glow";
-
-            glowKey = glowKey.replace(".geo.json", "");
+            String glowKey = splitPath[2] + ":" + splitPath[3] + "/" + splitPath[5] + "/" + splitPath[splitPath.length - 1].replace(".png", "") + "_glow";
 
             List<ResourceLocation> glowResources = textures.get(glowKey);
 

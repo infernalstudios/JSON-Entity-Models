@@ -146,7 +146,7 @@ public class ResourceCache {
                         String modelIdentifier = splitPath[2] + ":" + splitPath[3] + "/" + splitPath[5];
 
                         if (resource.toString().endsWith("_glow.png")) {
-                            modelIdentifier += "/glow";
+                            modelIdentifier += "/" + splitPath[splitPath.length - 1].replace(".png", "");
                         }
 
                         if (resource.getPath().contains("/adult/")) {
