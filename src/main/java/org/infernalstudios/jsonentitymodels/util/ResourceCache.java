@@ -135,8 +135,7 @@ public class ResourceCache {
                                                       String type, BiConsumer<String, List<ResourceLocation>> adults, BiConsumer<String, List<ResourceLocation>> babies) {
         return CompletableFuture.supplyAsync(
                         () -> resourceManager.listResources(type, fileName -> fileName.getNamespace().equals("jsonentitymodels")
-                                && fileName.toString().endsWith(".png") && !fileName.toString().endsWith("_glow.png") &&
-                                !fileName.toString().contains("crackiness")), executor)
+                                && fileName.toString().endsWith(".png") && !fileName.toString().contains("crackiness")), executor)
                 .thenApplyAsync(resources -> {
                     Map<String, List<ResourceLocation>> adultTextures = new Object2ObjectOpenHashMap<>();
                     Map<String, List<ResourceLocation>> babyTextures = new Object2ObjectOpenHashMap<>();
@@ -145,6 +144,10 @@ public class ResourceCache {
                         String[] splitPath = resource.getPath().split("/");
 
                         String modelIdentifier = splitPath[2] + ":" + splitPath[3] + "/" + splitPath[5];
+
+                        if (resource.toString().endsWith("_glow.png")) {
+                            modelIdentifier += "/glow";
+                        }
 
                         if (resource.getPath().contains("/adult/")) {
                             if (adultTextures.containsKey(modelIdentifier)) {
