@@ -57,7 +57,7 @@ public class CreeperPoweredLayer extends GeoLayerRenderer {
             if (poweredResources == null || poweredResources.isEmpty()) {
                 poweredResource = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
             } else {
-                poweredResource = poweredResources.get(RandomUtil.getPseudoRandomInt(entityLivingBaseIn.getUUID().getLeastSignificantBits(), RandomUtil.textureUUID.getMostSignificantBits(), poweredResources.size()));
+                poweredResource = poweredResources.get(RandomUtil.getPseudoRandomInt(entityLivingBaseIn.getUUID().getMostSignificantBits(), RandomUtil.textureUUID.getLeastSignificantBits(), poweredResources.size()));
             }
 
             float f = (float)creeper.tickCount + partialTicks;
