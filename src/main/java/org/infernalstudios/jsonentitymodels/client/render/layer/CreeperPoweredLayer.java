@@ -18,17 +18,21 @@
 package org.infernalstudios.jsonentitymodels.client.render.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
-import org.infernalstudios.jsonentitymodels.JSONEntityModels;
 import org.infernalstudios.jsonentitymodels.client.model.HeadTurningAnimatedGeoModel;
+import org.infernalstudios.jsonentitymodels.util.RandomUtil;
+import org.infernalstudios.jsonentitymodels.util.ResourceCache;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+
+import java.util.List;
+import java.util.Map;
 
 public class CreeperPoweredLayer extends GeoLayerRenderer {
 
@@ -40,12 +44,20 @@ public class CreeperPoweredLayer extends GeoLayerRenderer {
     public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, Entity entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 
         if (entityLivingBaseIn instanceof Creeper creeper && creeper.isPowered() && this.getEntityModel() instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
-            String poweredPath = headTurningAnimatedGeoModel.getTextureResource(null).getPath().replace(".png", "_powered.png");
+            Map<String, List<ResourceLocation>> textures = ((LivingEntity) entityLivingBaseIn).isBaby() ? ResourceCache.getInstance().getBabyTextures() : ResourceCache.getInstance().getAdultTextures();
 
-            ResourceLocation poweredResource = new ResourceLocation(JSONEntityModels.MOD_ID, poweredPath);
+            String[] splitPath = headTurningAnimatedGeoModel.getTextureResource(null).getPath().split("/");
 
-            if (Minecraft.getInstance().getResourceManager().getResource(poweredResource).isEmpty()) {
+            String poweredKey = splitPath[2] + ":" + splitPath[3] + "/" + splitPath[5] + "/" + splitPath[splitPath.length - 1].replace(".png", "") + "_glow";
+
+            List<ResourceLocation> poweredResources = textures.get(poweredKey);
+
+            ResourceLocation poweredResource;
+
+            if (poweredResources == null || poweredResources.isEmpty()) {
                 poweredResource = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
+            } else {
+                poweredResource = poweredResources.get(RandomUtil.getPseudoRandomInt(entityLivingBaseIn.getUUID().getLeastSignificantBits(), RandomUtil.textureUUID.getMostSignificantBits(), poweredResources.size()));
             }
 
             float f = (float)creeper.tickCount + partialTicks;
