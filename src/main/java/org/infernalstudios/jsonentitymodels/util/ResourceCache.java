@@ -150,6 +150,8 @@ public class ResourceCache {
 
                         if (resource.toString().endsWith("_glow.png")) {
                             modelIdentifier += "/" + splitPath[splitPath.length - 1].replace(".png", "");
+                        } else if (resource.toString().endsWith("_powered.png")) {
+                            modelIdentifier += "/" + splitPath[splitPath.length - 1].replace(".png", "");
                         }
 
                         if (resource.getPath().contains("/adult/")) {
