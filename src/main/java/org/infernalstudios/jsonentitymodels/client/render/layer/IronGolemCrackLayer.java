@@ -16,19 +16,22 @@
 package org.infernalstudios.jsonentitymodels.client.render.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.IronGolem;
-import org.infernalstudios.jsonentitymodels.JSONEntityModels;
 import org.infernalstudios.jsonentitymodels.client.model.HeadTurningAnimatedGeoModel;
+import org.infernalstudios.jsonentitymodels.util.RandomUtil;
+import org.infernalstudios.jsonentitymodels.util.ResourceCache;
 import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
 
 public class IronGolemCrackLayer extends GeoLayerRenderer {
 
@@ -44,12 +47,11 @@ public class IronGolemCrackLayer extends GeoLayerRenderer {
                 IronGolem.Crackiness crackLevel = ironGolem.getCrackiness();
 
                 if (crackLevel != IronGolem.Crackiness.NONE) {
-                    ResourceLocation cracksResource = this.getCracksResource(crackLevel, headTurningAnimatedGeoModel.getTextureLocation(null));
+                    List<ResourceLocation> cracksResources = this.getCracksResource(crackLevel, ((LivingEntity) entityLivingBaseIn).isBaby(), headTurningAnimatedGeoModel.getTextureLocation(null));
 
-                    if (cracksResource != null &&
-                            Minecraft.getInstance().getResourceManager().hasResource(cracksResource)) {
+                    if (cracksResources != null && !cracksResources.isEmpty()) {
 
-                        RenderType renderType = RenderType.entityCutoutNoCull(cracksResource);
+                        RenderType renderType = RenderType.entityCutoutNoCull(cracksResources.get(RandomUtil.getPseudoRandomInt(entityLivingBaseIn.getUUID().getLeastSignificantBits(), RandomUtil.textureUUID.getLeastSignificantBits(), cracksResources.size())));
 
                         this.getRenderer().render(
                                 headTurningAnimatedGeoModel.getModel(headTurningAnimatedGeoModel.getModelLocation(null)),
@@ -69,14 +71,25 @@ public class IronGolemCrackLayer extends GeoLayerRenderer {
     }
 
     @Nullable
-    private ResourceLocation getCracksResource(IronGolem.Crackiness crackLevel, ResourceLocation textureLocation) {
-        String cracksPath = textureLocation.getPath().replace(".png", "_crackiness_");
+    private List<ResourceLocation> getCracksResource(IronGolem.Crackiness crackLevel, boolean isBaby, ResourceLocation textureLocation) {
+        Map<String, List<ResourceLocation>> textures = isBaby ? ResourceCache.getInstance().getBabyTextures() : ResourceCache.getInstance().getAdultTextures();
 
-       return switch (crackLevel) {
-            case HIGH -> new ResourceLocation(JSONEntityModels.MOD_ID, cracksPath + "high.png");
-            case MEDIUM -> new ResourceLocation(JSONEntityModels.MOD_ID, cracksPath + "medium.png");
-            case LOW -> new ResourceLocation(JSONEntityModels.MOD_ID, cracksPath + "low.png");
-           default -> null;
-        };
+        String[] splitPath = textureLocation.getPath().split("/");
+
+        String cracksKey = splitPath[2] + ":" + splitPath[3] + "/" + splitPath[5] + "/" + splitPath[splitPath.length - 1].replace(".png", "") + "_crackiness_";
+
+        switch (crackLevel) {
+            case HIGH:
+                cracksKey += "high";
+                break;
+            case MEDIUM:
+                cracksKey += "medium";
+                break;
+            case LOW:
+                cracksKey += "low";
+                break;
+        }
+
+        return textures.get(cracksKey);
     }
 }

@@ -136,7 +136,7 @@ public class ResourceCache {
     private static CompletableFuture<Void> loadTextures(Executor executor, ResourceManager resourceManager,
                                                       String type, BiConsumer<String, List<ResourceLocation>> adults, BiConsumer<String, List<ResourceLocation>> babies) {
         return CompletableFuture.supplyAsync(
-                        () -> resourceManager.listResources(type, fileName -> fileName.endsWith(".png") && !fileName.contains("crackiness")), executor)
+                        () -> resourceManager.listResources(type, fileName -> fileName.endsWith(".png")), executor)
                 .thenApplyAsync(resources -> {
                     Map<String, List<ResourceLocation>> adultTextures = new Object2ObjectOpenHashMap<>();
                     Map<String, List<ResourceLocation>> babyTextures = new Object2ObjectOpenHashMap<>();
@@ -148,9 +148,10 @@ public class ResourceCache {
 
                         String modelIdentifier = splitPath[2] + ":" + splitPath[3] + "/" + splitPath[5];
 
-                        if (resource.toString().endsWith("_glow.png")) {
-                            modelIdentifier += "/" + splitPath[splitPath.length - 1].replace(".png", "");
-                        } else if (resource.toString().endsWith("_powered.png")) {
+                        if (resource.toString().endsWith("_glow.png") || resource.toString().endsWith("_powered.png") ||
+                                resource.toString().endsWith("_crackiness_high.png") ||
+                                resource.toString().endsWith("_crackiness_medium.png") ||
+                                resource.toString().endsWith("_crackiness_low.png")) {
                             modelIdentifier += "/" + splitPath[splitPath.length - 1].replace(".png", "");
                         }
 
