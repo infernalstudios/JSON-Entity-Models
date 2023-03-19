@@ -747,7 +747,7 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
 
     @Override
     protected float getDeathMaxRotation(LivingEntity entity) {
-        return this.getGeoModelProvider().getAnimationResource(null) == null ? super.getDeathMaxRotation(entity) : 0;
+        return this.getGeoModelProvider().getAnimationFileLocation(null) == null ? super.getDeathMaxRotation(entity) : 0;
     }
 
     /**

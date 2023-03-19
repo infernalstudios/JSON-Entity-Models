@@ -42,7 +42,7 @@ public class HumanoidAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
 
     @Override
     public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
-        if (this.getAnimationResource(animatable) == null) {
+        if (this.getAnimationFileLocation(animatable) == null) {
             LivingEntity livingEntity = this.getCurrentEntity();
 
             EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
@@ -326,11 +326,6 @@ public class HumanoidAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
                     rightArm.setRotationY(head.getRotationY() - 0.2617994F);
                 }
                 break;
-            case TOOT_HORN:
-                if (rightArm != null) {
-                    rightArm.setRotationX(Mth.clamp(head.getRotationX(), -1.2F, 1.2F) - 1.4835298F);
-                    rightArm.setRotationY(head.getRotationY() - ((float) Math.PI / 6F));
-                }
             default:
         }
 
@@ -381,11 +376,6 @@ public class HumanoidAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
                     leftArm.setRotationY(head.getRotationY() + 0.2617994F);
                 }
                 break;
-            case TOOT_HORN:
-                if (leftArm != null) {
-                    leftArm.setRotationX(Mth.clamp(head.getRotationX(), -1.2F, 1.2F) - 1.4835298F);
-                    leftArm.setRotationY(head.getRotationY() + ((float) Math.PI / 6F));
-                }
             default:
         }
 

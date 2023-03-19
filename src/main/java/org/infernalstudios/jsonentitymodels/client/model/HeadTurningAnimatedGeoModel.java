@@ -92,7 +92,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends IAnimatable, U exten
                 EntityRenderer originalRenderer = Minecraft.getInstance().getEntityRenderDispatcher().renderers.get(this.currentEntity.getType());
 
                 if (originalRenderer instanceof GeoEntityRenderer geoEntityRenderer && geoEntityRenderer.getGeoModelProvider() instanceof AnimatedGeoModel animatedGeoModel) {
-                    return animatedGeoModel.getAnimationResource(this.currentEntity);
+                    return animatedGeoModel.getAnimationFileLocation(this.currentEntity);
                 }
             }
 

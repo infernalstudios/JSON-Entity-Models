@@ -29,7 +29,7 @@ public class ReplacedSheepModel extends QuardrupedAnimatedGeoModel {
     public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
         super.setCustomAnimations(animatable, instanceId, animationEvent);
 
-        if (this.getAnimationResource(animatable) == null) {
+        if (this.getAnimationFileLocation(animatable) == null) {
             IBone head = this.getAnimationProcessor().getBone("head");
 
             if (head != null) {

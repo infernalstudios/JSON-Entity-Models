@@ -28,7 +28,7 @@ public class ReplacedSpiderModel extends HeadTurningAnimatedGeoModel {
 
     @Override
     public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
-        if (this.getAnimationResource(animatable) == null) {
+        if (this.getAnimationFileLocation(animatable) == null) {
             EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
 
             IBone head = this.getAnimationProcessor().getBone("head");

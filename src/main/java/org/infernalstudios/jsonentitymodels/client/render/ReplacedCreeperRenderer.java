@@ -44,7 +44,7 @@ public class ReplacedCreeperRenderer extends ExtendedGeoReplacedEntityRenderer<R
         if (entity instanceof Creeper creeper && animatable instanceof ReplacedCreeperEntity replacedCreeper) {
             replacedCreeper.setSwelling(creeper.getSwelling(partialTick) > 0);
 
-            if (this.modelProvider.getAnimationResource(animatable) == null) {
+            if (this.modelProvider.getAnimationFileLocation(animatable) == null) {
                 this.scale(creeper, poseStack, partialTick);
             }
         }

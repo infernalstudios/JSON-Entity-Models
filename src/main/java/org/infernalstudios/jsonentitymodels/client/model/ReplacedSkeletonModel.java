@@ -36,7 +36,7 @@ public class ReplacedSkeletonModel extends HumanoidAnimatedGeoModel {
     public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
         super.setCustomAnimations(animatable, instanceId, animationEvent);
 
-        if (this.getAnimationResource(animatable) == null) {
+        if (this.getAnimationFileLocation(animatable) == null) {
             EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
 
             IBone rightArm = this.getAnimationProcessor().getBone("rightarm");

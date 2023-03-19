@@ -30,7 +30,7 @@ public class ReplacedZombieModel extends HumanoidAnimatedGeoModel {
     public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
         super.setCustomAnimations(animatable, instanceId, animationEvent);
 
-        if (this.getAnimationResource(animatable) == null) {
+        if (this.getAnimationFileLocation(animatable) == null) {
             IBone rightArm = this.getAnimationProcessor().getBone("rightarm");
             IBone leftArm = this.getAnimationProcessor().getBone("leftarm");
 

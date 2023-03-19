@@ -35,7 +35,7 @@ public class ReplacedEnderManModel extends HumanoidAnimatedGeoModel {
     public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
         super.setCustomAnimations(animatable, instanceId, animationEvent);
 
-        if (this.getAnimationResource(animatable) == null) {
+        if (this.getAnimationFileLocation(animatable) == null) {
             LivingEntity livingEntity = this.getCurrentEntity();
             
             IBone skull = this.getAnimationProcessor().getBone("skull");
