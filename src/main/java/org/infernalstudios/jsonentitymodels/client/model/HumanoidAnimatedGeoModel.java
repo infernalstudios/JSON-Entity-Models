@@ -36,6 +36,10 @@ public class HumanoidAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
         super(entityName);
     }
 
+    public HumanoidAnimatedGeoModel(String namespace, String entityName) {
+        super(namespace, entityName);
+    }
+
     @Override
     public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
         if (this.getAnimationResource(animatable) == null) {
