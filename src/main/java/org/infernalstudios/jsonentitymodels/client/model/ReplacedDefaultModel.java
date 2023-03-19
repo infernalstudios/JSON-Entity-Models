@@ -15,7 +15,7 @@
  */
 package org.infernalstudios.jsonentitymodels.client.model;
 
-public class ReplacedDefaultModel extends HeadTurningAnimatedGeoModel {
+public class ReplacedDefaultModel extends HumanoidAnimatedGeoModel {
     public ReplacedDefaultModel(String namespace, String entityName) {
         super(namespace, entityName);
     }
