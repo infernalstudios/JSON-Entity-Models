@@ -16,6 +16,7 @@
 package org.infernalstudios.jsonentitymodels.client.model;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -31,6 +32,7 @@ import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.file.AnimationFile;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 import software.bernie.geckolib3.resource.GeckoLibCache;
 
 import javax.annotation.Nullable;
@@ -85,6 +87,15 @@ public abstract class HeadTurningAnimatedGeoModel<T extends IAnimatable, U exten
         List<ResourceLocation> animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, this.currentEntity != null && this.currentEntity.isBaby());
 
         if (animations == null || animations.isEmpty()) {
+
+            if (this.currentEntity != null) {
+                EntityRenderer originalRenderer = Minecraft.getInstance().getEntityRenderDispatcher().renderers.get(this.currentEntity.getType());
+
+                if (originalRenderer instanceof GeoEntityRenderer geoEntityRenderer && geoEntityRenderer.getGeoModelProvider() instanceof AnimatedGeoModel animatedGeoModel) {
+                    return animatedGeoModel.getAnimationResource(this.currentEntity);
+                }
+            }
+
             return null;
         }
 
