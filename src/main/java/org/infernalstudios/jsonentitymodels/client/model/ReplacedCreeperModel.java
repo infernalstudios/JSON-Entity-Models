@@ -37,13 +37,26 @@ public class ReplacedCreeperModel extends HeadTurningAnimatedGeoModel {
             IBone rightFrontLeg = this.getAnimationProcessor().getBone("rightlegfront");
             IBone leftFrontLeg = this.getAnimationProcessor().getBone("leftlegfront");
 
+            if (head != null) {
+                head.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F));
+                head.setRotationX(extraData.headPitch * ((float) Math.PI / 180F));
+            }
 
-            head.setRotationY(extraData.netHeadYaw * ((float)Math.PI / 180F));
-            head.setRotationX(extraData.headPitch * ((float)Math.PI / 180F));
-            rightHindLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F) * 1.4F * animationEvent.getLimbSwingAmount());
-            leftHindLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F + (float)Math.PI) * 1.4F * animationEvent.getLimbSwingAmount());
-            rightFrontLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F + (float)Math.PI) * 1.4F * animationEvent.getLimbSwingAmount());
-            leftFrontLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F) * 1.4F * animationEvent.getLimbSwingAmount());
+            if (rightHindLeg != null) {
+                rightHindLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F) * 1.4F * animationEvent.getLimbSwingAmount());
+            }
+
+            if (leftHindLeg != null) {
+                leftHindLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F + (float) Math.PI) * 1.4F * animationEvent.getLimbSwingAmount());
+            }
+
+            if (rightFrontLeg != null) {
+                rightFrontLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F + (float) Math.PI) * 1.4F * animationEvent.getLimbSwingAmount());
+            }
+
+            if (leftFrontLeg != null) {
+                leftFrontLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F) * 1.4F * animationEvent.getLimbSwingAmount());
+            }
         } else {
             super.setCustomAnimations(animatable, instanceId, animationEvent);
         }
