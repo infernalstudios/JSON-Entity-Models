@@ -32,17 +32,19 @@ public class ReplacedSpiderModel extends HeadTurningAnimatedGeoModel {
             EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
 
             IBone head = this.getAnimationProcessor().getBone("head");
-            IBone rightFrontLeg = this.getAnimationProcessor().getBone("rightleg1o");
-            IBone leftFrontLeg = this.getAnimationProcessor().getBone("leftleg1o");
-            IBone rightMiddleFrontLeg = this.getAnimationProcessor().getBone("rightleg2o");
-            IBone leftMiddleFrontLeg = this.getAnimationProcessor().getBone("leftleg2o");
-            IBone rightMiddleHindLeg = this.getAnimationProcessor().getBone("rightleg3o");
-            IBone leftMiddleHindLeg = this.getAnimationProcessor().getBone("leftleg3o");
-            IBone rightHindLeg = this.getAnimationProcessor().getBone("rightleg4o");
-            IBone leftHindLeg = this.getAnimationProcessor().getBone("leftleg4o");
+            IBone rightFrontLeg = this.getAnimationProcessor().getBone("rightleg1");
+            IBone leftFrontLeg = this.getAnimationProcessor().getBone("leftleg1");
+            IBone rightMiddleFrontLeg = this.getAnimationProcessor().getBone("rightleg2");
+            IBone leftMiddleFrontLeg = this.getAnimationProcessor().getBone("leftleg2");
+            IBone rightMiddleHindLeg = this.getAnimationProcessor().getBone("rightleg3");
+            IBone leftMiddleHindLeg = this.getAnimationProcessor().getBone("leftleg3");
+            IBone rightHindLeg = this.getAnimationProcessor().getBone("rightleg4");
+            IBone leftHindLeg = this.getAnimationProcessor().getBone("leftleg4");
 
-            head.setRotationY(extraData.netHeadYaw * ((float)Math.PI / 180F));
-            head.setRotationX(extraData.headPitch * ((float)Math.PI / 180F));
+            if (head != null) {
+                head.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F));
+                head.setRotationX(extraData.headPitch * ((float) Math.PI / 180F));
+            }
 
             float f3 = -(Mth.cos(animationEvent.getLimbSwing() * 0.6662F * 2.0F + 0.0F) * 0.4F) * animationEvent.getLimbSwingAmount();
             float f4 = -(Mth.cos(animationEvent.getLimbSwing() * 0.6662F * 2.0F + (float)Math.PI) * 0.4F) * animationEvent.getLimbSwingAmount();
@@ -53,22 +55,45 @@ public class ReplacedSpiderModel extends HeadTurningAnimatedGeoModel {
             float f9 = Math.abs(Mth.sin(animationEvent.getLimbSwing() * 0.6662F + ((float)Math.PI / 2F)) * 0.4F) * animationEvent.getLimbSwingAmount();
             float f10 = Math.abs(Mth.sin(animationEvent.getLimbSwing() * 0.6662F + ((float)Math.PI * 1.5F)) * 0.4F) * animationEvent.getLimbSwingAmount();
 
-            rightHindLeg.setRotationY(f3);
-            leftHindLeg.setRotationY(-f3);
-            rightMiddleHindLeg.setRotationY(f4);
-            leftMiddleHindLeg.setRotationY(-f4);
-            rightMiddleFrontLeg.setRotationY(f5);
-            leftMiddleFrontLeg.setRotationY(-f5);
-            rightFrontLeg.setRotationY(f6);
-            leftFrontLeg.setRotationY(-f6);
-            rightHindLeg.setRotationZ(f7);
-            leftHindLeg.setRotationZ(-f7);
-            rightMiddleHindLeg.setRotationZ(f8);
-            leftMiddleHindLeg.setRotationZ(-f8);
-            rightMiddleFrontLeg.setRotationZ(f9);
-            leftMiddleFrontLeg.setRotationZ(-f9);
-            rightFrontLeg.setRotationZ(f10);
-            leftFrontLeg.setRotationZ(-f10);
+            if (rightHindLeg != null) {
+                rightHindLeg.setRotationY(f3);
+                rightHindLeg.setRotationZ(f7);
+            }
+
+            if (leftHindLeg != null) {
+                leftHindLeg.setRotationY(-f3);
+                leftHindLeg.setRotationZ(-f7);
+            }
+
+            if (rightMiddleHindLeg != null) {
+                rightMiddleHindLeg.setRotationY(f4);
+                rightMiddleHindLeg.setRotationZ(f8);
+            }
+
+            if (leftMiddleHindLeg != null) {
+                leftMiddleHindLeg.setRotationY(-f4);
+                leftMiddleHindLeg.setRotationZ(-f8);
+            }
+
+            if (rightMiddleFrontLeg != null) {
+                rightMiddleFrontLeg.setRotationY(f5);
+                rightMiddleFrontLeg.setRotationZ(f9);
+            }
+
+            if (leftMiddleFrontLeg != null) {
+                leftMiddleFrontLeg.setRotationY(-f5);
+                leftMiddleFrontLeg.setRotationZ(-f9);
+            }
+
+            if (rightFrontLeg != null) {
+                rightFrontLeg.setRotationY(f6);
+                rightFrontLeg.setRotationZ(f10);
+            }
+
+            if (leftFrontLeg != null) {
+                leftFrontLeg.setRotationY(-f6);
+                leftFrontLeg.setRotationZ(-f10);
+            }
         } else {
             super.setCustomAnimations(animatable, instanceId, animationEvent);
         }

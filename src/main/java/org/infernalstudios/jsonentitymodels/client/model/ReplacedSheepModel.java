@@ -32,8 +32,10 @@ public class ReplacedSheepModel extends QuardrupedAnimatedGeoModel {
         if (this.getAnimationResource(animatable) == null) {
             IBone head = this.getAnimationProcessor().getBone("head");
 
-            head.setPositionY(-((Sheep) this.getCurrentEntity()).getHeadEatPositionScale(animationEvent.getPartialTick()) * 9.0F);
-            head.setRotationX(-((Sheep) this.getCurrentEntity()).getHeadEatAngleScale(animationEvent.getPartialTick()));
+            if (head != null) {
+                head.setPositionY(-((Sheep) this.getCurrentEntity()).getHeadEatPositionScale(animationEvent.getPartialTick()) * 9.0F);
+                head.setRotationX(-((Sheep) this.getCurrentEntity()).getHeadEatAngleScale(animationEvent.getPartialTick()));
+            }
         }
     }
 }

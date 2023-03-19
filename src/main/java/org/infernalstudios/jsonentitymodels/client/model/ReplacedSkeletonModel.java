@@ -58,14 +58,21 @@ public class ReplacedSkeletonModel extends HumanoidAnimatedGeoModel {
 
                 float f = Mth.sin(attackTime * (float)Math.PI);
                 float f1 = Mth.sin((1.0F - (1.0F - attackTime) * (1.0F - attackTime)) * (float)Math.PI);
-                rightArm.setRotationZ(0.0F);
-                leftArm.setRotationZ(0.0F);
-                rightArm.setRotationY(-(0.1F - f * 0.6F));
-                leftArm.setRotationY(0.1F - f * 0.6F);
-                rightArm.setRotationX((-(float)Math.PI / 2F));
-                leftArm.setRotationX((-(float)Math.PI / 2F));
-                rightArm.setRotationX(rightArm.getRotationX() - f * 1.2F - f1 * 0.4F);
-                leftArm.setRotationX(leftArm.getRotationX() - f * 1.2F - f1 * 0.4F);
+
+                if (rightArm != null) {
+                    rightArm.setRotationZ(0.0F);
+                    rightArm.setRotationY(-(0.1F - f * 0.6F));
+                    rightArm.setRotationX((-(float) Math.PI / 2F));
+                    rightArm.setRotationX(rightArm.getRotationX() - f * 1.2F - f1 * 0.4F);
+                }
+
+                if (leftArm != null) {
+                    leftArm.setRotationZ(0.0F);
+                    leftArm.setRotationY(0.1F - f * 0.6F);
+                    leftArm.setRotationX((-(float) Math.PI / 2F));
+                    leftArm.setRotationX(leftArm.getRotationX() - f * 1.2F - f1 * 0.4F);
+                }
+
                 this.bobArms(rightArm, leftArm, animationEvent.getPartialTick());
             }
         }

@@ -33,29 +33,51 @@ public class ReplacedIronGolemModel extends HeadTurningAnimatedGeoModel {
             EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
 
             IBone head = this.getAnimationProcessor().getBone("head");
-            IBone rightLeg = this.getAnimationProcessor().getBone("legright");
-            IBone leftLeg = this.getAnimationProcessor().getBone("legleft");
-            IBone rightArm = this.getAnimationProcessor().getBone("armright");
-            IBone leftArm = this.getAnimationProcessor().getBone("armleft");
+            IBone rightLeg = this.getAnimationProcessor().getBone("rightleg");
+            IBone leftLeg = this.getAnimationProcessor().getBone("leftleg");
+            IBone rightArm = this.getAnimationProcessor().getBone("rightarm");
+            IBone leftArm = this.getAnimationProcessor().getBone("leftarm");
 
-            head.setRotationY(extraData.netHeadYaw * ((float)Math.PI / 180F));
-            head.setRotationX(extraData.headPitch * ((float)Math.PI / 180F));
+            if (head != null) {
+                head.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F));
+                head.setRotationX(extraData.headPitch * ((float) Math.PI / 180F));
+            }
 
-            rightLeg.setRotationX(-1.5F * Mth.triangleWave(animationEvent.getLimbSwing(), 13.0F) * animationEvent.getLimbSwingAmount());
-            leftLeg.setRotationX(1.5F * Mth.triangleWave(animationEvent.getLimbSwing(), 13.0F) * animationEvent.getLimbSwingAmount());
+            if (rightLeg != null) {
+                rightLeg.setRotationX(-1.5F * Mth.triangleWave(animationEvent.getLimbSwing(), 13.0F) * animationEvent.getLimbSwingAmount());
+            }
+
+            if (leftLeg != null) {
+                leftLeg.setRotationX(1.5F * Mth.triangleWave(animationEvent.getLimbSwing(), 13.0F) * animationEvent.getLimbSwingAmount());
+            }
 
             int i = ((IronGolem) this.getCurrentEntity()).getAttackAnimationTick();
             if (i > 0) {
-                rightArm.setRotationX(2.0F - 1.5F * Mth.triangleWave((float)i - animationEvent.getPartialTick(), 10.0F));
-                leftArm.setRotationX(2.0F - 1.5F * Mth.triangleWave((float)i - animationEvent.getPartialTick(), 10.0F));
+                if (rightArm != null) {
+                    rightArm.setRotationX(2.0F - 1.5F * Mth.triangleWave((float) i - animationEvent.getPartialTick(), 10.0F));
+                }
+
+                if (leftArm != null) {
+                    leftArm.setRotationX(2.0F - 1.5F * Mth.triangleWave((float) i - animationEvent.getPartialTick(), 10.0F));
+                }
             } else {
                 int j = ((IronGolem) this.getCurrentEntity()).getOfferFlowerTick();
                 if (j > 0) {
-                    rightArm.setRotationX(-0.8F + 0.025F * Mth.triangleWave((float)j, 70.0F));
-                    leftArm.setRotationX(0.0F);
+                    if (rightArm != null) {
+                        rightArm.setRotationX(-0.8F + 0.025F * Mth.triangleWave((float) j, 70.0F));
+                    }
+
+                    if (leftArm != null) {
+                        leftArm.setRotationX(0.0F);
+                    }
                 } else {
-                    rightArm.setRotationX((-0.2F + 1.5F * Mth.triangleWave(animationEvent.getLimbSwing(), 13.0F)) * animationEvent.getLimbSwingAmount());
-                    leftArm.setRotationX((-0.2F - 1.5F * Mth.triangleWave(animationEvent.getLimbSwing(), 13.0F)) * animationEvent.getLimbSwingAmount());
+                    if (rightArm != null) {
+                        rightArm.setRotationX((-0.2F + 1.5F * Mth.triangleWave(animationEvent.getLimbSwing(), 13.0F)) * animationEvent.getLimbSwingAmount());
+                    }
+
+                    if (leftArm != null) {
+                        leftArm.setRotationX((-0.2F - 1.5F * Mth.triangleWave(animationEvent.getLimbSwing(), 13.0F)) * animationEvent.getLimbSwingAmount());
+                    }
                 }
             }
         } else {

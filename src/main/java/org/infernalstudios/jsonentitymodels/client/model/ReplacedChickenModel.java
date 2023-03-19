@@ -38,12 +38,26 @@ public class ReplacedChickenModel extends HeadTurningAnimatedGeoModel {
             IBone rightWing = this.getAnimationProcessor().getBone("wingright");
             IBone leftWing = this.getAnimationProcessor().getBone("wingleft");
 
-            head.setRotationX(extraData.headPitch * ((float) Math.PI / 180F));
-            head.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F));
-            rightLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F) * 1.4F * animationEvent.getLimbSwingAmount());
-            leftLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F + (float) Math.PI) * 1.4F * animationEvent.getLimbSwingAmount());
-            rightWing.setRotationZ(this.getBob((Chicken) this.getCurrentEntity(), animationEvent.getPartialTick()));
-            leftWing.setRotationZ(-this.getBob((Chicken) this.getCurrentEntity(), animationEvent.getPartialTick()));
+            if (head != null) {
+                head.setRotationX(extraData.headPitch * ((float) Math.PI / 180F));
+                head.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F));
+            }
+
+            if (rightLeg != null) {
+                rightLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F) * 1.4F * animationEvent.getLimbSwingAmount());
+            }
+
+            if (leftLeg != null) {
+                leftLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F + (float) Math.PI) * 1.4F * animationEvent.getLimbSwingAmount());
+            }
+
+            if (rightWing != null) {
+                rightWing.setRotationZ(this.getBob((Chicken) this.getCurrentEntity(), animationEvent.getPartialTick()));
+            }
+
+            if (leftWing != null) {
+                leftWing.setRotationZ(-this.getBob((Chicken) this.getCurrentEntity(), animationEvent.getPartialTick()));
+            }
         } else {
             super.setCustomAnimations(animatable, instanceId, animationEvent);
         }
