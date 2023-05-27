@@ -84,18 +84,18 @@ public class EntityRenderDispatcherMixin {
     static {
         RENDERER_PROVIDER_MAP.put(EntityType.CREEPER, ReplacedCreeperRenderer::new);
         RENDERER_PROVIDER_MAP.put(EntityType.SPIDER, ReplacedSpiderRenderer::new);
-        RENDERER_PROVIDER_MAP.put(EntityType.CAVE_SPIDER, ReplacedSpiderRenderer::new);
+        RENDERER_PROVIDER_MAP.put(EntityType.CAVE_SPIDER, (context) -> new ReplacedSpiderRenderer(context, "cave_spider"));
         RENDERER_PROVIDER_MAP.put(EntityType.ZOMBIE, ReplacedZombieRenderer::new);
-        RENDERER_PROVIDER_MAP.put(EntityType.DROWNED, ReplacedZombieRenderer::new);
-        RENDERER_PROVIDER_MAP.put(EntityType.HUSK, ReplacedZombieRenderer::new);
+        RENDERER_PROVIDER_MAP.put(EntityType.DROWNED, (context) -> new ReplacedZombieRenderer(context, "drowned"));
+        RENDERER_PROVIDER_MAP.put(EntityType.HUSK, (context) -> new ReplacedZombieRenderer(context, "husk"));
         RENDERER_PROVIDER_MAP.put(EntityType.SKELETON, ReplacedSkeletonRenderer::new);
-        RENDERER_PROVIDER_MAP.put(EntityType.STRAY, ReplacedSkeletonRenderer::new);
-        RENDERER_PROVIDER_MAP.put(EntityType.WITHER_SKELETON, ReplacedSkeletonRenderer::new);
+        RENDERER_PROVIDER_MAP.put(EntityType.STRAY, (context) -> new ReplacedSkeletonRenderer(context, "stray"));
+        RENDERER_PROVIDER_MAP.put(EntityType.WITHER_SKELETON, (context) -> new ReplacedSkeletonRenderer(context, "wither_skeleton"));
         RENDERER_PROVIDER_MAP.put(EntityType.IRON_GOLEM, ReplacedIronGolemRenderer::new);
         RENDERER_PROVIDER_MAP.put(EntityType.SHEEP, ReplacedSheepRenderer::new);
         RENDERER_PROVIDER_MAP.put(EntityType.PIG, ReplacedPigRenderer::new);
         RENDERER_PROVIDER_MAP.put(EntityType.COW, ReplacedCowRenderer::new);
-        RENDERER_PROVIDER_MAP.put(EntityType.MOOSHROOM, ReplacedCowRenderer::new);
+        RENDERER_PROVIDER_MAP.put(EntityType.MOOSHROOM, (context) -> new ReplacedCowRenderer(context, "mooshroom"));
         RENDERER_PROVIDER_MAP.put(EntityType.CHICKEN, ReplacedChickenRenderer::new);
         RENDERER_PROVIDER_MAP.put(EntityType.ENDERMAN, ReplacedEnderManRenderer::new);
     }

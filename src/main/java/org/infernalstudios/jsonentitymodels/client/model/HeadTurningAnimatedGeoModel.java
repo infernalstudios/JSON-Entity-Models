@@ -67,7 +67,11 @@ public abstract class HeadTurningAnimatedGeoModel<T extends IAnimatable, U exten
 
     @Override
     public ResourceLocation getTextureLocation(@Nullable T object) {
-        String[] modelPath = this.getModelLocation(object).getPath().split("/");
+        ResourceLocation modelResource = this.getModelLocation(object);
+
+        if (modelResource == null) return null;
+
+        String[] modelPath = modelResource.getPath().split("/");
         String modelName = modelPath[modelPath.length - 1].replaceAll("(\\.geo)?\\.json$", "");;
 
         List<ResourceLocation> textures = ResourceUtil.fetchTexturesForModel(this.namespace, this.entityName, modelName, this.currentEntity != null && this.currentEntity.isBaby());
@@ -81,7 +85,11 @@ public abstract class HeadTurningAnimatedGeoModel<T extends IAnimatable, U exten
 
     @Override
     public ResourceLocation getAnimationFileLocation(@Nullable T animatable) {
-        String[] modelPath = this.getModelLocation(animatable).getPath().split("/");
+        ResourceLocation modelResource = this.getModelLocation(animatable);
+
+        if (modelResource == null) return null;
+
+        String[] modelPath = modelResource.getPath().split("/");
         String modelName = modelPath[modelPath.length - 1].replaceAll("(\\.geo)?\\.json$", "");
 
         List<ResourceLocation> animations = ResourceUtil.fetchAnimationsForModel(this.namespace, this.entityName, modelName, this.currentEntity != null && this.currentEntity.isBaby());

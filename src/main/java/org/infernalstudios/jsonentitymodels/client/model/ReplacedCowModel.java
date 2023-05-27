@@ -19,4 +19,8 @@ public class ReplacedCowModel extends QuardrupedAnimatedGeoModel {
     public ReplacedCowModel() {
         super("cow");
     }
+
+    public ReplacedCowModel(String entityTypeName) {
+        super(entityTypeName);
+    }
 }

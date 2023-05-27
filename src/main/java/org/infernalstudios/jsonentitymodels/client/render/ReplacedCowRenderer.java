@@ -32,6 +32,10 @@ public class ReplacedCowRenderer extends ExtendedGeoReplacedEntityRenderer<Repla
         super(renderManager, new ReplacedCowModel(), new ReplacedCowEntity());
     }
 
+    public ReplacedCowRenderer(EntityRendererProvider.Context renderManager, String entityTypeName) {
+        super(renderManager, new ReplacedCowModel(entityTypeName), new ReplacedCowEntity());
+    }
+
     @Nullable
     @Override
     protected ResourceLocation getTextureForBone(String boneName, Cow animatable) {
