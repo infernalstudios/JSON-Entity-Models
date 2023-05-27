@@ -276,7 +276,7 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
         float headPitch = Mth.lerp(partialTick, entity.xRotO, entity.getXRot());
         entityModelData.headPitch = -headPitch;
         entityModelData.netHeadYaw = -netHeadYaw;
-        GeoModel model = this.modelProvider.getModel(this.modelProvider.getModelLocation(animatable));
+        GeoModel model = this.modelProvider.getModel(this.modelProvider.getModelResource(animatable));
         AnimationEvent predicate = new AnimationEvent(animatable, limbSwing, limbSwingAmount, partialTick,
                 (limbSwingAmount <= -getSwingMotionAnimThreshold() || limbSwingAmount <= getSwingMotionAnimThreshold()), Collections.singletonList(entityModelData));
 
@@ -310,10 +310,10 @@ public abstract class ExtendedGeoReplacedEntityRenderer<T extends IAnimatable, U
 
         poseStack.popPose();
 
-        net.minecraftforge.client.event.RenderNameplateEvent renderNameplateEvent = new net.minecraftforge.client.event.RenderNameplateEvent(entity, entity.getDisplayName(), this, poseStack, bufferSource, packedLight, partialTick);
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
-        if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.shouldShowName(entity))) {
-            this.renderNameTag(entity, renderNameplateEvent.getContent(), poseStack, bufferSource, packedLight);
+        var renderNameTagEvent = new net.minecraftforge.client.event.RenderNameTagEvent(entity, entity.getDisplayName(), this, poseStack, bufferSource, packedLight, partialTick);
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameTagEvent);
+        if (renderNameTagEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameTagEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.shouldShowName(entity))) {
+            this.renderNameTag(entity, renderNameTagEvent.getContent(), poseStack, bufferSource, packedLight);
         }
     }
 
