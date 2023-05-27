@@ -34,6 +34,10 @@ public class ReplacedZombieRenderer extends ExtendedGeoReplacedEntityRenderer<Re
         super(renderManager, new ReplacedZombieModel(), new ReplacedZombieEntity());
     }
 
+    public ReplacedZombieRenderer(EntityRendererProvider.Context renderManager, String entityTypeName) {
+        super(renderManager, new ReplacedZombieModel(entityTypeName), new ReplacedZombieEntity());
+    }
+
     @Override
     public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         if (entity instanceof Zombie zombieEntity && animatable instanceof ReplacedZombieEntity replacedZombie) {

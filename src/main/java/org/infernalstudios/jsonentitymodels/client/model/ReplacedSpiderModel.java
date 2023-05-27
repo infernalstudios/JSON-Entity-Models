@@ -26,6 +26,10 @@ public class ReplacedSpiderModel extends HeadTurningAnimatedGeoModel {
         super("spider");
     }
 
+    public ReplacedSpiderModel(String entityTypeName) {
+        super(entityTypeName);
+    }
+
     @Override
     public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
         if (this.getAnimationResource(animatable) == null) {

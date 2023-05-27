@@ -32,6 +32,10 @@ public class ReplacedSkeletonModel extends HumanoidAnimatedGeoModel {
         super("skeleton");
     }
 
+    public ReplacedSkeletonModel(String entityTypeName) {
+        super(entityTypeName);
+    }
+
     @Override
     public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
         super.setCustomAnimations(animatable, instanceId, animationEvent);

@@ -36,6 +36,10 @@ public class ReplacedSkeletonRenderer extends ExtendedGeoReplacedEntityRenderer<
         super(renderManager, new ReplacedSkeletonModel(), new ReplacedSkeletonEntity());
     }
 
+    public ReplacedSkeletonRenderer(EntityRendererProvider.Context renderManager, String entityTypeName) {
+        super(renderManager, new ReplacedSkeletonModel(entityTypeName), new ReplacedSkeletonEntity());
+    }
+
     @Override
     public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         if (entity instanceof Skeleton skeletonEntity && animatable instanceof ReplacedSkeletonEntity replacedSkeleton) {

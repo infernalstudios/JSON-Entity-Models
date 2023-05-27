@@ -37,6 +37,10 @@ public class ReplacedSpiderRenderer extends ExtendedGeoReplacedEntityRenderer<Re
         super(renderManager, new ReplacedSpiderModel(), new ReplacedSpiderEntity());
     }
 
+    public ReplacedSpiderRenderer(EntityRendererProvider.Context renderManager, String entityTypeName) {
+        super(renderManager, new ReplacedSpiderModel(entityTypeName), new ReplacedSpiderEntity());
+    }
+
     @Override
     public void render(Entity entity, IAnimatable animatable, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
         if (entity instanceof Spider spider && animatable instanceof ReplacedSpiderEntity replacedSpider) {
