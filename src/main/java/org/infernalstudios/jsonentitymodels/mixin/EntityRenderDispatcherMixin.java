@@ -18,7 +18,6 @@
 package org.infernalstudios.jsonentitymodels.mixin;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -31,18 +30,11 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.FolderPackResources;
-import net.minecraft.server.packs.PackResources;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.FallbackResourceManager;
-import net.minecraft.server.packs.resources.MultiPackResourceManager;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.infernalstudios.jsonentitymodels.JSONEntityModels;
 import org.infernalstudios.jsonentitymodels.client.model.ReplacedDefaultModel;
 import org.infernalstudios.jsonentitymodels.client.render.ReplacedChickenRenderer;
 import org.infernalstudios.jsonentitymodels.client.render.ReplacedCowRenderer;
@@ -66,15 +58,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Mixin(EntityRenderDispatcher.class)
 public class EntityRenderDispatcherMixin {
-
     @Shadow @Final private ItemRenderer itemRenderer;
     @Shadow @Final private EntityModelSet entityModels;
     @Shadow @Final private Font font;
@@ -122,20 +111,24 @@ public class EntityRenderDispatcherMixin {
 
     @Inject(method = "onResourceManagerReload", at = @At("RETURN"))
     private void jsonentitymodels_trackDefaultRenderers(ResourceManager manager, CallbackInfo ci) {
+        boolean changedRenderer = false;
+
         for (Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entityEntry : ForgeRegistries.ENTITY_TYPES.getEntries()) {
             ResourceLocation entityResourceLocation = entityEntry.getKey().location();
 
             if (entityResourceLocation.toString().equals("minecraft:player")) continue;
 
-            if (doesEntityHaveResource(entityResourceLocation) && !RENDERER_PROVIDER_MAP.containsKey(entityEntry.getValue())) {
-                JSONEntityModels.LOGGER.info("JEMs found resource for entity: " + entityResourceLocation);
-
+            if (!RENDERER_PROVIDER_MAP.containsKey(entityEntry.getValue())) {
                 RENDERER_PROVIDER_MAP.put(entityEntry.getValue(), RENDERER_PROVIDER_MAP.getOrDefault(entityEntry.getValue(), (context) -> new ReplacedDefaultRenderer(context,
                         new ReplacedDefaultModel(entityResourceLocation.getNamespace(), entityResourceLocation.getPath()), new ReplacedDefaultEntity())));
+
+                changedRenderer = true;
             }
         }
 
-        createRenderers(manager);
+        if (changedRenderer) {
+            createRenderers(manager);
+        }
     }
 
     @Unique
@@ -152,34 +145,5 @@ public class EntityRenderDispatcherMixin {
         });
 
         RENDERER_MAP = builder.build();
-    }
-
-    @Unique
-    private static boolean doesEntityHaveResource(ResourceLocation entityResourceLocation) {
-        ResourceLocation resourceLocation = new ResourceLocation(JSONEntityModels.MOD_ID, "geo/" + entityResourceLocation.getNamespace() + "/" + entityResourceLocation.getPath());
-
-        FallbackResourceManager packs = ((MultiPackResourceManager) ((ReloadableResourceManager) Minecraft.getInstance().getResourceManager()).resources).namespacedManagers.get(JSONEntityModels.MOD_ID);
-
-        if (!resourceLocation.getPath().contains("..") && packs != null) {
-            for (PackResources packResources : packs.listPacks().toList()) {
-                if (packResources instanceof FolderPackResources folderPackResources) {
-                    String path = String.format("%s/%s/%s", PackType.CLIENT_RESOURCES.getDirectory(), resourceLocation.getNamespace(), resourceLocation.getPath());
-                    File tempFile = new File(folderPackResources.file, path);
-
-                    try {
-                        if (tempFile.isDirectory() && FolderPackResources.validatePath(tempFile, path)) {
-                            return true;
-                        }
-                    } catch (IOException ignored) {
-                    }
-                } else {
-                    if (packResources.hasResource(PackType.CLIENT_RESOURCES, resourceLocation)) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
     }
 }
