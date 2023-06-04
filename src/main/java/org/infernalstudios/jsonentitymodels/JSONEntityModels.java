@@ -29,7 +29,7 @@ import org.infernalstudios.jsonentitymodels.util.ResourceUtil;
 public class JSONEntityModels {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "jsonentitymodels";
-    public static final String CURR_VERSION = "0.2.1";
+    public static final String CURR_VERSION = "0.2.2";
 
     public JSONEntityModels() {
         JSONEntityModels.registerReloadListeners();
