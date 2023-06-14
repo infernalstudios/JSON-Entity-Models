@@ -18,33 +18,34 @@
 package org.infernalstudios.jsonentitymodels.client.render.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import org.infernalstudios.jsonentitymodels.client.model.HeadTurningAnimatedGeoModel;
 import org.infernalstudios.jsonentitymodels.util.RandomUtil;
 import org.infernalstudios.jsonentitymodels.util.ResourceCache;
-import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.renderer.GeoRenderer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 import java.util.List;
 import java.util.Map;
 
-public class CreeperPoweredLayer extends GeoLayerRenderer {
+public class CreeperPoweredLayer extends GeoRenderLayer {
 
-    public CreeperPoweredLayer(IGeoRenderer entityRendererIn) {
+    public CreeperPoweredLayer(GeoRenderer entityRendererIn) {
         super(entityRendererIn);
     }
 
     @Override
-    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, Entity entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-
-        if (entityLivingBaseIn instanceof Creeper creeper && creeper.isPowered() && this.getEntityModel() instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
-            Map<String, List<ResourceLocation>> textures = ((LivingEntity) entityLivingBaseIn).isBaby() ? ResourceCache.getInstance().getBabyTextures() : ResourceCache.getInstance().getAdultTextures();
+    public void render(PoseStack poseStack, GeoAnimatable animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        if (animatable instanceof Creeper creeper && creeper.isPowered() && this.getGeoModel() instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
+            Map<String, List<ResourceLocation>> textures = ((LivingEntity) animatable).isBaby() ? ResourceCache.getInstance().getBabyTextures() : ResourceCache.getInstance().getAdultTextures();
 
             String[] splitPath = headTurningAnimatedGeoModel.getTextureResource(null).getPath().split("/");
 
@@ -57,24 +58,25 @@ public class CreeperPoweredLayer extends GeoLayerRenderer {
             if (poweredResources == null || poweredResources.isEmpty()) {
                 poweredResource = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
             } else {
-                poweredResource = poweredResources.get(RandomUtil.getPseudoRandomInt(entityLivingBaseIn.getUUID().getMostSignificantBits(), RandomUtil.textureUUID.getLeastSignificantBits(), poweredResources.size()));
+                poweredResource = poweredResources.get(RandomUtil.getPseudoRandomInt(((LivingEntity) animatable).getUUID().getMostSignificantBits(), RandomUtil.textureUUID.getLeastSignificantBits(), poweredResources.size()));
             }
 
-            float f = (float)creeper.tickCount + partialTicks;
+            float f = (float)creeper.tickCount + partialTick;
 
-            RenderType renderType = RenderType.energySwirl(poweredResource, this.xOffset(f) % 1.0F, f * 0.01F % 1.0F);
+            RenderType newRenderType = RenderType.energySwirl(poweredResource, this.xOffset(f) % 1.0F, f * 0.01F % 1.0F);
 
-            this.getRenderer().render(
-                    headTurningAnimatedGeoModel.getModel(headTurningAnimatedGeoModel.getModelResource(null)),
-                    entityLivingBaseIn,
-                    partialTicks,
-                    renderType,
-                    matrixStackIn,
-                    bufferIn,
-                    bufferIn.getBuffer(renderType),
-                    packedLightIn,
-                    OverlayTexture.NO_OVERLAY,
-                    0.5f, 0.5f, 0.5f, 1f);
+            this.getRenderer().actuallyRender(
+                    poseStack,
+                    animatable,
+                    bakedModel,
+                    newRenderType,
+                    bufferSource,
+                    bufferSource.getBuffer(newRenderType),
+                    true,
+                    partialTick,
+                    packedLight,
+                    LivingEntityRenderer.getOverlayCoords(creeper, 0.0F),
+                    1f, 1f, 1f, 1f);
         }
     }
 

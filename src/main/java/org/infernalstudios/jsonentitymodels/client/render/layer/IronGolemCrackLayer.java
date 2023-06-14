@@ -16,53 +16,56 @@
 package org.infernalstudios.jsonentitymodels.client.render.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.IronGolem;
 import org.infernalstudios.jsonentitymodels.client.model.HeadTurningAnimatedGeoModel;
 import org.infernalstudios.jsonentitymodels.util.RandomUtil;
 import org.infernalstudios.jsonentitymodels.util.ResourceCache;
-import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.renderer.GeoRenderer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public class IronGolemCrackLayer extends GeoLayerRenderer {
+public class IronGolemCrackLayer extends GeoRenderLayer {
 
-    public IronGolemCrackLayer(IGeoRenderer entityRendererIn) {
+    public IronGolemCrackLayer(GeoRenderer entityRendererIn) {
         super(entityRendererIn);
     }
 
     @Override
-    public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, Entity entityLivingBaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (entityLivingBaseIn instanceof IronGolem ironGolem && this.getEntityModel() instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
+    public void render(PoseStack poseStack, GeoAnimatable animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        if (animatable instanceof IronGolem ironGolem && this.getGeoModel() instanceof HeadTurningAnimatedGeoModel headTurningAnimatedGeoModel) {
             if (!ironGolem.isInvisible()) {
 
                 IronGolem.Crackiness crackLevel = ironGolem.getCrackiness();
 
                 if (crackLevel != IronGolem.Crackiness.NONE) {
-                    List<ResourceLocation> cracksResources = this.getCracksResource(crackLevel, ((LivingEntity) entityLivingBaseIn).isBaby(), headTurningAnimatedGeoModel.getTextureResource(null));
+                    List<ResourceLocation> cracksResources = this.getCracksResource(crackLevel, ((LivingEntity) animatable).isBaby(), headTurningAnimatedGeoModel.getTextureResource(null));
 
                     if (cracksResources != null && !cracksResources.isEmpty()) {
 
-                        RenderType renderType = RenderType.entityCutoutNoCull(cracksResources.get(RandomUtil.getPseudoRandomInt(entityLivingBaseIn.getUUID().getLeastSignificantBits(), RandomUtil.textureUUID.getLeastSignificantBits(), cracksResources.size())));
+                        RenderType newRenderType = RenderType.entityCutoutNoCull(cracksResources.get(RandomUtil.getPseudoRandomInt(((LivingEntity) animatable).getUUID().getLeastSignificantBits(), RandomUtil.textureUUID.getLeastSignificantBits(), cracksResources.size())));
 
 
-                        this.getRenderer().render(
-                                headTurningAnimatedGeoModel.getModel(headTurningAnimatedGeoModel.getModelResource(null)),
-                                entityLivingBaseIn,
-                                partialTicks,
-                                renderType,
-                                matrixStackIn,
-                                bufferIn,
-                                bufferIn.getBuffer(renderType),
-                                packedLightIn,
+                        this.getRenderer().actuallyRender(
+                                poseStack,
+                                animatable,
+                                bakedModel,
+                                newRenderType,
+                                bufferSource,
+                                bufferSource.getBuffer(newRenderType),
+                                true,
+                                partialTick,
+                                packedLight,
                                 LivingEntityRenderer.getOverlayCoords(ironGolem, 0.0F),
                                 1f, 1f, 1f, 1f);
                     }
