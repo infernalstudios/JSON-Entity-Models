@@ -15,50 +15,66 @@
  */
 package org.infernalstudios.jsonentitymodels.entity;
 
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
+import net.minecraft.world.entity.EntityType;
+import software.bernie.geckolib.animatable.GeoReplacedEntity;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+
+import static org.infernalstudios.jsonentitymodels.entity.ReplacedDefaultEntity.DEATH;
+import static org.infernalstudios.jsonentitymodels.entity.ReplacedDefaultEntity.HURT;
+import static org.infernalstudios.jsonentitymodels.entity.ReplacedDefaultEntity.IDLE;
+import static org.infernalstudios.jsonentitymodels.entity.ReplacedDefaultEntity.WALK;
 
 public class ReplacedZombieEntity extends ReplacedEntityBase {
+    protected static final RawAnimation AGGRESSIVE_HURT = RawAnimation.begin().thenPlay("aggressive_hurt");
+    protected static final RawAnimation SINK = RawAnimation.begin().thenPlay("sink");
+    protected static final RawAnimation AGGRESSIVE_WALK = RawAnimation.begin().thenPlay("aggressive_walk");
+    protected static final RawAnimation AGGRESSIVE_IDLE = RawAnimation.begin().thenPlay("aggressive_idle");
+    protected static final RawAnimation AGGRESSIVE = RawAnimation.begin().thenPlay("aggressive");
     private boolean isAggressive;
+
+    public ReplacedZombieEntity(EntityType<?> type) {
+        super(type);
+    }
 
     public void setAggressive(boolean isAgressive) {
         this.isAggressive = isAgressive;
     }
 
     @Override
-    protected  <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+    protected <P extends GeoReplacedEntity> PlayState predicate(AnimationState<P> event) {
         if (this.isDead) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+            event.getController().setAnimation(DEATH);
         } else if (this.isHurt) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAggressive ? "aggressive_hurt" : "hurt", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+            event.getController().setAnimation(this.isAggressive ? AGGRESSIVE_HURT : HURT);
         } else if (this.inWater) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("sink", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(SINK);
         } else if (!(event.getLimbSwingAmount() > -0.10F && event.getLimbSwingAmount() < 0.10F)) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAggressive ? "aggressive_walk" : "walk", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(this.isAggressive ? AGGRESSIVE_WALK : WALK);
         } else {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isAggressive ? "aggressive_idle" : "idle", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(this.isAggressive ? AGGRESSIVE_IDLE : IDLE);
         }
         return PlayState.CONTINUE;
     }
 
-    private <P extends IAnimatable> PlayState attackPredicate(AnimationEvent<P> event) {
+    protected <P extends GeoReplacedEntity> PlayState attackPredicate(AnimationState<P> event) {
         if (this.isAggressive) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("aggressive", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(AGGRESSIVE);
             return PlayState.CONTINUE;
         }
 
-        event.getController().markNeedsReload();
+        event.getController().forceAnimationReset();
         return PlayState.STOP;
     }
 
     @Override
-    public void registerControllers(AnimationData data) {
-        super.registerControllers(data);
-        data.addAnimationController(new AnimationController<>(this, "attack_controller", 0, this::attackPredicate));
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+        super.registerControllers(controllerRegistrar);
+        controllerRegistrar.add(new AnimationController<>(this, "attack_controller", 0, this::attackPredicate));
     }
+
+
 }

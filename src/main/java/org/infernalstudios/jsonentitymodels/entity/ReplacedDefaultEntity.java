@@ -15,26 +15,39 @@
  */
 package org.infernalstudios.jsonentitymodels.entity;
 
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import net.minecraft.world.entity.EntityType;
+import software.bernie.geckolib.animatable.GeoReplacedEntity;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+
 
 public class ReplacedDefaultEntity extends ReplacedEntityBase {
+
+    protected static final RawAnimation DEATH = RawAnimation.begin().thenPlay("death");
+    protected static final RawAnimation HURT = RawAnimation.begin().thenPlay("hurt");
+    protected static final RawAnimation SWIM = RawAnimation.begin().thenPlay("swim");
+    protected static final RawAnimation WALK = RawAnimation.begin().thenPlay("walk");
+    protected static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
+
+    public ReplacedDefaultEntity(EntityType<?> type) {
+        super(type);
+    }
+
     @Override
-    protected <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+    protected <P extends GeoReplacedEntity> PlayState predicate(AnimationState<P> event) {
         if (this.isDead) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+            event.getController().setAnimation(DEATH);
         } else if (this.isHurt) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("hurt", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+            event.getController().setAnimation(HURT);
         } else if (this.inWater) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(SWIM);
         } else if (!(event.getLimbSwingAmount() > -0.10F && event.getLimbSwingAmount() < 0.10F)) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("walk", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(WALK);
         } else {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(IDLE);
         }
+
         return PlayState.CONTINUE;
     }
 }

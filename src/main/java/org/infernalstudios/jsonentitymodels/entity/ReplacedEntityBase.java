@@ -15,18 +15,19 @@
  */
 package org.infernalstudios.jsonentitymodels.entity;
 
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import org.infernalstudios.jsonentitymodels.client.model.HeadTurningAnimatedGeoModel;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
-import software.bernie.geckolib3.util.GeckoLibUtil;
+import software.bernie.geckolib.animatable.GeoReplacedEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public abstract class ReplacedEntityBase implements IAnimatable {
-    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
+public abstract class ReplacedEntityBase implements GeoReplacedEntity {
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     protected boolean isHurt;
     protected boolean isBaby;
     protected boolean isDead;
@@ -35,6 +36,11 @@ public abstract class ReplacedEntityBase implements IAnimatable {
     protected LivingEntity originalEntity;
 
     private HeadTurningAnimatedGeoModel modelInstance;
+    private final EntityType<?> entityType;
+
+    public ReplacedEntityBase(EntityType<?> type) {
+        this.entityType = type;
+    }
 
     public void setHurt(boolean isHurt) {
         this.isHurt = isHurt;
@@ -68,19 +74,24 @@ public abstract class ReplacedEntityBase implements IAnimatable {
         this.originalEntity = entity;
     }
 
-    protected abstract <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event);
+    protected abstract <P extends GeoReplacedEntity> PlayState predicate(AnimationState<P> event);
 
     @Override
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<>(this, "controller", 0, this::predicate));
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
+        controllerRegistrar.add(new AnimationController<>(this, "controller", 0, this::predicate));
     }
 
     @Override
-    public AnimationFactory getFactory() {
-        if (this.originalEntity instanceof IAnimatable animatable) {
-            return animatable.getFactory();
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        if (this.originalEntity instanceof GeoReplacedEntity animatable) {
+            return animatable.getAnimatableInstanceCache();
         }
 
-        return this.factory;
+        return this.cache;
+    }
+
+    @Override
+    public EntityType<?> getReplacingEntityType() {
+        return this.entityType;
     }
 }

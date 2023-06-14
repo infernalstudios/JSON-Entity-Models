@@ -15,31 +15,42 @@
  */
 package org.infernalstudios.jsonentitymodels.entity;
 
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import net.minecraft.world.entity.EntityType;
+import software.bernie.geckolib.animatable.GeoReplacedEntity;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+
+import static org.infernalstudios.jsonentitymodels.entity.ReplacedDefaultEntity.DEATH;
+import static org.infernalstudios.jsonentitymodels.entity.ReplacedDefaultEntity.HURT;
+import static org.infernalstudios.jsonentitymodels.entity.ReplacedDefaultEntity.IDLE;
+import static org.infernalstudios.jsonentitymodels.entity.ReplacedDefaultEntity.SWIM;
 
 public class ReplacedSpiderEntity extends ReplacedEntityBase {
+    protected static final RawAnimation WALK_HOSTILE = RawAnimation.begin().thenPlay("walk_hostile");
+    protected static final RawAnimation WALK_NEUTRAL = RawAnimation.begin().thenPlay("walk_neutral");
     private boolean isHostile;
+
+    public ReplacedSpiderEntity(EntityType<?> type) {
+        super(type);
+    }
 
     public void setHostile(boolean isHostile) {
         this.isHostile = isHostile;
     }
 
     @Override
-    protected  <P extends IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+    protected <P extends GeoReplacedEntity> PlayState predicate(AnimationState<P> event) {
         if (this.isDead) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("death", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+            event.getController().setAnimation(DEATH);
         } else if (this.isHurt) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("hurt", ILoopType.EDefaultLoopTypes.PLAY_ONCE));
+            event.getController().setAnimation(HURT);
         } else if (this.inWater) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("swim", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(SWIM);
         } else if (!(event.getLimbSwingAmount() > -0.15F && event.getLimbSwingAmount() < 0.15F)) {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation(this.isHostile ? "walk_hostile" : "walk_neutral", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(this.isHostile ? WALK_HOSTILE : WALK_NEUTRAL);
         } else {
-            event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", ILoopType.EDefaultLoopTypes.LOOP));
+            event.getController().setAnimation(IDLE);
         }
         return PlayState.CONTINUE;
     }

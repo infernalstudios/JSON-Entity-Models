@@ -18,28 +18,31 @@ package org.infernalstudios.jsonentitymodels.client.model;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import org.infernalstudios.jsonentitymodels.JSONEntityModels;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedEntityBase;
 import org.infernalstudios.jsonentitymodels.util.RandomUtil;
 import org.infernalstudios.jsonentitymodels.util.ResourceUtil;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.builder.Animation;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.file.AnimationFile;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
-import software.bernie.geckolib3.resource.GeckoLibCache;
+import software.bernie.geckolib.GeckoLibException;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.GeoReplacedEntity;
+import software.bernie.geckolib.cache.GeckoLibCache;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.Animation;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.loading.object.BakedAnimations;
+import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class HeadTurningAnimatedGeoModel<T extends IAnimatable, U extends Mob> extends AnimatedGeoModel<T> {
+public abstract class HeadTurningAnimatedGeoModel<T extends GeoReplacedEntity, U extends Mob> extends GeoModel<T> {
     private final String namespace;
     private final String entityName;
 
@@ -97,10 +100,10 @@ public abstract class HeadTurningAnimatedGeoModel<T extends IAnimatable, U exten
         if (animations == null || animations.isEmpty()) {
 
             if (this.currentEntity != null) {
-                EntityRenderer originalRenderer = Minecraft.getInstance().getEntityRenderDispatcher().renderers.get(this.currentEntity.getType());
+                EntityRenderer<?> originalRenderer = Minecraft.getInstance().getEntityRenderDispatcher().renderers.get(this.currentEntity.getType());
 
-                if (originalRenderer instanceof GeoEntityRenderer geoEntityRenderer && geoEntityRenderer.getGeoModelProvider() instanceof AnimatedGeoModel animatedGeoModel) {
-                    return animatedGeoModel.getAnimationResource(this.currentEntity);
+                if (this.currentEntity instanceof GeoEntity geoEntity && originalRenderer instanceof GeoEntityRenderer<?> geoEntityRenderer && geoEntityRenderer.getGeoModel() != null) {
+                    return geoEntityRenderer.getGeoModel().getAnimationResource(geoEntity);
                 }
             }
 
@@ -113,33 +116,30 @@ public abstract class HeadTurningAnimatedGeoModel<T extends IAnimatable, U exten
     }
 
     @Override
-    public Animation getAnimation(String name, IAnimatable animatable) {
-        AnimationFile animation = GeckoLibCache.getInstance().getAnimations().get(this.getAnimationResource((T) animatable));
+    public Animation getAnimation(T animatable, String name) {
+        ResourceLocation location = getAnimationResource(animatable);
+        BakedAnimations bakedAnimations = GeckoLibCache.getBakedAnimations().get(location);
 
-        if (animation == null) {
+        if (bakedAnimations == null)
             return null;
-        }
 
-        return animation.getAnimation(name);
+        return bakedAnimations.getAnimation(name);
     }
 
     @Override
-    public void setCustomAnimations(T animatable, int instanceId, AnimationEvent animationEvent) {
+    public void setCustomAnimations(T animatable, long instanceId, AnimationState<T> animationState) {
         if (animatable instanceof ReplacedEntityBase replacedEntityBase) {
             replacedEntityBase.setModelInstance(this);
         }
-        super.setCustomAnimations(animatable, instanceId, animationEvent);
+        super.setCustomAnimations(animatable, instanceId, animationState);
 
-        IBone head = this.getAnimationProcessor().getBone("head");
+        CoreGeoBone head = this.getAnimationProcessor().getBone("head");
 
         if (head != null) {
-            EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
+            EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
-            AnimationData manager = animatable.getFactory().getOrCreateAnimationData(instanceId);
-            int unpausedMultiplier = !Minecraft.getInstance().isPaused() || manager.shouldPlayWhilePaused ? 1 : 0;
-
-            head.setRotationX(head.getRotationX() + extraData.headPitch * ((float) Math.PI / 180F) * unpausedMultiplier);
-            head.setRotationY(head.getRotationY() + extraData.netHeadYaw * ((float) Math.PI / 180F) * unpausedMultiplier);
+            head.setRotX(entityData.headPitch() * Mth.DEG_TO_RAD);
+            head.setRotY(entityData.netHeadYaw() * Mth.DEG_TO_RAD);
         }
     }
 

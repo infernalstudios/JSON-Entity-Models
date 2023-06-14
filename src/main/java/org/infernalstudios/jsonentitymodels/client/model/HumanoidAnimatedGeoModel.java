@@ -23,10 +23,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.CrossbowItem;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib.model.data.EntityModelData;
 
 public class HumanoidAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
     public HumanoidModel.ArmPose leftArmPose = HumanoidModel.ArmPose.EMPTY;

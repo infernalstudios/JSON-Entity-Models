@@ -120,7 +120,7 @@ public class EntityRenderDispatcherMixin {
 
             if (!RENDERER_PROVIDER_MAP.containsKey(entityEntry.getValue())) {
                 RENDERER_PROVIDER_MAP.put(entityEntry.getValue(), RENDERER_PROVIDER_MAP.getOrDefault(entityEntry.getValue(), (context) -> new ReplacedDefaultRenderer(context,
-                        new ReplacedDefaultModel(entityResourceLocation.getNamespace(), entityResourceLocation.getPath()), new ReplacedDefaultEntity())));
+                        new ReplacedDefaultModel(entityResourceLocation.getNamespace(), entityResourceLocation.getPath()), new ReplacedDefaultEntity(entityEntry.getValue()))));
 
                 changedRenderer = true;
             }
