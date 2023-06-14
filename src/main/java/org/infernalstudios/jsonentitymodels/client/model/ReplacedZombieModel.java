@@ -17,9 +17,9 @@ package org.infernalstudios.jsonentitymodels.client.model;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.monster.Zombie;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
+import software.bernie.geckolib.animatable.GeoReplacedEntity;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
 
 public class ReplacedZombieModel extends HumanoidAnimatedGeoModel {
     public ReplacedZombieModel() {
@@ -31,33 +31,33 @@ public class ReplacedZombieModel extends HumanoidAnimatedGeoModel {
     }
 
     @Override
-    public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
-        super.setCustomAnimations(animatable, instanceId, animationEvent);
+    public void setCustomAnimations(GeoReplacedEntity animatable, long instanceId, AnimationState animationState) {
+        super.setCustomAnimations(animatable, instanceId, animationState);
 
         if (this.getAnimationResource(animatable) == null) {
-            IBone rightArm = this.getAnimationProcessor().getBone("rightarm");
-            IBone leftArm = this.getAnimationProcessor().getBone("leftarm");
+            CoreGeoBone rightArm = this.getAnimationProcessor().getBone("rightarm");
+            CoreGeoBone leftArm = this.getAnimationProcessor().getBone("leftarm");
 
             this.animateZombieArms(leftArm, rightArm, ((Zombie) this.getCurrentEntity()).isAggressive(),
-                    this.getCurrentEntity().getAttackAnim(animationEvent.getPartialTick()), animationEvent.getPartialTick());
+                    this.getCurrentEntity().getAttackAnim(animationState.getPartialTick()), animationState.getPartialTick());
         }
     }
 
-    public void animateZombieArms(IBone leftArm, IBone rightArm, boolean isAggressive, float attackTime, float partialTicks) {
+    public void animateZombieArms(CoreGeoBone leftArm, CoreGeoBone rightArm, boolean isAggressive, float attackTime, float partialTicks) {
         float f = Mth.sin(attackTime * (float)Math.PI);
         float f1 = Mth.sin((1.0F - (1.0F - attackTime) * (1.0F - attackTime)) * (float)Math.PI);
         float f2 = (float)Math.PI / (isAggressive ? 5.0F : 15.0F);
 
         if (rightArm != null) {
-            rightArm.setRotationY(0.1F - f * 0.6F);
-            rightArm.setRotationX(f2);
-            rightArm.setRotationX(rightArm.getRotationX() - f * 1.2F + f1 * 0.4F);
+            rightArm.setRotY(0.1F - f * 0.6F);
+            rightArm.setRotX(f2);
+            rightArm.setRotX(rightArm.getRotX() - f * 1.2F + f1 * 0.4F);
         }
 
         if (leftArm != null) {
-            leftArm.setRotationY(-0.1F + f * 0.6F);
-            leftArm.setRotationX(f2);
-            leftArm.setRotationX(leftArm.getRotationX() - f * 1.2F + f1 * 0.4F);
+            leftArm.setRotY(-0.1F + f * 0.6F);
+            leftArm.setRotX(f2);
+            leftArm.setRotX(leftArm.getRotX() - f * 1.2F + f1 * 0.4F);
         }
 
         this.bobArms(rightArm, leftArm, partialTicks);

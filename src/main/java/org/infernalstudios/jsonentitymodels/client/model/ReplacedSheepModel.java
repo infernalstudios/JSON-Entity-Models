@@ -16,9 +16,9 @@
 package org.infernalstudios.jsonentitymodels.client.model;
 
 import net.minecraft.world.entity.animal.Sheep;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
+import software.bernie.geckolib.animatable.GeoReplacedEntity;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
 
 public class ReplacedSheepModel extends QuardrupedAnimatedGeoModel {
     public ReplacedSheepModel() {
@@ -26,15 +26,15 @@ public class ReplacedSheepModel extends QuardrupedAnimatedGeoModel {
     }
 
     @Override
-    public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
-        super.setCustomAnimations(animatable, instanceId, animationEvent);
+    public void setCustomAnimations(GeoReplacedEntity animatable, long instanceId, AnimationState animationState) {
+        super.setCustomAnimations(animatable, instanceId, animationState);
 
         if (this.getAnimationResource(animatable) == null) {
-            IBone head = this.getAnimationProcessor().getBone("head");
+            CoreGeoBone head = this.getAnimationProcessor().getBone("head");
 
             if (head != null) {
-                head.setPositionY(-((Sheep) this.getCurrentEntity()).getHeadEatPositionScale(animationEvent.getPartialTick()) * 9.0F);
-                head.setRotationX(-((Sheep) this.getCurrentEntity()).getHeadEatAngleScale(animationEvent.getPartialTick()));
+                head.setPosY(-((Sheep) this.getCurrentEntity()).getHeadEatPositionScale(animationState.getPartialTick()) * 9.0F);
+                head.setRotX(-((Sheep) this.getCurrentEntity()).getHeadEatAngleScale(animationState.getPartialTick()));
             }
         }
     }

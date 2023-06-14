@@ -1,7 +1,7 @@
 modLoader="javafml" #mandatory
 
 # A version range to match for said mod loader - for regular FML @Mod it will be the forge version
-loaderVersion="[43,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+loaderVersion="[45,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 
 license="Apache-2.0"
 
@@ -48,18 +48,18 @@ Nekomaster1000 - Artist, Modeler, and Animator
 [[dependencies.jsonentitymodels]]
 modId="forge"
 mandatory=true
-versionRange="[43,)"
+versionRange="[45,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.jsonentitymodels]]
 modId="minecraft"
 mandatory = true
-versionRange = "[1.19.2,1.19.3)"
+versionRange = "[1.19.4,1.20)"
 ordering = "NONE"
 side="BOTH"
 [[dependencies.jsonentitymodels]]
-modId="geckolib3"
+modId="geckolib"
 mandatory = true
-versionRange = "[3.1.39,4.0)"
+versionRange = "[4.2,5.0)"
 ordering = "NONE"
 side="BOTH"

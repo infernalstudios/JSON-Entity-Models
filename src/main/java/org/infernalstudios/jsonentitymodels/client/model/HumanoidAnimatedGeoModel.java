@@ -23,6 +23,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.CrossbowItem;
+import software.bernie.geckolib.animatable.GeoReplacedEntity;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.data.EntityModelData;
 
 public class HumanoidAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
@@ -38,41 +42,41 @@ public class HumanoidAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
     }
 
     @Override
-    public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
+    public void setCustomAnimations(GeoReplacedEntity animatable, long instanceId, AnimationState animationState) {
         if (this.getAnimationResource(animatable) == null) {
             LivingEntity livingEntity = this.getCurrentEntity();
 
-            EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
+            EntityModelData extraData = (EntityModelData) animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
-            IBone head = this.getAnimationProcessor().getBone("head");
-            IBone body = this.getAnimationProcessor().getBone("body");
-            IBone rightArm = this.getAnimationProcessor().getBone("rightarm");
-            IBone leftArm = this.getAnimationProcessor().getBone("leftarm");
-            IBone rightLeg = this.getAnimationProcessor().getBone("rightleg");
-            IBone leftLeg = this.getAnimationProcessor().getBone("leftleg");
+            CoreGeoBone head = this.getAnimationProcessor().getBone("head");
+            CoreGeoBone body = this.getAnimationProcessor().getBone("body");
+            CoreGeoBone rightArm = this.getAnimationProcessor().getBone("rightarm");
+            CoreGeoBone leftArm = this.getAnimationProcessor().getBone("leftarm");
+            CoreGeoBone rightLeg = this.getAnimationProcessor().getBone("rightleg");
+            CoreGeoBone leftLeg = this.getAnimationProcessor().getBone("leftleg");
 
             boolean flag = livingEntity.getFallFlyingTicks() > 4;
             boolean flag1 = livingEntity.isVisuallySwimming();
 
-            float swimAmount = livingEntity.getSwimAmount(animationEvent.getPartialTick());
+            float swimAmount = livingEntity.getSwimAmount(animationState.getPartialTick());
 
             if (head != null) {
-                head.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F));
+                head.setRotY(extraData.netHeadYaw() * ((float) Math.PI / 180F));
                 if (flag) {
-                    head.setRotationX((-(float) Math.PI / 4F));
+                    head.setRotX((-(float) Math.PI / 4F));
                 } else if (swimAmount > 0.0F) {
                     if (flag1) {
-                        head.setRotationX(this.rotlerpRad(swimAmount, head.getRotationX(), (-(float) Math.PI / 4F)));
+                        head.setRotX(this.rotlerpRad(swimAmount, head.getRotX(), (-(float) Math.PI / 4F)));
                     } else {
-                        head.setRotationX(this.rotlerpRad(swimAmount, head.getRotationX(), extraData.headPitch) * ((float) Math.PI / 180F));
+                        head.setRotX(this.rotlerpRad(swimAmount, head.getRotX(), extraData.headPitch()) * ((float) Math.PI / 180F));
                     }
                 } else {
-                    head.setRotationX(extraData.headPitch * ((float) Math.PI / 180F));
+                    head.setRotX(extraData.headPitch() * ((float) Math.PI / 180F));
                 }
             }
 
             if (body != null) {
-                body.setRotationY(0.0F);
+                body.setRotY(0.0F);
             }
 
             float f = 1.0F;
@@ -87,57 +91,57 @@ public class HumanoidAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
             }
 
             if (rightArm != null) {
-                rightArm.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F + (float) Math.PI) * 2.0F * animationEvent.getLimbSwingAmount() * 0.5F / f);
-                rightArm.setRotationZ(0.0F);
+                rightArm.setRotX(Mth.cos(animationState.getLimbSwing() * 0.6662F + (float) Math.PI) * 2.0F * animationState.getLimbSwingAmount() * 0.5F / f);
+                rightArm.setRotZ(0.0F);
             }
 
             if (leftArm != null) {
-                leftArm.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F) * 2.0F * animationEvent.getLimbSwingAmount() * 0.5F / f);
-                leftArm.setRotationZ(0.0F);
+                leftArm.setRotX(Mth.cos(animationState.getLimbSwing() * 0.6662F) * 2.0F * animationState.getLimbSwingAmount() * 0.5F / f);
+                leftArm.setRotZ(0.0F);
             }
 
             if (rightLeg != null) {
-                rightLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F) * 1.4F * animationEvent.getLimbSwingAmount() / f);
-                rightLeg.setRotationY(0.0F);
-                rightLeg.setRotationZ(0.0F);
+                rightLeg.setRotX(Mth.cos(animationState.getLimbSwing() * 0.6662F) * 1.4F * animationState.getLimbSwingAmount() / f);
+                rightLeg.setRotY(0.0F);
+                rightLeg.setRotZ(0.0F);
             }
 
             if (leftLeg != null) {
-                leftLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F + (float) Math.PI) * 1.4F * animationEvent.getLimbSwingAmount() / f);
-                leftLeg.setRotationY(0.0F);
-                leftLeg.setRotationZ(0.0F);
+                leftLeg.setRotX(Mth.cos(animationState.getLimbSwing() * 0.6662F + (float) Math.PI) * 1.4F * animationState.getLimbSwingAmount() / f);
+                leftLeg.setRotY(0.0F);
+                leftLeg.setRotZ(0.0F);
             }
 
             boolean riding = livingEntity.isPassenger() && (livingEntity.getVehicle() != null && livingEntity.getVehicle().shouldRiderSit());
 
             if (riding) {
                 if (rightArm != null) {
-                    rightArm.setRotationX(rightArm.getRotationX() - (float) Math.PI / 5F);
+                    rightArm.setRotX(rightArm.getRotX() - (float) Math.PI / 5F);
                 }
 
                 if (leftArm != null) {
-                    leftArm.setRotationX(leftArm.getRotationX() - (float) Math.PI / 5F);
+                    leftArm.setRotX(leftArm.getRotX() - (float) Math.PI / 5F);
                 }
 
                 if (rightLeg != null) {
-                    rightLeg.setRotationX(-1.4137167F);
-                    rightLeg.setRotationY(((float) Math.PI / 10F));
-                    rightLeg.setRotationZ(0.07853982F);
+                    rightLeg.setRotX(-1.4137167F);
+                    rightLeg.setRotY(((float) Math.PI / 10F));
+                    rightLeg.setRotZ(0.07853982F);
                 }
 
                 if (leftLeg != null) {
-                    leftLeg.setRotationX(-1.4137167F);
-                    leftLeg.setRotationY((-(float) Math.PI / 10F));
-                    leftLeg.setRotationZ(-0.07853982F);
+                    leftLeg.setRotX(-1.4137167F);
+                    leftLeg.setRotY((-(float) Math.PI / 10F));
+                    leftLeg.setRotZ(-0.07853982F);
                 }
             }
 
             if (rightArm != null) {
-                rightArm.setRotationY(0.0F);
+                rightArm.setRotY(0.0F);
             }
 
             if (leftArm != null) {
-                leftArm.setRotationY(0.0F);
+                leftArm.setRotY(0.0F);
             }
 
             boolean flag2 = livingEntity.getMainArm() == HumanoidArm.RIGHT;
@@ -159,104 +163,104 @@ public class HumanoidAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
                 }
             }
 
-            this.setupAttackAnimation(livingEntity, animationEvent.getPartialTick(), rightArm, leftArm, body, head, livingEntity.getAttackAnim(animationEvent.getPartialTick()));
+            this.setupAttackAnimation(livingEntity, animationState.getPartialTick(), rightArm, leftArm, body, head, livingEntity.getAttackAnim(animationState.getPartialTick()));
 
             boolean crouching = livingEntity.isCrouching();
             if (crouching) {
                 if (body != null) {
-                    body.setRotationX(0.5F);
+                    body.setRotX(0.5F);
                 }
 
                 if (rightArm != null) {
-                    rightArm.setRotationX(rightArm.getRotationX() + 0.4F);
+                    rightArm.setRotX(rightArm.getRotX() + 0.4F);
                 }
 
                 if (leftArm != null) {
-                    leftArm.setRotationX(leftArm.getRotationX() + 0.4F);
+                    leftArm.setRotX(leftArm.getRotX() + 0.4F);
                 }
             } else if (body != null) {
-                body.setRotationX(0.0F);
+                body.setRotX(0.0F);
             }
 
             if (this.rightArmPose != HumanoidModel.ArmPose.SPYGLASS) {
-                this.bobBone(rightArm, animationEvent.getPartialTick(), 1.0F);
+                this.bobBone(rightArm, animationState.getPartialTick(), 1.0F);
             }
 
             if (this.leftArmPose != HumanoidModel.ArmPose.SPYGLASS) {
-                this.bobBone(leftArm, animationEvent.getPartialTick(), -1.0F);
+                this.bobBone(leftArm, animationState.getPartialTick(), -1.0F);
             }
 
             if (swimAmount > 0.0F) {
-                float attackTime = livingEntity.getAttackAnim(animationEvent.getPartialTick());
+                float attackTime = livingEntity.getAttackAnim(animationState.getPartialTick());
 
-                float f5 = animationEvent.getLimbSwing() % 26.0F;
+                float f5 = animationState.getLimbSwing() % 26.0F;
                 HumanoidArm humanoidarm = this.getAttackArm(livingEntity);
                 float f1 = humanoidarm == HumanoidArm.RIGHT && attackTime > 0.0F ? 0.0F : swimAmount;
                 float f2 = humanoidarm == HumanoidArm.LEFT && attackTime > 0.0F ? 0.0F : swimAmount;
                 if (!livingEntity.isUsingItem()) {
                     if (f5 < 14.0F) {
                         if (leftArm != null) {
-                            leftArm.setRotationX(this.rotlerpRad(f2, leftArm.getRotationX(), 0.0F));
-                            leftArm.setRotationY(this.rotlerpRad(f2, leftArm.getRotationY(), (float) Math.PI));
-                            leftArm.setRotationZ(this.rotlerpRad(f2, leftArm.getRotationZ(), (float) Math.PI + 1.8707964F * this.quadraticArmUpdate(f5) / this.quadraticArmUpdate(14.0F)));
+                            leftArm.setRotX(this.rotlerpRad(f2, leftArm.getRotX(), 0.0F));
+                            leftArm.setRotY(this.rotlerpRad(f2, leftArm.getRotY(), (float) Math.PI));
+                            leftArm.setRotZ(this.rotlerpRad(f2, leftArm.getRotZ(), (float) Math.PI + 1.8707964F * this.quadraticArmUpdate(f5) / this.quadraticArmUpdate(14.0F)));
                         }
 
                         if (rightArm != null) {
-                            rightArm.setRotationX(Mth.lerp(f1, rightArm.getRotationX(), 0.0F));
-                            rightArm.setRotationY(Mth.lerp(f1, rightArm.getRotationY(), (float) Math.PI));
-                            rightArm.setRotationZ(Mth.lerp(f1, rightArm.getRotationZ(), (float) Math.PI - 1.8707964F * this.quadraticArmUpdate(f5) / this.quadraticArmUpdate(14.0F)));
+                            rightArm.setRotX(Mth.lerp(f1, rightArm.getRotX(), 0.0F));
+                            rightArm.setRotY(Mth.lerp(f1, rightArm.getRotY(), (float) Math.PI));
+                            rightArm.setRotZ(Mth.lerp(f1, rightArm.getRotZ(), (float) Math.PI - 1.8707964F * this.quadraticArmUpdate(f5) / this.quadraticArmUpdate(14.0F)));
                         }
                     } else if (f5 >= 14.0F && f5 < 22.0F) {
                         float f6 = (f5 - 14.0F) / 8.0F;
 
                         if (leftArm != null) {
-                            leftArm.setRotationX(this.rotlerpRad(f2, leftArm.getRotationX(), ((float) Math.PI / 2F) * f6));
-                            leftArm.setRotationY(this.rotlerpRad(f2, leftArm.getRotationY(), (float) Math.PI));
-                            leftArm.setRotationZ(this.rotlerpRad(f2, leftArm.getRotationZ(), 5.012389F - 1.8707964F * f6));
+                            leftArm.setRotX(this.rotlerpRad(f2, leftArm.getRotX(), ((float) Math.PI / 2F) * f6));
+                            leftArm.setRotY(this.rotlerpRad(f2, leftArm.getRotY(), (float) Math.PI));
+                            leftArm.setRotZ(this.rotlerpRad(f2, leftArm.getRotZ(), 5.012389F - 1.8707964F * f6));
                         }
 
                         if (rightArm != null) {
-                            rightArm.setRotationX(Mth.lerp(f1, rightArm.getRotationX(), ((float) Math.PI / 2F) * f6));
-                            rightArm.setRotationY(Mth.lerp(f1, rightArm.getRotationY(), (float) Math.PI));
-                            rightArm.setRotationZ(Mth.lerp(f1, rightArm.getRotationZ(), 1.2707963F + 1.8707964F * f6));
+                            rightArm.setRotX(Mth.lerp(f1, rightArm.getRotX(), ((float) Math.PI / 2F) * f6));
+                            rightArm.setRotY(Mth.lerp(f1, rightArm.getRotY(), (float) Math.PI));
+                            rightArm.setRotZ(Mth.lerp(f1, rightArm.getRotZ(), 1.2707963F + 1.8707964F * f6));
                         }
                     } else if (f5 >= 22.0F && f5 < 26.0F) {
                         float f3 = (f5 - 22.0F) / 4.0F;
                         if (leftArm != null) {
-                            leftArm.setRotationX(this.rotlerpRad(f2, leftArm.getRotationX(), ((float) Math.PI / 2F) - ((float) Math.PI / 2F) * f3));
-                            leftArm.setRotationY(this.rotlerpRad(f2, leftArm.getRotationY(), (float) Math.PI));
-                            leftArm.setRotationZ(this.rotlerpRad(f2, leftArm.getRotationZ(), (float) Math.PI));
+                            leftArm.setRotX(this.rotlerpRad(f2, leftArm.getRotX(), ((float) Math.PI / 2F) - ((float) Math.PI / 2F) * f3));
+                            leftArm.setRotY(this.rotlerpRad(f2, leftArm.getRotY(), (float) Math.PI));
+                            leftArm.setRotZ(this.rotlerpRad(f2, leftArm.getRotZ(), (float) Math.PI));
                         }
 
                         if (rightArm != null) {
-                            rightArm.setRotationX(Mth.lerp(f1, rightArm.getRotationX(), ((float) Math.PI / 2F) - ((float) Math.PI / 2F) * f3));
-                            rightArm.setRotationY(Mth.lerp(f1, rightArm.getRotationY(), (float) Math.PI));
-                            rightArm.setRotationZ(Mth.lerp(f1, rightArm.getRotationZ(), (float) Math.PI));
+                            rightArm.setRotX(Mth.lerp(f1, rightArm.getRotX(), ((float) Math.PI / 2F) - ((float) Math.PI / 2F) * f3));
+                            rightArm.setRotY(Mth.lerp(f1, rightArm.getRotY(), (float) Math.PI));
+                            rightArm.setRotZ(Mth.lerp(f1, rightArm.getRotZ(), (float) Math.PI));
                         }
                     }
                 }
 
                 if (leftLeg != null) {
-                    leftLeg.setRotationX(Mth.lerp(swimAmount, leftLeg.getRotationX(), 0.3F * Mth.cos(animationEvent.getLimbSwing() * 0.33333334F + (float) Math.PI)));
+                    leftLeg.setRotX(Mth.lerp(swimAmount, leftLeg.getRotX(), 0.3F * Mth.cos(animationState.getLimbSwing() * 0.33333334F + (float) Math.PI)));
                 }
 
                 if (rightLeg != null) {
-                    rightLeg.setRotationX(Mth.lerp(swimAmount, rightLeg.getRotationX(), 0.3F * Mth.cos(animationEvent.getLimbSwing() * 0.33333334F)));
+                    rightLeg.setRotX(Mth.lerp(swimAmount, rightLeg.getRotX(), 0.3F * Mth.cos(animationState.getLimbSwing() * 0.33333334F)));
                 }
             }
         } else {
-            super.setCustomAnimations(animatable, instanceId, animationEvent);
+            super.setCustomAnimations(animatable, instanceId, animationState);
         }
     }
 
-    public void bobBone(IBone bone, float partialTick, float multiplier) {
+    public void bobBone(CoreGeoBone bone, float partialTick, float multiplier) {
         if (bone != null) {
-            bone.setRotationZ(bone.getRotationZ() + multiplier * (Mth.cos(partialTick * 0.09F) * 0.05F + 0.05F));
-            bone.setRotationX(bone.getRotationX() + multiplier * Mth.sin(partialTick * 0.067F) * 0.05F);
+            bone.setRotZ(bone.getRotZ() + multiplier * (Mth.cos(partialTick * 0.09F) * 0.05F + 0.05F));
+            bone.setRotX(bone.getRotX() + multiplier * Mth.sin(partialTick * 0.067F) * 0.05F);
         }
     }
 
-    public void bobArms(IBone rightArm, IBone leftArm, float partialTicks) {
+    public void bobArms(CoreGeoBone rightArm, CoreGeoBone leftArm, float partialTicks) {
         if (rightArm != null) {
             this.bobBone(rightArm, partialTicks, 1.0F);
         }
@@ -275,40 +279,40 @@ public class HumanoidAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
         return -65.0F * limbSwingFactor + limbSwingFactor * limbSwingFactor;
     }
 
-    private void poseRightArm(LivingEntity livingEntity, IBone rightArm, IBone leftArm, IBone head) {
+    private void poseRightArm(LivingEntity livingEntity, CoreGeoBone rightArm, CoreGeoBone leftArm, CoreGeoBone head) {
         switch (this.rightArmPose) {
             case EMPTY:
                 if (rightArm != null) {
-                    rightArm.setRotationY(0.0F);
+                    rightArm.setRotY(0.0F);
                 }
                 break;
             case BLOCK:
                 if (rightArm != null) {
-                    rightArm.setRotationX(rightArm.getRotationX() * 0.5F - 0.9424779F);
-                    rightArm.setRotationY(-(float) Math.PI / 6F);
+                    rightArm.setRotX(rightArm.getRotX() * 0.5F - 0.9424779F);
+                    rightArm.setRotY(-(float) Math.PI / 6F);
                 }
                 break;
             case ITEM:
                 if (rightArm != null) {
-                    rightArm.setRotationX(rightArm.getRotationX() * 0.5F - ((float) Math.PI / 10F));
-                    rightArm.setRotationY(0.0F);
+                    rightArm.setRotX(rightArm.getRotX() * 0.5F - ((float) Math.PI / 10F));
+                    rightArm.setRotY(0.0F);
                 }
                 break;
             case THROW_SPEAR:
                 if (rightArm != null) {
-                    rightArm.setRotationX(rightArm.getRotationX() * 0.5F - (float) Math.PI);
-                    rightArm.setRotationY(0.0F);
+                    rightArm.setRotX(rightArm.getRotX() * 0.5F - (float) Math.PI);
+                    rightArm.setRotY(0.0F);
                 }
                 break;
             case BOW_AND_ARROW:
                 if (rightArm != null) {
-                    rightArm.setRotationY(0.1F + head.getRotationY());
-                    rightArm.setRotationX((float) Math.PI / 2F + head.getRotationX());
+                    rightArm.setRotY(0.1F + head.getRotY());
+                    rightArm.setRotX((float) Math.PI / 2F + head.getRotX());
                 }
 
                 if (leftArm != null) {
-                    leftArm.setRotationY(-0.1F - head.getRotationY() - 0.4F);
-                    leftArm.setRotationX((float) Math.PI / 2F + head.getRotationX());
+                    leftArm.setRotY(-0.1F - head.getRotY() - 0.4F);
+                    leftArm.setRotX((float) Math.PI / 2F + head.getRotX());
                 }
                 break;
             case CROSSBOW_CHARGE:
@@ -319,51 +323,51 @@ public class HumanoidAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
                 break;
             case SPYGLASS:
                 if (rightArm != null) {
-                    rightArm.setRotationX(Mth.clamp(head.getRotationX() - 1.9198622F - (livingEntity.isCrouching() ? 0.2617994F : 0.0F), -2.4F, 3.3F));
-                    rightArm.setRotationY(head.getRotationY() - 0.2617994F);
+                    rightArm.setRotX(Mth.clamp(head.getRotX() - 1.9198622F - (livingEntity.isCrouching() ? 0.2617994F : 0.0F), -2.4F, 3.3F));
+                    rightArm.setRotY(head.getRotY() - 0.2617994F);
                 }
                 break;
             case TOOT_HORN:
                 if (rightArm != null) {
-                    rightArm.setRotationX(Mth.clamp(head.getRotationX(), -1.2F, 1.2F) - 1.4835298F);
-                    rightArm.setRotationY(head.getRotationY() - ((float) Math.PI / 6F));
+                    rightArm.setRotX(Mth.clamp(head.getRotX(), -1.2F, 1.2F) - 1.4835298F);
+                    rightArm.setRotY(head.getRotY() - ((float) Math.PI / 6F));
                 }
             default:
         }
 
     }
 
-    private void poseLeftArm(LivingEntity livingEntity, IBone rightArm, IBone leftArm, IBone head) {
+    private void poseLeftArm(LivingEntity livingEntity, CoreGeoBone rightArm, CoreGeoBone leftArm, CoreGeoBone head) {
         switch (this.leftArmPose) {
             case EMPTY:
                 break;
             case BLOCK:
                 if (leftArm != null) {
-                    leftArm.setRotationX(leftArm.getRotationX() * 0.5F - 0.9424779F);
-                    leftArm.setRotationY(((float) Math.PI / 6F));
+                    leftArm.setRotX(leftArm.getRotX() * 0.5F - 0.9424779F);
+                    leftArm.setRotY(((float) Math.PI / 6F));
                 }
                 break;
             case ITEM:
                 if (leftArm != null) {
-                    leftArm.setRotationX(leftArm.getRotationX() * 0.5F - ((float) Math.PI / 10F));
-                    leftArm.setRotationY(0.0F);
+                    leftArm.setRotX(leftArm.getRotX() * 0.5F - ((float) Math.PI / 10F));
+                    leftArm.setRotY(0.0F);
                 }
                 break;
             case THROW_SPEAR:
                 if (leftArm != null) {
-                    leftArm.setRotationX(leftArm.getRotationX() * 0.5F - (float) Math.PI);
-                    leftArm.setRotationY(0.0F);
+                    leftArm.setRotX(leftArm.getRotX() * 0.5F - (float) Math.PI);
+                    leftArm.setRotY(0.0F);
                 }
                 break;
             case BOW_AND_ARROW:
                 if (rightArm != null) {
-                    rightArm.setRotationY(0.1F + head.getRotationY() - 0.4F);
-                    rightArm.setRotationX((float) Math.PI / 2F + head.getRotationX());
+                    rightArm.setRotY(0.1F + head.getRotY() - 0.4F);
+                    rightArm.setRotX((float) Math.PI / 2F + head.getRotX());
                 }
 
                 if (leftArm != null) {
-                    leftArm.setRotationY(0.1F + head.getRotationY());
-                    leftArm.setRotationX((float) Math.PI / 2F + head.getRotationX());
+                    leftArm.setRotY(0.1F + head.getRotY());
+                    leftArm.setRotX((float) Math.PI / 2F + head.getRotX());
                 }
                 break;
             case CROSSBOW_CHARGE:
@@ -374,41 +378,41 @@ public class HumanoidAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
                 break;
             case SPYGLASS:
                 if (leftArm != null) {
-                    leftArm.setRotationX(Mth.clamp(head.getRotationX() - 1.9198622F - (livingEntity.isCrouching() ? 0.2617994F : 0.0F), -2.4F, 3.3F));
-                    leftArm.setRotationY(head.getRotationY() + 0.2617994F);
+                    leftArm.setRotX(Mth.clamp(head.getRotX() - 1.9198622F - (livingEntity.isCrouching() ? 0.2617994F : 0.0F), -2.4F, 3.3F));
+                    leftArm.setRotY(head.getRotY() + 0.2617994F);
                 }
                 break;
             case TOOT_HORN:
                 if (leftArm != null) {
-                    leftArm.setRotationX(Mth.clamp(head.getRotationX(), -1.2F, 1.2F) - 1.4835298F);
-                    leftArm.setRotationY(head.getRotationY() + ((float) Math.PI / 6F));
+                    leftArm.setRotX(Mth.clamp(head.getRotX(), -1.2F, 1.2F) - 1.4835298F);
+                    leftArm.setRotY(head.getRotY() + ((float) Math.PI / 6F));
                 }
             default:
         }
 
     }
 
-    protected void setupAttackAnimation(LivingEntity livingEntity, float partialTick, IBone rightArm, IBone leftArm, IBone body, IBone head, float attackTime) {
+    protected void setupAttackAnimation(LivingEntity livingEntity, float partialTick, CoreGeoBone rightArm, CoreGeoBone leftArm, CoreGeoBone body, CoreGeoBone head, float attackTime) {
         if (!(attackTime <= 0.0F)) {
             HumanoidArm humanoidarm = this.getAttackArm(livingEntity);
-            IBone arm = this.getArm(humanoidarm, rightArm, leftArm);
+            CoreGeoBone arm = this.getArm(humanoidarm, rightArm, leftArm);
             float f = attackTime;
 
             if (body != null) {
-                body.setRotationY(Mth.sin(Mth.sqrt(f) * ((float) Math.PI * 2F)) * 0.2F);
+                body.setRotY(Mth.sin(Mth.sqrt(f) * ((float) Math.PI * 2F)) * 0.2F);
             }
 
             if (humanoidarm == HumanoidArm.LEFT && body != null) {
-                body.setRotationY(-body.getRotationY());
+                body.setRotY(-body.getRotY());
             }
 
             if (rightArm != null && body != null) {
-                rightArm.setRotationY(rightArm.getRotationY() + body.getRotationY());
+                rightArm.setRotY(rightArm.getRotY() + body.getRotY());
             }
 
             if (leftArm != null && body != null) {
-                leftArm.setRotationY(leftArm.getRotationY() + body.getRotationY());
-                leftArm.setRotationX(leftArm.getRotationX() + body.getRotationY());
+                leftArm.setRotY(leftArm.getRotY() + body.getRotY());
+                leftArm.setRotX(leftArm.getRotX() + body.getRotY());
             }
 
             f = 1.0F - attackTime;
@@ -417,12 +421,12 @@ public class HumanoidAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
             f = 1.0F - f;
             float f1 = Mth.sin(f * (float)Math.PI);
 
-            float f2 = Mth.sin(attackTime * (float)Math.PI) * -((head != null ? head.getRotationX() : 0.0F) - 0.7F) * 0.75F;
+            float f2 = Mth.sin(attackTime * (float)Math.PI) * -((head != null ? head.getRotX() : 0.0F) - 0.7F) * 0.75F;
 
             if (arm != null) {
-                arm.setRotationX(arm.getRotationX() - f1 * 1.2F + f2);
-                arm.setRotationY(arm.getRotationY() + (body != null ? body.getRotationY() : 0.0F) * 2.0F);
-                arm.setRotationZ(arm.getRotationZ() + Mth.sin(attackTime * (float) Math.PI) * -0.4F);
+                arm.setRotX(arm.getRotX() - f1 * 1.2F + f2);
+                arm.setRotY(arm.getRotY() + (body != null ? body.getRotY() : 0.0F) * 2.0F);
+                arm.setRotZ(arm.getRotZ() + Mth.sin(attackTime * (float) Math.PI) * -0.4F);
             }
         }
     }
@@ -440,34 +444,34 @@ public class HumanoidAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
         return p_102837_ + p_102836_ * f;
     }
 
-    protected IBone getArm(HumanoidArm arm, IBone rightArm, IBone leftArm) {
+    protected CoreGeoBone getArm(HumanoidArm arm, CoreGeoBone rightArm, CoreGeoBone leftArm) {
         return arm == HumanoidArm.LEFT ? leftArm : rightArm;
     }
 
-    public void animateCrossbowHold(IBone rightArm, IBone leftArm, IBone head, boolean rightHanded) {
-        IBone mainhand = rightHanded ? rightArm : leftArm;
-        IBone offhand = rightHanded ? leftArm : rightArm;
+    public void animateCrossbowHold(CoreGeoBone rightArm, CoreGeoBone leftArm, CoreGeoBone head, boolean rightHanded) {
+        CoreGeoBone mainhand = rightHanded ? rightArm : leftArm;
+        CoreGeoBone offhand = rightHanded ? leftArm : rightArm;
 
         if (mainhand != null) {
-            mainhand.setRotationY((rightHanded ? -0.3F : 0.3F) + (head != null ? head.getRotationY() : 0.0F));
-            mainhand.setRotationX((-(float)Math.PI / 2F) + (head != null ? head.getRotationX() : 0.0F) + 0.1F);
+            mainhand.setRotY((rightHanded ? -0.3F : 0.3F) + (head != null ? head.getRotY() : 0.0F));
+            mainhand.setRotX((-(float)Math.PI / 2F) + (head != null ? head.getRotX() : 0.0F) + 0.1F);
         }
 
         if (offhand != null) {
-            offhand.setRotationY((rightHanded ? 0.6F : -0.6F) + (head != null ? head.getRotationY() : 0.0F));
-            offhand.setRotationX(-1.5F + (head != null ? head.getRotationX() : 0.0F));
+            offhand.setRotY((rightHanded ? 0.6F : -0.6F) + (head != null ? head.getRotY() : 0.0F));
+            offhand.setRotX(-1.5F + (head != null ? head.getRotX() : 0.0F));
         }
     }
 
-    public void animateCrossbowCharge(IBone rightArm, IBone leftArm, LivingEntity entity, boolean rightHanded) {
-        IBone mainhand = rightHanded ? rightArm : leftArm;
-        IBone offhand = rightHanded ? leftArm : rightArm;
+    public void animateCrossbowCharge(CoreGeoBone rightArm, CoreGeoBone leftArm, LivingEntity entity, boolean rightHanded) {
+        CoreGeoBone mainhand = rightHanded ? rightArm : leftArm;
+        CoreGeoBone offhand = rightHanded ? leftArm : rightArm;
 
         if (mainhand != null) {
-            mainhand.setRotationX(-0.97079635F);
+            mainhand.setRotX(-0.97079635F);
 
             if (offhand != null) {
-                offhand.setRotationX(mainhand.getRotationX());
+                offhand.setRotX(mainhand.getRotX());
             }
         }
 
@@ -476,7 +480,7 @@ public class HumanoidAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
         float f2 = f1 / f;
 
         if (offhand != null) {
-            offhand.setRotationX(Mth.lerp(f2, offhand.getRotationX(), (-(float) Math.PI / 2F)));
+            offhand.setRotX(Mth.lerp(f2, offhand.getRotX(), (-(float) Math.PI / 2F)));
         }
     }
 }

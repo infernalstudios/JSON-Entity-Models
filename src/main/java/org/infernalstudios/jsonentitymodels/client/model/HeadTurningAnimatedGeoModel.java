@@ -25,7 +25,6 @@ import org.infernalstudios.jsonentitymodels.JSONEntityModels;
 import org.infernalstudios.jsonentitymodels.entity.ReplacedEntityBase;
 import org.infernalstudios.jsonentitymodels.util.RandomUtil;
 import org.infernalstudios.jsonentitymodels.util.ResourceUtil;
-import software.bernie.geckolib.GeckoLibException;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.GeoReplacedEntity;
 import software.bernie.geckolib.cache.GeckoLibCache;
@@ -102,7 +101,7 @@ public abstract class HeadTurningAnimatedGeoModel<T extends GeoReplacedEntity, U
             if (this.currentEntity != null) {
                 EntityRenderer<?> originalRenderer = Minecraft.getInstance().getEntityRenderDispatcher().renderers.get(this.currentEntity.getType());
 
-                if (this.currentEntity instanceof GeoEntity geoEntity && originalRenderer instanceof GeoEntityRenderer<?> geoEntityRenderer && geoEntityRenderer.getGeoModel() != null) {
+                if (this.currentEntity instanceof GeoEntity geoEntity && originalRenderer instanceof GeoEntityRenderer geoEntityRenderer && geoEntityRenderer.getGeoModel() != null) {
                     return geoEntityRenderer.getGeoModel().getAnimationResource(geoEntity);
                 }
             }

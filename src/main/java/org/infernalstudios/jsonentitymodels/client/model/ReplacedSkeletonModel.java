@@ -22,10 +22,9 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib.animatable.GeoReplacedEntity;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
 
 public class ReplacedSkeletonModel extends HumanoidAnimatedGeoModel {
     public ReplacedSkeletonModel() {
@@ -37,14 +36,12 @@ public class ReplacedSkeletonModel extends HumanoidAnimatedGeoModel {
     }
 
     @Override
-    public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
-        super.setCustomAnimations(animatable, instanceId, animationEvent);
+    public void setCustomAnimations(GeoReplacedEntity animatable, long instanceId, AnimationState animationState) {
+        super.setCustomAnimations(animatable, instanceId, animationState);
 
         if (this.getAnimationResource(animatable) == null) {
-            EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
-
-            IBone rightArm = this.getAnimationProcessor().getBone("rightarm");
-            IBone leftArm = this.getAnimationProcessor().getBone("leftarm");
+            CoreGeoBone rightArm = this.getAnimationProcessor().getBone("rightarm");
+            CoreGeoBone leftArm = this.getAnimationProcessor().getBone("leftarm");
 
             this.rightArmPose = HumanoidModel.ArmPose.EMPTY;
             this.leftArmPose = HumanoidModel.ArmPose.EMPTY;
@@ -58,26 +55,26 @@ public class ReplacedSkeletonModel extends HumanoidAnimatedGeoModel {
             }
 
             if (((Skeleton) this.getCurrentEntity()).isAggressive() && (itemstack.isEmpty() || !itemstack.is(Items.BOW))) {
-                float attackTime = this.getCurrentEntity().getAttackAnim(animationEvent.getPartialTick());
+                float attackTime = this.getCurrentEntity().getAttackAnim(animationState.getPartialTick());
 
                 float f = Mth.sin(attackTime * (float)Math.PI);
                 float f1 = Mth.sin((1.0F - (1.0F - attackTime) * (1.0F - attackTime)) * (float)Math.PI);
 
                 if (rightArm != null) {
-                    rightArm.setRotationZ(0.0F);
-                    rightArm.setRotationY(-(0.1F - f * 0.6F));
-                    rightArm.setRotationX((-(float) Math.PI / 2F));
-                    rightArm.setRotationX(rightArm.getRotationX() - f * 1.2F - f1 * 0.4F);
+                    rightArm.setRotZ(0.0F);
+                    rightArm.setRotY(-(0.1F - f * 0.6F));
+                    rightArm.setRotX((-(float) Math.PI / 2F));
+                    rightArm.setRotX(rightArm.getRotX() - f * 1.2F - f1 * 0.4F);
                 }
 
                 if (leftArm != null) {
-                    leftArm.setRotationZ(0.0F);
-                    leftArm.setRotationY(0.1F - f * 0.6F);
-                    leftArm.setRotationX((-(float) Math.PI / 2F));
-                    leftArm.setRotationX(leftArm.getRotationX() - f * 1.2F - f1 * 0.4F);
+                    leftArm.setRotZ(0.0F);
+                    leftArm.setRotY(0.1F - f * 0.6F);
+                    leftArm.setRotX((-(float) Math.PI / 2F));
+                    leftArm.setRotX(leftArm.getRotX() - f * 1.2F - f1 * 0.4F);
                 }
 
-                this.bobArms(rightArm, leftArm, animationEvent.getPartialTick());
+                this.bobArms(rightArm, leftArm, animationState.getPartialTick());
             }
         }
     }

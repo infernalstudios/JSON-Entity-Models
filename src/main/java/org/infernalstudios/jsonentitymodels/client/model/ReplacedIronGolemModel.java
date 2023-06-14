@@ -17,10 +17,11 @@ package org.infernalstudios.jsonentitymodels.client.model;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.animal.IronGolem;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib.animatable.GeoReplacedEntity;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.data.EntityModelData;
 
 public class ReplacedIronGolemModel extends HeadTurningAnimatedGeoModel {
     public ReplacedIronGolemModel() {
@@ -28,60 +29,60 @@ public class ReplacedIronGolemModel extends HeadTurningAnimatedGeoModel {
     }
 
     @Override
-    public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
+    public void setCustomAnimations(GeoReplacedEntity animatable, long instanceId, AnimationState animationState) {
         if (this.getAnimationResource(animatable) == null) {
-            EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
+            EntityModelData extraData = (EntityModelData) animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
-            IBone head = this.getAnimationProcessor().getBone("head");
-            IBone rightLeg = this.getAnimationProcessor().getBone("rightleg");
-            IBone leftLeg = this.getAnimationProcessor().getBone("leftleg");
-            IBone rightArm = this.getAnimationProcessor().getBone("rightarm");
-            IBone leftArm = this.getAnimationProcessor().getBone("leftarm");
+            CoreGeoBone head = this.getAnimationProcessor().getBone("head");
+            CoreGeoBone rightLeg = this.getAnimationProcessor().getBone("rightleg");
+            CoreGeoBone leftLeg = this.getAnimationProcessor().getBone("leftleg");
+            CoreGeoBone rightArm = this.getAnimationProcessor().getBone("rightarm");
+            CoreGeoBone leftArm = this.getAnimationProcessor().getBone("leftarm");
 
             if (head != null) {
-                head.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F));
-                head.setRotationX(extraData.headPitch * ((float) Math.PI / 180F));
+                head.setRotY(extraData.netHeadYaw() * ((float) Math.PI / 180F));
+                head.setRotX(extraData.headPitch() * ((float) Math.PI / 180F));
             }
 
             if (rightLeg != null) {
-                rightLeg.setRotationX(-1.5F * Mth.triangleWave(animationEvent.getLimbSwing(), 13.0F) * animationEvent.getLimbSwingAmount());
+                rightLeg.setRotX(-1.5F * Mth.triangleWave(animationState.getLimbSwing(), 13.0F) * animationState.getLimbSwingAmount());
             }
 
             if (leftLeg != null) {
-                leftLeg.setRotationX(1.5F * Mth.triangleWave(animationEvent.getLimbSwing(), 13.0F) * animationEvent.getLimbSwingAmount());
+                leftLeg.setRotX(1.5F * Mth.triangleWave(animationState.getLimbSwing(), 13.0F) * animationState.getLimbSwingAmount());
             }
 
             int i = ((IronGolem) this.getCurrentEntity()).getAttackAnimationTick();
             if (i > 0) {
                 if (rightArm != null) {
-                    rightArm.setRotationX(2.0F - 1.5F * Mth.triangleWave((float) i - animationEvent.getPartialTick(), 10.0F));
+                    rightArm.setRotX(2.0F - 1.5F * Mth.triangleWave((float) i - animationState.getPartialTick(), 10.0F));
                 }
 
                 if (leftArm != null) {
-                    leftArm.setRotationX(2.0F - 1.5F * Mth.triangleWave((float) i - animationEvent.getPartialTick(), 10.0F));
+                    leftArm.setRotX(2.0F - 1.5F * Mth.triangleWave((float) i - animationState.getPartialTick(), 10.0F));
                 }
             } else {
                 int j = ((IronGolem) this.getCurrentEntity()).getOfferFlowerTick();
                 if (j > 0) {
                     if (rightArm != null) {
-                        rightArm.setRotationX(-0.8F + 0.025F * Mth.triangleWave((float) j, 70.0F));
+                        rightArm.setRotX(-0.8F + 0.025F * Mth.triangleWave((float) j, 70.0F));
                     }
 
                     if (leftArm != null) {
-                        leftArm.setRotationX(0.0F);
+                        leftArm.setRotX(0.0F);
                     }
                 } else {
                     if (rightArm != null) {
-                        rightArm.setRotationX((-0.2F + 1.5F * Mth.triangleWave(animationEvent.getLimbSwing(), 13.0F)) * animationEvent.getLimbSwingAmount());
+                        rightArm.setRotX((-0.2F + 1.5F * Mth.triangleWave(animationState.getLimbSwing(), 13.0F)) * animationState.getLimbSwingAmount());
                     }
 
                     if (leftArm != null) {
-                        leftArm.setRotationX((-0.2F - 1.5F * Mth.triangleWave(animationEvent.getLimbSwing(), 13.0F)) * animationEvent.getLimbSwingAmount());
+                        leftArm.setRotX((-0.2F - 1.5F * Mth.triangleWave(animationState.getLimbSwing(), 13.0F)) * animationState.getLimbSwingAmount());
                     }
                 }
             }
         } else {
-            super.setCustomAnimations(animatable, instanceId, animationEvent);
+            super.setCustomAnimations(animatable, instanceId, animationState);
         }
     }
 }

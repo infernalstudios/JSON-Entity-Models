@@ -18,10 +18,11 @@
 package org.infernalstudios.jsonentitymodels.client.model;
 
 import net.minecraft.util.Mth;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib.animatable.GeoReplacedEntity;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.data.EntityModelData;
 
 public class QuardrupedAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
 
@@ -30,38 +31,38 @@ public class QuardrupedAnimatedGeoModel extends HeadTurningAnimatedGeoModel {
     }
 
     @Override
-    public void setCustomAnimations(IAnimatable animatable, int instanceId, AnimationEvent animationEvent) {
+    public void setCustomAnimations(GeoReplacedEntity animatable, long instanceId, AnimationState animationState) {
         if (this.getAnimationResource(animatable) == null) {
-            EntityModelData extraData = (EntityModelData) animationEvent.getExtraDataOfType(EntityModelData.class).get(0);
+            EntityModelData extraData = (EntityModelData) animationState.getData(DataTickets.ENTITY_MODEL_DATA);
 
-            IBone head = this.getAnimationProcessor().getBone("head");
-            IBone rightHindLeg = this.getAnimationProcessor().getBone("rightlegback");
-            IBone leftHindLeg = this.getAnimationProcessor().getBone("leftlegback");
-            IBone rightFrontLeg = this.getAnimationProcessor().getBone("rightlegfront");
-            IBone leftFrontLeg = this.getAnimationProcessor().getBone("leftlegfront");
+            CoreGeoBone head = this.getAnimationProcessor().getBone("head");
+            CoreGeoBone rightHindLeg = this.getAnimationProcessor().getBone("rightlegback");
+            CoreGeoBone leftHindLeg = this.getAnimationProcessor().getBone("leftlegback");
+            CoreGeoBone rightFrontLeg = this.getAnimationProcessor().getBone("rightlegfront");
+            CoreGeoBone leftFrontLeg = this.getAnimationProcessor().getBone("leftlegfront");
 
             if (head != null) {
-                head.setRotationX(extraData.headPitch * ((float) Math.PI / 180F));
-                head.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F));
+                head.setRotX(extraData.headPitch() * ((float) Math.PI / 180F));
+                head.setRotY(extraData.netHeadYaw() * ((float) Math.PI / 180F));
             }
 
             if (rightHindLeg != null) {
-                rightHindLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F) * 1.4F * animationEvent.getLimbSwingAmount());
+                rightHindLeg.setRotX(Mth.cos(animationState.getLimbSwing() * 0.6662F) * 1.4F * animationState.getLimbSwingAmount());
             }
 
             if (leftHindLeg != null) {
-                leftHindLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F + (float) Math.PI) * 1.4F * animationEvent.getLimbSwingAmount());
+                leftHindLeg.setRotX(Mth.cos(animationState.getLimbSwing() * 0.6662F + (float) Math.PI) * 1.4F * animationState.getLimbSwingAmount());
             }
 
             if (rightFrontLeg != null) {
-                rightFrontLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F + (float) Math.PI) * 1.4F * animationEvent.getLimbSwingAmount());
+                rightFrontLeg.setRotX(Mth.cos(animationState.getLimbSwing() * 0.6662F + (float) Math.PI) * 1.4F * animationState.getLimbSwingAmount());
             }
 
             if (leftFrontLeg != null) {
-                leftFrontLeg.setRotationX(Mth.cos(animationEvent.getLimbSwing() * 0.6662F) * 1.4F * animationEvent.getLimbSwingAmount());
+                leftFrontLeg.setRotX(Mth.cos(animationState.getLimbSwing() * 0.6662F) * 1.4F * animationState.getLimbSwingAmount());
             }
         } else {
-            super.setCustomAnimations(animatable, instanceId, animationEvent);
+            super.setCustomAnimations(animatable, instanceId, animationState);
         }
     }
 }
